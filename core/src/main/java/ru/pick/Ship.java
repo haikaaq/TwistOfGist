@@ -12,13 +12,17 @@ public class Ship extends Object {
     public int phase, nPhases =12;
     private long timeLastPhase;
     private long timePhaseInterval=150;
+    public float rotation=0;
+    public float rotationSpeed;
+    public float rotationPoint;
+    public  float CheckVx;
 
 
 
     public Ship(float x, float y){
         super(x,y);
-        width=250;
-        height=250;
+        width=350;
+        height=350;
 
 
     }
@@ -36,15 +40,17 @@ public class Ship extends Object {
 
     public void touch( Vector3 touch){
 
-
-        vX= (touch.x-scrX()-125)/50;
-        vY= (touch.y-scrY()-125)/80;
+        vX= (touch.x-scrX()-125)/27;
+        vY= (touch.y-scrY()-125)/70;
         OutOfScreen();
 
     }
     @Override
     public void move() {
         super.move();
+        rotationSpeed=(vX-CheckVx)*2;
+        rotation-=rotationSpeed;
+
 
         changePhase();
         OutOfScreen();

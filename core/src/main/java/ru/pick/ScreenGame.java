@@ -44,7 +44,7 @@ public class ScreenGame implements Screen {
     private long timeRedSpawn, timeRed = 700;
 
     public int level = 1;
-    public int EmeniesMAX = MathUtils.random(20, 38);
+    public int EmeniesMAX = MathUtils.random(6, 8);
     private int EmeniesDone = 0;
     private int EmeniesCount = 0;
 
@@ -77,6 +77,7 @@ public class ScreenGame implements Screen {
     Texture imgEnemyesBoses;
     Texture imgEnemyesDead;
     Texture imgEnemyesWouded;
+
     Texture imgMinus;
     Texture imgPlus;
     Texture imgGreen;
@@ -84,11 +85,13 @@ public class ScreenGame implements Screen {
 
     TextureRegion[][] imgShipatlas = new TextureRegion[5][12];
     TextureRegion[][] imgEnemy = new TextureRegion[4][12];
-    TextureRegion[][] imgEnemyBoses = new TextureRegion[4][12];
-    TextureRegion[][] imgEnemyDead = new TextureRegion[4][12];
+    TextureRegion[] imgEnemyBoses = new TextureRegion [6];
+    TextureRegion[] imgEnemyDead = new TextureRegion[10];
     TextureRegion[][] imgFragments = new TextureRegion[4][4];
     TextureRegion[] imgShotatlas = new TextureRegion[5];
     TextureRegion[][] imgEnemyWouded = new TextureRegion[4][12];
+
+
 
     SpaceButton btnMoney;
     String moneyStr = "" + money;
@@ -100,6 +103,7 @@ public class ScreenGame implements Screen {
 
     SpaceButton btnBack;
     SpaceButton btnGetMoney;
+
     Ship ship;
     GameBackground[] bg = new GameBackground[2];
     List<Enemy> enemies = new ArrayList<>();
@@ -155,16 +159,12 @@ public class ScreenGame implements Screen {
                 imgEnemyWouded[j][i] = new TextureRegion(imgEnemyesWouded, (i < 7 ? i : 12 - i) * 800, (j) * 800, 800, 800);
             }
         }
-        for (int e = 0; e < imgEnemyBoses.length; e++) {
-            for (int m = 0; m < imgEnemyBoses[e].length; m++) {
-                imgEnemyBoses[e][m] = new TextureRegion(imgEnemyesBoses, (m < 7 ? m : 12 - m) * 800, (e + 1) * 800, 800, 800);
-            }
-        }
+
 
         for (int e = 0; e < imgEnemyDead.length; e++) {
-            for (int m = 0; m < imgEnemyDead[e].length; m++) {
-                imgEnemyDead[e][m] = new TextureRegion(imgEnemyesDead, (m < 7 ? m : 12 - m) * 800, (e + 1) * 800, 800, 800);
-            }
+
+                imgEnemyDead[e] = new TextureRegion(imgEnemyesDead, (e < 6 ? e : 10 - e) * 450, 0, 450, 450);
+
         }
 
         for (int j = 0; j < imgFragments.length; j++) {
@@ -176,7 +176,14 @@ public class ScreenGame implements Screen {
         }
         for (int i = 0; i < imgShotatlas.length; i++) {
             imgShotatlas[i] = new TextureRegion(imgShotsatlas, (i) * 100, 0, 100, 350);
+
         }
+
+        for (int e = 0; e < imgEnemyBoses.length; e++) {
+
+            imgEnemyBoses[e] = new TextureRegion(imgEnemyesBoses, (e<6? e:10-e) *450, 0, 450, 450);
+        }
+
 
         btnBack = new SpaceButton(font70, "Back", 30, 1550);
         btnGetMoney = new SpaceButton(font70, "get and exit", SCR_WIDTH / 2 - 220, 400);
@@ -218,6 +225,7 @@ public class ScreenGame implements Screen {
     public void render(float delta) {
         ShotCount=main.ShotsBostCount;
         ShotEven=main.ShotEven;
+        ship.CheckVx=ship.vX;
 
 
          SaveGame();
@@ -250,6 +258,7 @@ public class ScreenGame implements Screen {
 
         //события
         if (GameState == GAME) {
+
             gameStart();
         }
 
@@ -261,24 +270,29 @@ public class ScreenGame implements Screen {
             }
 
             if (enemies.get(j).EnemyIsBoss) {
-                if (enemies.get(j).y < SCR_HEIGHT - 50)
+
+                /*if (enemies.get(j).y < SCR_HEIGHT - 50)
                     enemies.get(j).vY += MathUtils.random(-0.13f, 0.15f);
                 if (enemies.get(j).y > SCR_HEIGHT - 50) enemies.get(j).vY = -2.6f;
                 if (enemies.get(j).y < SCR_HEIGHT / 4)
-                    enemies.get(j).vY = -0.1f * enemies.get(j).type;
+                    enemies.get(j).vY = -0.1f * enemies.get(j).type;*/
             }
             if (enemies.get(j).health == 0) {
 
                 EmeniesDone += 1;
 
                 sndExplosion.play();
+                enemies.get(j).health=-1;
 
 
                 btnMoney.changeText(money);
 
-                if (enemies.get(j).EnemyIsBoss && enemies.get(j).health == 0) {
+                if (enemies.get(j).EnemyIsBoss && enemies.get(j).health <= 0) {
                     enemies.get(j).EmenyDead = true;
                     enemies.get(j).vY = -7.69f;
+                    money += MoneyFactor;
+                    enemies.get(j).EnemyIsBoss=false;
+                    btnMoney.changeText(money);
 
                 } else {
 
@@ -358,7 +372,7 @@ public class ScreenGame implements Screen {
             }
 
         }
-
+        ship.rotationSpeed=(ship.vX-ship.CheckVx)*100;
 
         for (int i = boosts.size() - 1; i >= 0; i--) {
             if (ship.overlab(boosts.get(i))) {
@@ -368,8 +382,7 @@ public class ScreenGame implements Screen {
                     if (ShotCount < 4) {
                         if (ShotEven < ShotCount) ShotEven = ShotCount;
                         else {
-                            //ShotEven = 0;
-                           // ShotCount += 1;
+
                             main.ShotsBostCount+=1;
                             main.ShotEven=0;
                         }
@@ -428,16 +441,19 @@ public class ScreenGame implements Screen {
 
         for (Enemy e : enemies) {
             if (e.EmenyDead) {
-                batch.draw(imgEnemyDead[e.type][e.phase], e.scrX(), e.scrY(), e.width, e.height);
+                batch.draw(imgEnemyDead[e.phase], e.scrX(), e.scrY(),e.width/2,e.height/2, e.width, e.height,1,1,e.rotation);
             }
             //else {
             if (e.EnemyIsBoss && !e.EmenyDead) {
+                if(e.isWouded){
 
-                batch.draw(imgEnemyBoses[e.type][e.phase], e.scrX(), e.scrY(), e.width, e.height);
+                    batch.draw(imgEnemyDead[e.phase],e.scrX(), e.scrY(),e.width/2,e.height/2, e.width, e.height,1,1,e.rotation);}
+
+                   else batch.draw(imgEnemyBoses[e.phase], e.scrX(), e.scrY(),e.width/2,e.height/2, e.width, e.height,1,1,e.rotation);
             }
-            if (!e.EnemyIsBoss && !e.EmenyDead) {
-                if(e.isWouded)
-                    batch.draw(imgEnemyWouded[e.type][e.phase], e.scrX(), e.scrY(), e.width, e.height);
+            if ( !e.EnemyIsBoss&&!e.EmenyDead) {
+                if(e.isWouded){
+                    batch.draw(imgEnemyWouded[e.type][e.phase], e.scrX(), e.scrY(), e.width, e.height);}
                 else batch.draw(imgEnemy[e.type][e.phase], e.scrX(), e.scrY(), e.width, e.height);
 
             }
@@ -451,7 +467,7 @@ public class ScreenGame implements Screen {
             batch.draw(b.type == 1 ? imgPlus : imgMinus, b.scrX(), b.scrY(), b.width, b.height);
         }
 
-        batch.draw(imgShipatlas[main.ShipSkin][ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
+        batch.draw(imgShipatlas[main.ShipSkin][ship.phase], ship.scrX(), ship.scrY(), ship.width/2,ship.height/2, ship.width, ship.height,1,1,ship.rotation);
         if (GameState == GAME_OWER) {
             batch.draw(imgGrayBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
         }
@@ -532,7 +548,7 @@ public class ScreenGame implements Screen {
         if (TimeUtils.millis() > timeLastSpawnEnemy + timeEnemyInterval) {
             if (EmeniesCount < EmeniesMAX) {
                 enemies.add(new Enemy());
-                if (EmeniesCount >= EmeniesMAX - 4) {
+                if (EmeniesCount >= EmeniesMAX - 4 ) {
                     enemies.get(enemies.size() - 1).EnemyIsBoss = true;
                     enemies.get(enemies.size() - 1).height = enemies.get(enemies.size() - 1).width = MathUtils.random(200f, 300);
 
@@ -622,6 +638,9 @@ public class ScreenGame implements Screen {
         for (Fragment f:fragments) f.stop();
         SaveGame();
 
+        ship.rotation=0;
+        ship.CheckVx=ship.vX;
+
         }
 
 
@@ -704,6 +723,8 @@ public class ScreenGame implements Screen {
         ship.x=SCR_WIDTH/2;
         ship.y  =SCR_HEIGHT/5;
         ShotCount=0;
+        ship.rotationSpeed=0;
+        ship.rotation=0;
 
         EmeniesCount=0;
         EmeniesDone=0;
@@ -732,15 +753,16 @@ public class ScreenGame implements Screen {
 
         //
         for (Enemy e : enemies) {
-
-
-
             e.move() ;
+
 
         }
         spavnBoost();
         for(Boost b: boosts)b.move();
+
         ship.move();
+
+
         if (ShotCount==0){
             for ( Shot s: shots) s.move();}
 
@@ -819,13 +841,21 @@ public class ScreenGame implements Screen {
                 ship.touch(touch);
 
 
-                ship.move();}
+                ship.CheckVx=ship.vX;
+                 ship.move();
+                 ship.vY/=30;
+                 ship.vY/=70;
+
+
+
+                }
             if (controls == JOYSTIK_LEFT||controls==JOYSTIK_RIGHT) {
                 touch.set(screenX, screenY, 0);
                 camera.unproject(touch);
                 //проверяем попали ли мы касанием в круг используя формулу графика окружности
                 if(Math.pow(touch.x-JSwidth/2,2)+Math.pow(touch.y-JSheight/2,2)<=Math.pow(JSwidth/2,2)){
                 ship.vX=(touch.x-JSwidth/2)/19;
+
                 ship.vY=(touch.y-JSheight/2)/19;}
                 else{ship.stop();
                 ship.vX=ship.vY=0;}
@@ -857,7 +887,7 @@ public class ScreenGame implements Screen {
             touch.set(screenX,screenY,0);
             camera.unproject(touch);
             ship.touch(touch);
-            ship.move();
+             ship.move();
               }
             if (controls == JOYSTIK_LEFT||controls==JOYSTIK_RIGHT) {
                 touch.set(screenX, screenY, 0);

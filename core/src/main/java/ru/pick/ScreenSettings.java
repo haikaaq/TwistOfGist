@@ -114,15 +114,15 @@ public class ScreenSettings implements Screen {
         font70.draw(batch, "SETTINGS", 0, 1500,SCR_WIDTH, Align.center,true);
         btnControls.font.draw(batch, btnControls.text, btnControls.x, btnControls.y);
         btnScreen.font.draw(batch, btnScreen.text, btnScreen.x, btnScreen.y);
-        batch.draw(controls==SCREEN?imgON:imgOFF,btnScreen.x+btnScreen.widht, btnScreen.y-btnScreen.height-10,70,70 );
+        batch.draw(controls==SCREEN?imgON:imgOFF,btnScreen.x+btnScreen.widht, btnScreen.y-btnScreen.height -10,70,70 );
         btnJoystic.font.draw(batch, btnJoystic.text, btnJoystic.x, btnJoystic.y);
         btnAccelerometr.font.draw(batch, btnAccelerometr.text, btnAccelerometr.x, btnAccelerometr.y);
-        batch.draw(controls==ACCELEROMETER?imgON:imgOFF,btnAccelerometr.x+btnAccelerometr.widht, btnAccelerometr.y-btnAccelerometr.height-10,70,70 );
+        batch.draw(controls==ACCELEROMETER?imgON:imgOFF,btnAccelerometr.x+btnAccelerometr.widht, btnAccelerometr.y-btnAccelerometr.height -10,70,70 );
         if (controls==JOYSTIK||controls==JOYSTIK_LEFT||controls==JOYSTIK_RIGHT){
             btnLeft.font.draw(batch,btnLeft.text,btnLeft.x,btnLeft.y);
-            batch.draw(controls==JOYSTIK_LEFT?imgON:imgOFF,btnLeft.x+btnLeft.widht, btnLeft.y-btnLeft.height-10,70,70 );
+            batch.draw(controls==JOYSTIK_LEFT?imgON:imgOFF,btnLeft.x+btnLeft.widht, btnLeft.y-btnLeft.height -10,70,70 );
             btnRight.font.draw(batch,btnRight.text,btnRight.x,btnRight.y);
-            batch.draw(controls==JOYSTIK_RIGHT?imgON:imgOFF,btnRight.x+btnRight.widht, btnRight.y-btnRight.height-10,70,70 );
+            batch.draw(controls==JOYSTIK_RIGHT?imgON:imgOFF,btnRight.x+btnRight.widht, btnRight.y-btnRight.height -10,70,70 );
             btnAccelerometr.y=700;
             btnScreen.y=800;
         }

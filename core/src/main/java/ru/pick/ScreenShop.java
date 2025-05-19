@@ -92,13 +92,13 @@ public class ScreenShop implements Screen {
         btnAllmoney= new  SpaceButton(font,""+(main.Allmoney>=1000? main.Allmoney:main.Allmoney/1000+'k'),SCR_WIDTH-100,1550);
         btnBack = new SpaceButton(font,"Back",30,SCR_HEIGHT-50);
         btnBoosts= new SpaceButton(font,"BOOSTS",155);
-        btnSkins= new SpaceButton(font,"SKIN",btnBoosts.x-btnBoosts.widht-60,155);
-        btnShots = new SpaceButton(font,"SHOTS",btnBoosts.x+btnBoosts.widht+60,155);
+        btnSkins= new SpaceButton(font,"SKIN",btnBoosts.x-btnBoosts.widht -60,155);
+        btnShots = new SpaceButton(font,"SHOTS",btnBoosts.x+btnBoosts.widht +60,155);
         btnBuy = new SpaceButton(font,"buy for "+price()+ " coins",255);
         btnRight = new SpaceButton(font32,"ooo",SCR_WIDTH-80,SCR_HEIGHT/2 );
         btnLeft  = new SpaceButton(font32,"ooo",10,SCR_HEIGHT/2);
-        btnLeft.height+=50;
-        btnRight.height+=50;
+        btnLeft.widht +=50;
+        btnRight.widht +=50;
 
 
 
