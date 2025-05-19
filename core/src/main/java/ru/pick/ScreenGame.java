@@ -44,7 +44,7 @@ public class ScreenGame implements Screen {
     private long timeRedSpawn, timeRed = 700;
 
     public int level = 1;
-    public int EmeniesMAX = MathUtils.random(6, 8);
+    public int EmeniesMAX = MathUtils.random(16, 18);
     private int EmeniesDone = 0;
     private int EmeniesCount = 0;
 
