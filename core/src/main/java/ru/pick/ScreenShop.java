@@ -167,14 +167,14 @@ public class ScreenShop implements Screen {
                 if (ScreenState==SHOP)main.setScreen(main.screenMenu);
                else ScreenState=SHOP;
             }
-            if(btnShots.SetScreenButton){
+            if(btnShots.SetScreenButton&&ScreenState==SHOP){
                 ScreenState=SHOTS;
 
             }
-            if(btnBoosts.SetScreenButton){
+            if(btnBoosts.SetScreenButton&&ScreenState==SHOP){
                 ScreenState=BOOST;
             }
-            if(btnSkins.SetScreenButton){
+            if(btnSkins.SetScreenButton&&ScreenState==SHOP){
                 ScreenState=SKIN;
 
                // ChangeShip();

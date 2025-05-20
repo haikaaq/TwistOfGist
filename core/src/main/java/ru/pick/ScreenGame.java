@@ -43,7 +43,7 @@ public class ScreenGame implements Screen {
     private long timeRedSpawn, timeRed = 700;
 
     public int level = 1;
-    public int EmeniesMAX = MathUtils.random(16, 18);
+    public int EmeniesMAX = MathUtils.random(10, 15);
     private int EmeniesDone = 0;
     private int EmeniesCount = 0;
 
@@ -534,7 +534,7 @@ public class ScreenGame implements Screen {
             if (EmeniesCount < EmeniesMAX) {
                 enemies.add(new Enemy());
                 if (EmeniesCount >= EmeniesMAX - 4 ) {
-                    enemies.get(enemies.size() - 1).EnemyIsBoss = true;
+                    enemies.get(enemies.size() - 1 ).EnemyIsBoss = true;
                     enemies.get(enemies.size() - 1).height = enemies.get(enemies.size() - 1).width = MathUtils.random(200f, 300);
 
 
@@ -826,8 +826,8 @@ public class ScreenGame implements Screen {
                 camera.unproject(touch);
                 ship.touch(touch);
 
-
-                ship.CheckVx=ship.vX;
+                ship.rotation=0;
+               // ship.CheckVx=ship.vX;
                  ship.move();
                  ship.vY/=30;
                  ship.vY/=70;
@@ -856,7 +856,7 @@ public class ScreenGame implements Screen {
         @Override
         public boolean touchUp(int screenX, int screenY, int pointer, int button) {
             ship.rotation=0;
-            ship.CheckVx=ship.vX;
+            //ship.CheckVx=ship.vX;
             ship.stop();
             return false;
         }

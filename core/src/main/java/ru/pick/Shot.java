@@ -1,6 +1,7 @@
 package ru.pick;
 
 import static ru.pick.Main.*;
+import static ru.pick.ScreenGame.ShotCount;
 
 
 public class Shot extends Object {
@@ -19,7 +20,7 @@ public class Shot extends Object {
         width = 40;
         height = 50;
         vY = 16;
-       // vX= (ShotsType == 0) ? ShotCount : 0;
+        vX= (type == 0) ? ShotCount : 0;
 
 
 

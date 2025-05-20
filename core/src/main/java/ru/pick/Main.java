@@ -46,7 +46,7 @@ public class Main extends Game {
     public  int ShotsShots;
     public int ShotEven;
     public int ShotsBostCount;
-    public int Allmoney=1000;
+    public int Allmoney=10000;
     public boolean isFonMusic=true;
     public boolean isActionSounds=true;
     public Player player;

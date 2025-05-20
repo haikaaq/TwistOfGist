@@ -65,8 +65,8 @@ repositories {
 configurations { natives }
 
 dependencies {
-  implementation libs.firebase.database
-  implementation libs.firebase.firestore
+  //implementation libs.firebase.database
+  //implementation libs.firebase.firestore
   coreLibraryDesugaring libs.desugar.jdk.libs
   implementation libs.gdx.controllers.android
   implementation libs.gdx.backend.android
