@@ -6,12 +6,16 @@ import static ru.pick.Main.*;
 public class Shot extends Object {
     public int type;
 
+
     public boolean isoverlab= false;
 
 
 
     public Shot(float x, float y) {
-        super(x, y);
+       super(x,y);
+
+
+
         width = 40;
         height = 50;
         vY = 16;
@@ -28,6 +32,7 @@ public class Shot extends Object {
 
     public void move(float vX) {
         y += vY;
+
         x += vX;
 
     }

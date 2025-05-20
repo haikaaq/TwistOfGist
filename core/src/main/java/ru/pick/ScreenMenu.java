@@ -24,8 +24,8 @@ public class ScreenMenu implements Screen  {
     private BitmapFont font70;
     private long TimeLastChangeBg,TimeChangeBg= 700;
     private int phaseBg;
-    private InputKeyboard keyboard;
-    boolean wasTouched=false;
+
+
 
 
     SpaceButton btnPlay;
@@ -87,7 +87,7 @@ public class ScreenMenu implements Screen  {
                 imgButtons[j][i] = new TextureRegion(imgButtonsAtlas, i  * 209, (j) * 180, 209, 180);
             }
         }
-        btnPlay = new SpaceButton(font70, "PLAY",imgLongButtonAtlas,SCR_HEIGHT/3.6f);
+        btnPlay = new SpaceButton(font70, "PLAY",imgLongButtonAtlas,SCR_HEIGHT/3.6f,4.2f);
         btnLeaderboard = new SpaceButton(font70,"leaderboard",250);
 
         btnAbout = new SpaceButton(0,1140,200,170,0);
@@ -114,43 +114,41 @@ public class ScreenMenu implements Screen  {
 
     @Override
     public void render(float delta) {
+        Vector3 Mousepose = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
 
-        ButtonsState(btnPlay);
-        ButtonsState(btnSetting);
-        ButtonsState(btnAbout);
-        ButtonsState(btnShop);
-        if( btnAbout.SetScreenButton)main.setScreen(main.screenAbout);
+        camera.unproject(Mousepose);
+
+        btnPlay.ButtonsState(Mousepose.x,Mousepose.y);
+        btnSetting.ButtonsState(Mousepose.x,Mousepose.y);
+        btnAbout.ButtonsState(Mousepose.x,Mousepose.y);
+        btnShop.ButtonsState(Mousepose.x,Mousepose.y);
+        btnLeaderboard.ButtonsState(Mousepose.x,Mousepose.y);
+        btnExit.ButtonsState(Mousepose.x,Mousepose.y);
+
+        if(btnAbout.SetScreenButton)main.setScreen(main.screenAbout);
         if(btnSetting.SetScreenButton)main.setScreen(main.screenSettings);
         if(btnShop.SetScreenButton)main.setScreen(main.screenShop);
         if(btnPlay.SetScreenButton){
             main.setScreen(main.screenGame);
-            FonMusic.play();
+            if (main.isFonMusic)FonMusic.play();
             FonMusic.setVolume(0.3f);
             GameState=GAME;
         }
 
 
 
-
-
-
-        if(Gdx.input.isTouched()){
-            touch.set(Gdx.input.getX(),Gdx.input.getY(),0);
-            camera.unproject(touch);
-
-
-            if(btnLeaderboard.hit(touch.x,touch.y)){
+            if(btnLeaderboard.SetScreenButton){
                 main.setScreen(main.screenLeaderboard);
                 Iskeyboard=true;
             }
 
-            if(btnExit.hit(touch.x,touch.y)){
+            if(btnExit.SetScreenButton){
                 Gdx.app.exit();
             }
 
 
 
-        }
+
 
 
 
@@ -206,32 +204,7 @@ public class ScreenMenu implements Screen  {
 
           }
     }
-    public void ButtonsState(SpaceButton button){
-        button.isPressed=false;
-        button.SetScreenButton=false;
-        button.isHover=false;
-        Vector3 Mousepose = new Vector3 (Gdx.input.getX(),Gdx.input.getY(),0);
-        camera.unproject(Mousepose);
 
-        if (button.hit(Mousepose.x,Mousepose.y)){
-            button.isHover=true;
-        }
-        if(wasTouched&&(!Gdx.input.justTouched())&&button.hit(Mousepose.x,Mousepose.y)){
-
-            button.SetScreenButton=true;
-            wasTouched=false;
-
-        }
-        if (button.hit(Mousepose.x,Mousepose.y)&&Gdx.input.justTouched()){
-            button.isPressed=true;
-            wasTouched=true;
-
-        }
-
-
-
-
-    }
 
 
     @Override

@@ -16,6 +16,7 @@ public class Ship extends Object {
     public float rotationSpeed;
     public float rotationPoint;
     public  float CheckVx;
+    private float MaxVx=1;
 
 
 
@@ -48,8 +49,11 @@ public class Ship extends Object {
     @Override
     public void move() {
         super.move();
+        //if (vX>MaxVx)vX=MaxVx;
         rotationSpeed=(vX-CheckVx)*2;
+
         rotation-=rotationSpeed;
+
 
 
         changePhase();

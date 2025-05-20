@@ -59,8 +59,11 @@ public class ScreenShop implements Screen {
     Texture imgShotsatlas;
     Texture imgPlus;
     Texture imgBG;
+    Texture imgBG2;
     Texture imgGreen;
     Texture imgRed;
+    Texture imgLongButtonAtlas;
+
     SpaceButton btnBack;
     SpaceButton btnSkins;
     SpaceButton btnShots;
@@ -71,7 +74,7 @@ public class ScreenShop implements Screen {
 
 
 
-
+    TextureRegion[] imgLongButton = new  TextureRegion[3];
     TextureRegion[][] imgShipatlas = new TextureRegion[5][12];
     TextureRegion[] imgShotatlas = new TextureRegion[4];
 
@@ -89,11 +92,18 @@ public class ScreenShop implements Screen {
         imgGreen= new Texture("green.png");
         imgRed =new Texture("red.png");
         imgBG=new Texture("bgshop.png");
+        imgBG2=new Texture("bgmenu2.png");
+        imgLongButtonAtlas=new Texture("LongButton.png");
         btnAllmoney= new  SpaceButton(font,""+(main.Allmoney>=1000? main.Allmoney:main.Allmoney/1000+'k'),SCR_WIDTH-100,1550);
         btnBack = new SpaceButton(font,"Back",30,SCR_HEIGHT-50);
-        btnBoosts= new SpaceButton(font,"BOOSTS",155);
-        btnSkins= new SpaceButton(font,"SKIN",btnBoosts.x-btnBoosts.widht -60,155);
-        btnShots = new SpaceButton(font,"SHOTS",btnBoosts.x+btnBoosts.widht +60,155);
+
+        btnBoosts= new SpaceButton(font,"BOOSTS",imgLongButtonAtlas,229,1.4f);
+
+        btnSkins= new SpaceButton(font,"SKINS",70,229,1.4f);
+
+        btnShots = new SpaceButton(font,"SHOTS",SCR_WIDTH-btnSkins.widht-70,229, 1.4f);
+
+
         btnBuy = new SpaceButton(font,"buy for "+price()+ " coins",255);
         btnRight = new SpaceButton(font32,"ooo",SCR_WIDTH-80,SCR_HEIGHT/2 );
         btnLeft  = new SpaceButton(font32,"ooo",10,SCR_HEIGHT/2);
@@ -117,7 +127,10 @@ public class ScreenShop implements Screen {
         for (int i = 0; i < imgShotatlas.length;i++) {
             imgShotatlas[i] = new TextureRegion(imgShotsatlas, (i) * 100, 0, 100, 350);
         }
+        for (int e = 0; e < imgLongButton.length; e++) {
 
+            imgLongButton[e] = new TextureRegion(imgLongButtonAtlas, 0, (e)*193, 497, 193);
+        }
 
 
         ship= new Ship(SCR_WIDTH/2,SCR_HEIGHT/2) ;
@@ -134,26 +147,39 @@ public class ScreenShop implements Screen {
 
     @Override
     public void render(float delta) {
-        if(Gdx.input.justTouched()){
-            touch.set(Gdx.input.getX(),Gdx.input.getY(),0);
-            camera.unproject(touch);
-            if(btnBack.hit(touch.x,touch.y)){
+        Vector3 Mousepose = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+
+        camera.unproject(Mousepose);
+
+        btnShots.ButtonsState(Mousepose.x,Mousepose.y);
+        btnSkins.ButtonsState(Mousepose.x,Mousepose.y);
+        btnBoosts.ButtonsState(Mousepose.x,Mousepose.y);
+        btnBuy.ButtonsState(Mousepose.x,Mousepose.y);
+        btnLeft.ButtonsState(Mousepose.x,Mousepose.y);
+        btnRight.ButtonsState(Mousepose.x,Mousepose.y);
+        btnBack.ButtonsState(Mousepose.x,Mousepose.y);
+
+
+
+
+
+            if(btnBack.SetScreenButton){
                 if (ScreenState==SHOP)main.setScreen(main.screenMenu);
                else ScreenState=SHOP;
             }
-            if(btnShots.hit(touch.x,touch.y)){
+            if(btnShots.SetScreenButton){
                 ScreenState=SHOTS;
 
             }
-            if(btnBoosts.hit(touch.x,touch.y)){
+            if(btnBoosts.SetScreenButton){
                 ScreenState=BOOST;
             }
-            if(btnSkins.hit(touch.x,touch.y)){
+            if(btnSkins.SetScreenButton){
                 ScreenState=SKIN;
 
                // ChangeShip();
             }
-            if (btnRight.hit(touch.x,touch.y)&&ship.x==SCR_WIDTH/2){
+            if (btnRight.SetScreenButton&&ship.x==SCR_WIDTH/2){
                // btnBuy.changeText("buy for "+price()+ " coins");
                if (ScreenState==BOOST){
                    ChangePlusShots();
@@ -169,7 +195,7 @@ public class ScreenShop implements Screen {
 
                 }
             }
-            if (btnLeft.hit(touch.x,touch.y)&&ship.x==SCR_WIDTH/2){
+            if (btnLeft.SetScreenButton&&ship.x==SCR_WIDTH/2){
 
                 if (ScreenState==BOOST) {
                     ChangeMinusShots();
@@ -185,7 +211,7 @@ public class ScreenShop implements Screen {
 
                 }
             }
-            if (btnBuy.hit(touch.x,touch.y)){
+            if (btnBuy.SetScreenButton){
                 if (main.Allmoney>=price()){
 
 
@@ -246,7 +272,7 @@ public class ScreenShop implements Screen {
                 else{timeRedSpawn=TimeUtils.millis();}
 
 
-            }
+
 
 
 
@@ -254,6 +280,11 @@ public class ScreenShop implements Screen {
 
 
         }
+        btnShots.changePhases();
+        btnBoosts.changePhases();
+        btnSkins.changePhases();
+        btnLeft.changePhases();
+        btnRight.changePhases();
         ///действия
         btnAllmoney.changeText(main.Allmoney);
         spavnShot();
@@ -291,6 +322,7 @@ public class ScreenShop implements Screen {
 
         }
 
+
         //for (Shot s: shots)s.vY=3;
         for (int i = shots.size() - 1; i >= 0; i--) {
         if (shots.get(i).OutOfscreen() ){
@@ -307,7 +339,15 @@ public class ScreenShop implements Screen {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         batch.draw(imgBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
+        batch.draw(imgBG2, 0, 0, SCR_WIDTH, SCR_HEIGHT);
+
+
+
         if (ScreenState==SCREEN){
+            batch.draw(imgLongButton[btnSkins.phase],btnSkins.imgX,btnSkins.imgY,btnSkins.imgWidht,btnSkins.imgHeight);
+            batch.draw(imgLongButton[btnShots.phase],btnShots.imgX,btnShots.imgY,btnShots.imgWidht,btnShots.imgHeight);
+            batch.draw(imgLongButton[btnBoosts.phase],btnBoosts.imgX,btnBoosts.imgY,btnBoosts.imgWidht,btnBoosts.imgHeight);
+
             btnSkins.font.draw(batch,btnSkins.text,btnSkins.x,btnSkins.y);
             btnShots.font.draw(batch,btnShots.text,btnShots.x,btnShots.y);
             btnBoosts.font.draw(batch,btnBoosts.text,btnBoosts.x,btnBoosts.y);

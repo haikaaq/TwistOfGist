@@ -2,7 +2,6 @@ package ru.pick;
 
 import static ru.pick.Main.*;
 
-import static ru.pick.Shot.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -37,7 +36,7 @@ public class ScreenGame implements Screen {
     private final BitmapFont font70;
     private final BitmapFont font32;
     private long timeLastSpawnEnemy, timeEnemyInterval = 1450;
-    private static long timeLastEnemyWoud, timeEnemyWounded = 60;
+   // private static long timeLastEnemyWoud, timeEnemyWounded = 60;
     private long timeLastSpawnShots, timeShotsInterval = 190;
     private long timeLastSpawnBoost, timeBoostInterval = 9000;
     private long timeGreenSpawn, timeGreen = 700;
@@ -69,6 +68,7 @@ public class ScreenGame implements Screen {
     Texture imgJS;
     Texture imgMN;
     Texture imgBG;
+    Texture imgBG2;
     Texture imgRED;
     Texture imgShipsatlas;
     Texture imgShotsatlas;
@@ -77,11 +77,13 @@ public class ScreenGame implements Screen {
     Texture imgEnemyesBoses;
     Texture imgEnemyesDead;
     Texture imgEnemyesWouded;
+    Texture imgLongButtonAtlas;
 
     Texture imgMinus;
     Texture imgPlus;
     Texture imgGreen;
     Texture imgGrayBG;
+    Texture imgLogo;
 
     TextureRegion[][] imgShipatlas = new TextureRegion[5][12];
     TextureRegion[][] imgEnemy = new TextureRegion[4][12];
@@ -90,7 +92,7 @@ public class ScreenGame implements Screen {
     TextureRegion[][] imgFragments = new TextureRegion[4][4];
     TextureRegion[] imgShotatlas = new TextureRegion[5];
     TextureRegion[][] imgEnemyWouded = new TextureRegion[4][12];
-
+    TextureRegion[] imgLongButton = new  TextureRegion[3];
 
 
     SpaceButton btnMoney;
@@ -129,6 +131,7 @@ public class ScreenGame implements Screen {
         imgMN = new Texture("moneta.png");
         imgJS = new Texture("js.png");
         imgBG = new Texture("bggame.png");
+        imgBG2 = new Texture("bgmenu2.png");
         imgShipsatlas = new Texture("atlas.png");
         imgShotsatlas = new Texture("shots.png");
         imgFragmentatlas = new Texture("fragments.png");
@@ -136,12 +139,14 @@ public class ScreenGame implements Screen {
         imgEnemyesWouded = new Texture("woundedemenies.png");
         imgEnemyesBoses = new Texture("atlasboss.png");
         imgEnemyesDead = new Texture("emenyesDead.png");
+        imgLongButtonAtlas=new Texture("LongButton.png");
         imgRED = new Texture("red.png");
         imgMinus = new Texture("minus.png");
         imgPlus = new Texture("plus.png");
         imgGreen = new Texture("green.png");
         imgGrayBG = new Texture("GrayBG.png");
         imgShotsatlas = new Texture("shots.png");
+        imgLogo = new Texture("logo.png");
 
         for (int j = 0; j < imgShipatlas.length; j++) {
             for (int i = 0; i < imgShipatlas[j].length; i++) {
@@ -183,10 +188,14 @@ public class ScreenGame implements Screen {
 
             imgEnemyBoses[e] = new TextureRegion(imgEnemyesBoses, (e<6? e:10-e) *450, 0, 450, 450);
         }
+        for (int e = 0; e < imgLongButton.length; e++) {
+
+            imgLongButton[e] = new TextureRegion(imgLongButtonAtlas, 0, (e)*193, 497, 193);
+        }
 
 
         btnBack = new SpaceButton(font70, "Back", 30, 1550);
-        btnGetMoney = new SpaceButton(font70, "get and exit", SCR_WIDTH / 2 - 220, 400);
+        btnGetMoney = new SpaceButton(font70, "get and exit",imgLongButtonAtlas,  260,1.58f);
         btnMoney = new SpaceButton(font70, moneyStr, SCR_WIDTH * 4 / 5, btnBack.y);
 
         sndExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
@@ -250,6 +259,7 @@ public class ScreenGame implements Screen {
 
             }
         }
+        btnGetMoney.changePhases();
         if (controls == ACCELEROMETER) {
             ship.vX = -Gdx.input.getAccelerometerX() * 4;
             ship.vY = -Gdx.input.getAccelerometerY() * 4;
@@ -269,19 +279,12 @@ public class ScreenGame implements Screen {
                 enemies.get(j).isWouded=false;
             }
 
-            if (enemies.get(j).EnemyIsBoss) {
 
-                /*if (enemies.get(j).y < SCR_HEIGHT - 50)
-                    enemies.get(j).vY += MathUtils.random(-0.13f, 0.15f);
-                if (enemies.get(j).y > SCR_HEIGHT - 50) enemies.get(j).vY = -2.6f;
-                if (enemies.get(j).y < SCR_HEIGHT / 4)
-                    enemies.get(j).vY = -0.1f * enemies.get(j).type;*/
-            }
             if (enemies.get(j).health == 0) {
 
                 EmeniesDone += 1;
 
-                sndExplosion.play();
+                if(main.isActionSounds)sndExplosion.play();
                 enemies.get(j).health=-1;
 
 
@@ -314,7 +317,7 @@ public class ScreenGame implements Screen {
             if (enemies.get(j).BelowTheScreen()) {
 
 
-                if (!enemies.get(j).EnemyIsBoss) {
+                if (!enemies.get(j).EmenyDead) {
                     timeRedSpawn = TimeUtils.millis();
                     money -= 4 + MoneyFactor;
                 } else money += MoneyFactor;
@@ -416,16 +419,7 @@ public class ScreenGame implements Screen {
 
         }
 
-        /*for (int j = enemies.size() -1; j >= 0; j--) {
-            if(( EmeniesCount>=EmeniesMAX-4)){
-                enemies.getLast().EnemyIsBoss = true;
-                enemies.getLast().height= enemies.getLast().width=MathUtils.random(200f,300);
 
-                enemies.getLast().health= MathUtils.random(25*(ShotCount+1),25*(ShotCount+1));
-                enemies.getLast().vX= MathUtils.random(-2f,2f);
-                break;
-
-            }}*/
 
 
         batch.setProjectionMatrix(camera.combined);
@@ -485,17 +479,6 @@ public class ScreenGame implements Screen {
             batch.draw(imgJS, 2 * SCR_WIDTH / 3, 0, SCR_WIDTH / 3, SCR_WIDTH / 3);
             JSwidth = (SCR_WIDTH - SCR_WIDTH / 6) * 2;
         }
-        /*if (GameState==GAME_OVER) {
-            font120.draw(batch, "GAME OVER", 0, 650, SCR_WIDTH, Align.center, true);
-
-            for (int i = 0; i < player.length-1; i++) {
-                font36.draw(batch, player[i].name, 400, 533 - i * 70);
-                font36.draw(batch, currentTime(player[i].time), 750, 533 - i * 70);
-            }
-
-            restart.font.draw(batch, restart.text, restart.x, restart.y);
-            clearTable.font.draw(batch, clearTable.text, clearTable.x, clearTable.y);
-        }*/
 
 
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
@@ -507,9 +490,11 @@ public class ScreenGame implements Screen {
         //если игра завершена
         if (GameState == GAME_OWER) {
 
-
-            font70.draw(batch, !iscomplited() ? "GAME OVER" : "LEVEL COMPLETED", 0, 1000, SCR_WIDTH, Align.center, true);
-            font70.draw(batch, "you collected  " + money + "  coins ", 0, 800, SCR_WIDTH, Align.center, true);
+            batch.draw(imgBG2,0,0,SCR_WIDTH,SCR_HEIGHT);
+            batch.draw(imgLogo,SCR_WIDTH/2-240,1200,480,390);
+            font70.draw(batch, !iscomplited() ? "GAME OVER" : "LEVEL COMPLETED", 0, 900, SCR_WIDTH, Align.center, true);
+            font70.draw(batch, "you collected  " + money + "  coins ", 0, 600, SCR_WIDTH, Align.center, true);
+            batch.draw(imgLongButton[btnGetMoney.phase],btnGetMoney.imgX,btnGetMoney.imgY,btnGetMoney.imgWidht,btnGetMoney.imgHeight);
             btnGetMoney.font.draw(batch, btnGetMoney.text, btnGetMoney.x, btnGetMoney.y);
         }
 
@@ -568,17 +553,18 @@ public class ScreenGame implements Screen {
         if (TimeUtils.millis() > timeLastSpawnShots + timeShotsInterval && !enemies.isEmpty()) {
 
             if (ShotCount == 0) {
-                shots.add(new Shot(ship.scrX() + ship.width / 2, ship.scrY() + 245));
+                shots.add(new Shot(ship.scrX() + ship.width / 2 - (ship.rotation)*ship.width/90, ship.scrY() + 0.85f*ship.height));
+
 
             }
 
             for (int i = 0; i < (ShotEven == 0 ? ShotCount * 2 : (ShotCount * 2 + 1)); i++) {
-                shots.add(new Shot(ship.scrX() + ship.width / 2, ship.scrY() + 245));
+                shots.add(new Shot(ship.scrX() + ship.width / 2 - (ship.rotation)*ship.width/90, ship.scrY() + 245));
 
 
             }
             timeLastSpawnShots = TimeUtils.millis();
-            sndBlaster.play();
+            if(main.isActionSounds)sndBlaster.play();
 
 
         }
@@ -597,6 +583,7 @@ public class ScreenGame implements Screen {
 
 
                shots.get(r).vX=j;
+
                shots.get(r).move();
                j++;
               if(ShotEven==0){
@@ -638,8 +625,7 @@ public class ScreenGame implements Screen {
         for (Fragment f:fragments) f.stop();
         SaveGame();
 
-        ship.rotation=0;
-        ship.CheckVx=ship.vX;
+
 
         }
 
@@ -721,7 +707,7 @@ public class ScreenGame implements Screen {
         shots.clear();
         fragments.clear();
         ship.x=SCR_WIDTH/2;
-        ship.y  =SCR_HEIGHT/5;
+        ship.y =SCR_HEIGHT/5;
         ShotCount=0;
         ship.rotationSpeed=0;
         ship.rotation=0;
@@ -869,6 +855,8 @@ public class ScreenGame implements Screen {
 
         @Override
         public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+            ship.rotation=0;
+            ship.CheckVx=ship.vX;
             ship.stop();
             return false;
         }
@@ -893,13 +881,11 @@ public class ScreenGame implements Screen {
                 touch.set(screenX, screenY, 0);
                 camera.unproject(touch);
                 //проверяем попали ли мы касанием в круг
-               // if(Math.pow(touch.x-JSwidth/2,2)+Math.pow(touch.y-JSheight/2,2)<=Math.pow(150,2)){
-                    ship.vX=(touch.x-JSwidth/2)/19;
-                    ship.vY=(touch.y-JSheight/2)/19;
-                if(ship.vX>=(JSwidth/2)/19)ship.vX=(JSheight/2)/19;
-                if(ship.vY>(JSheight/2)/19)ship.vY=(JSheight/2)/19;
-             if(ship.vX<-(JSwidth/2)/19)ship.vX=(JSheight/2)/19;
-             if(ship.vY<-(JSheight/2)/19)ship.vY=-(JSheight/2)/19;}
+                if (Math.pow(touch.x - JSwidth / 2, 2) + Math.pow(touch.y - JSheight / 2, 2) <= Math.pow(150, 2)) {
+                    ship.vX = (touch.x - JSwidth / 2) / 19;
+                    ship.vY = (touch.y - JSheight / 2) / 19;
+                }
+            }
         // }
 
 
