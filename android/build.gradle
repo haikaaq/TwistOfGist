@@ -6,9 +6,7 @@ buildscript {
 }
 plugins {
   id 'com.google.gms.google-services'
-  //alias(libs.plugins.google.gms.google.services)
-  //alias(libs.plugins.android.application)
- // alias(libs.plugins.google.gms.google.services)
+
 }
 
 apply plugin: 'com.android.application'
@@ -16,7 +14,7 @@ apply plugin: 'com.android.application'
 
 android {
   namespace "ru.pick"
-  compileSdk 34
+  compileSdk 35
   sourceSets {
     main {
       manifest.srcFile 'AndroidManifest.xml'
@@ -65,8 +63,11 @@ repositories {
 configurations { natives }
 
 dependencies {
-  //implementation libs.firebase.database
-  //implementation libs.firebase.firestore
+
+  implementation platform(libs.firebase.bom)
+  implementation libs.firebase.analytics            // Analytics (опционально)
+  implementation libs.google.firebase.database            // Realtime Database
+
   coreLibraryDesugaring libs.desugar.jdk.libs
   implementation libs.gdx.controllers.android
   implementation libs.gdx.backend.android

@@ -10,6 +10,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -42,10 +43,11 @@ public class ScreenGame implements Screen {
     private long timeGreenSpawn, timeGreen = 700;
     private long timeRedSpawn, timeRed = 700;
 
-    public int level = 1;
-    public int EmeniesMAX = MathUtils.random(10, 15);
+    public int level ;
+    public int EmeniesMAX = MathUtils.random(4, 7);
     private int EmeniesDone = 0;
     private int EmeniesCount = 0;
+    private int BossCount =4;
 
     public static int ShotCount;
 
@@ -55,13 +57,13 @@ public class ScreenGame implements Screen {
 
 
     private int money;
+    private String strmoney=money+"";
 
 
     private boolean isgame;
 
     public int ShipSkin;
     public int Allmoney;
-    public Player[] players = new Player[10];
     public int ShotsShots;
     public int MoneyFactor;
 
@@ -84,19 +86,24 @@ public class ScreenGame implements Screen {
     Texture imgGreen;
     Texture imgGrayBG;
     Texture imgLogo;
+    Pixmap shipsPixmap;
+    Pixmap enemyPixmap;
+    Pixmap BossPixmap;
+    Pixmap enemyWoudedPixmap;
+    Pixmap enemyDeadPixmap;
 
     TextureRegion[][] imgShipatlas = new TextureRegion[5][12];
-    TextureRegion[][] imgEnemy = new TextureRegion[4][12];
+    TextureRegion[][] imgEnemy = new TextureRegion[5][12];
     TextureRegion[] imgEnemyBoses = new TextureRegion [6];
     TextureRegion[] imgEnemyDead = new TextureRegion[10];
     TextureRegion[][] imgFragments = new TextureRegion[4][4];
     TextureRegion[] imgShotatlas = new TextureRegion[5];
-    TextureRegion[][] imgEnemyWouded = new TextureRegion[4][12];
+    TextureRegion[][] imgEnemyWouded = new TextureRegion[5][12];
     TextureRegion[] imgLongButton = new  TextureRegion[3];
 
 
     SpaceButton btnMoney;
-    String moneyStr = "" + money;
+
 
     Sound sndExplosion;
     Sound sndBlaster;
@@ -109,6 +116,7 @@ public class ScreenGame implements Screen {
     Ship ship;
     GameBackground[] bg = new GameBackground[2];
     List<Enemy> enemies = new ArrayList<>();
+    List<Boss> bosses = new ArrayList<>();
     List<Shot> shots = new ArrayList<>();
     List<Fragment> fragments = new ArrayList<>();
     List<Boost> boosts = new ArrayList<>();
@@ -125,7 +133,7 @@ public class ScreenGame implements Screen {
         level = main.level;
         FonMusic = main.FonMusic;
         Allmoney = main.Allmoney;
-        MoneyFactor = Math.min(level, 10);
+        MoneyFactor =1;
 
         Gdx.input.setInputProcessor(new Processor());
         imgMN = new Texture("moneta.png");
@@ -133,7 +141,6 @@ public class ScreenGame implements Screen {
         imgBG = new Texture("bggame.png");
         imgBG2 = new Texture("bgmenu2.png");
         imgShipsatlas = new Texture("atlas.png");
-        imgShotsatlas = new Texture("shots.png");
         imgFragmentatlas = new Texture("fragments.png");
         imgEnemyes = new Texture("enemyes.png");
         imgEnemyesWouded = new Texture("woundedemenies.png");
@@ -147,6 +154,29 @@ public class ScreenGame implements Screen {
         imgGrayBG = new Texture("GrayBG.png");
         imgShotsatlas = new Texture("shots.png");
         imgLogo = new Texture("logo.png");
+        //Pixmap
+
+
+
+
+        shipsPixmap = new Pixmap(Gdx.files.internal("atlas.png"));
+
+
+
+        enemyPixmap = new Pixmap(Gdx.files.internal("enemyes.png"));
+
+        if (!imgEnemyesBoses.getTextureData().isPrepared()) {
+            imgEnemyesBoses.getTextureData().prepare();
+        }
+        BossPixmap = imgEnemyesBoses.getTextureData().consumePixmap();
+
+
+
+        if (!imgEnemyesDead.getTextureData().isPrepared()) {
+            imgEnemyesDead.getTextureData().prepare();
+        }
+        enemyDeadPixmap = imgEnemyesDead.getTextureData().consumePixmap();
+
 
         for (int j = 0; j < imgShipatlas.length; j++) {
             for (int i = 0; i < imgShipatlas[j].length; i++) {
@@ -168,7 +198,7 @@ public class ScreenGame implements Screen {
 
         for (int e = 0; e < imgEnemyDead.length; e++) {
 
-                imgEnemyDead[e] = new TextureRegion(imgEnemyesDead, (e < 6 ? e : 10 - e) * 450, 0, 450, 450);
+                imgEnemyDead[e] = new TextureRegion(imgEnemyesDead, (e) * 450, 0, 450, 450);
 
         }
 
@@ -186,7 +216,7 @@ public class ScreenGame implements Screen {
 
         for (int e = 0; e < imgEnemyBoses.length; e++) {
 
-            imgEnemyBoses[e] = new TextureRegion(imgEnemyesBoses, (e<6? e:10-e) *450, 0, 450, 450);
+            imgEnemyBoses[e] = new TextureRegion(imgEnemyesBoses, (e) *450, 0, 450, 450);
         }
         for (int e = 0; e < imgLongButton.length; e++) {
 
@@ -196,7 +226,7 @@ public class ScreenGame implements Screen {
 
         btnBack = new SpaceButton(font70, "Back", 30, 1550);
         btnGetMoney = new SpaceButton(font70, "get and exit",imgLongButtonAtlas,  260,1.58f);
-        btnMoney = new SpaceButton(font70, moneyStr, SCR_WIDTH * 4 / 5, btnBack.y);
+        btnMoney = new SpaceButton(font70, strmoney, SCR_WIDTH * 4 / 5, btnBack.y);
 
         sndExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
         sndBlaster = Gdx.audio.newSound(Gdx.files.internal("blaster.mp3"));
@@ -211,14 +241,10 @@ public class ScreenGame implements Screen {
 
 
         ship = new Ship(SCR_WIDTH / 2, SCR_HEIGHT / 5);
-        for (int i = 0; i < players.length; i++) {
-            players[i] = new Player();
 
 
-        }
 
 
-        LoadTable();
         LoadGame();
 
 
@@ -232,12 +258,13 @@ public class ScreenGame implements Screen {
 
     @Override
     public void render(float delta) {
-        ShotCount=main.ShotsBostCount;
-        ShotEven=main.ShotEven;
-        ship.CheckVx=ship.vX;
+        ShotCount = main.ShotsBostCount;
+        ShotEven = main.ShotEven;
+        ship.CheckVx = ship.vX;
+        ship.type = main.ShipSkin;
 
 
-         SaveGame();
+        SaveGame();
         //касания и управление
         if (Gdx.input.justTouched()) {
             touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -245,16 +272,16 @@ public class ScreenGame implements Screen {
             if (btnBack.hit(touch.x, touch.y)) {
                 main.setScreen(main.screenMenu);
                 FonMusic.stop();
-                main.ShotsBostCount=ShotCount;
+                main.ShotsBostCount = ShotCount;
                 StopGame();
             }
             if (btnGetMoney.hit(touch.x, touch.y)) {
                 if (GameState == GAME_OWER) {
-                    main.ShotsBostCount=InitialShotCount;
-                    main.ShotEven=InitialEven;
+                    main.ShotsBostCount = InitialShotCount;
+                    main.ShotEven = InitialEven;
                     GameClear();
 
-                    gameStart();
+                     gameStart();
                 }
 
             }
@@ -273,112 +300,109 @@ public class ScreenGame implements Screen {
         }
 
 
-        //
-        for (int j = enemies.size() - 1; j >= 0; j--) {
-            if((TimeUtils.millis()-enemies.get(j).timeLastWouded)>154){
-                enemies.get(j).isWouded=false;
+        ///bosses
+
+        if (EmeniesCount>EmeniesMAX){
+        for (int j = bosses.size() - 1; j >= 0; j--) {
+            if ((TimeUtils.millis() - bosses.get(j).timeLastWouded) > 154) {
+                bosses.get(j).isWouded = false;
             }
-
-
-            if (enemies.get(j).health == 0) {
-
+            if (bosses.get(j).health <= 0) {
+                bosses.get(j).Dead = true;
+                bosses.get(j).vY = -7.69f;
+               // btnMoney.changeText(strmoney);
                 EmeniesDone += 1;
-
-                if(main.isActionSounds)sndExplosion.play();
-                enemies.get(j).health=-1;
-
-
-                btnMoney.changeText(money);
-
-                if (enemies.get(j).EnemyIsBoss && enemies.get(j).health <= 0) {
-                    enemies.get(j).EmenyDead = true;
-                    enemies.get(j).vY = -7.69f;
-                    money += MoneyFactor;
-                    enemies.get(j).EnemyIsBoss=false;
-                    btnMoney.changeText(money);
-
-                } else {
-
-                    money += MoneyFactor;
-                    btnMoney.changeText(money);
-                    for (int k = MathUtils.random(2, 9); k >= 0; k--) {
-                        fragments.add(new Fragment(enemies.get(j).x, enemies.get(j).y));
-                    }
-                    enemies.get(j).width = 0;
-                    enemies.remove(j);
-
-                    break;
-                }
-
+                if (main.isActionSounds) sndExplosion.play();
+                bosses.get(j).health = -1;
 
             }
 
 
-            if (enemies.get(j).BelowTheScreen()) {
+            if (bosses.get(j).BelowTheScreen()) {
+                money += MoneyFactor*2;
+               // btnMoney.changeText(strmoney);
+                bosses.remove(j);
 
-
-                if (!enemies.get(j).EmenyDead) {
-                    timeRedSpawn = TimeUtils.millis();
-                    money -= 4 + MoneyFactor;
-                } else money += MoneyFactor;
-                enemies.remove(j);
-                btnMoney.changeText(money);
                 break;
 
             }
-            if (enemies.get(j).overlab(ship, enemies.get(j).EnemyIsBoss)) {
+            if (bosses.get(j).overlap(ship, ((bosses.get(j).isWouded || bosses.get(j).Dead) ? enemyDeadPixmap : BossPixmap), shipsPixmap)) {
                 EmeniesDone = 0;
                 timeRedSpawn = TimeUtils.millis();
                 GameState = GAME_OWER;
                 StopGame();
                 break;
             }
-
-            //enemies.get(j).vX=MathUtils.random(-1.97f,1.97f);
-
-
-        }
-
-
-        for (int j = enemies.size() - 1; j >= 0; j--) {
             for (int i = shots.size() - 1; i >= 0; i--) {
 
-                if (shots.get(i).overlab(enemies.get(j))) {
-                    if (enemies.get(j).health > 0) {
-                        enemies.get(j).health--;
-                        enemies.get(j).isWouded=true;
-                        enemies.get(j).timeLastWouded=TimeUtils.millis();
+
+                if (shots.get(i).overlap(bosses.get(j))) {
+                    if (bosses.get(j).health > 0) {
+                        bosses.get(j).health--;
+                        bosses.get(j).isWouded = true;
+                        bosses.get(j).timeLastWouded = TimeUtils.millis();
 
                     }
                     shots.get(i).isoverlab = true;
-
                     isgame = true;
-
-
-                    //break;
-
-
-                }
-
-
-                if (shots.get(i).isoverlab || shots.get(i).OutOfscreen()) {
-                    shots.get(i).width = 0;
-                    shots.get(i).height = 0;
-                    if (TimeUtils.millis() >= timeLastSpawnShots + timeShotsInterval) {
-                        shots.remove(i);
-                        break;
-                    }
-
                 }
 
 
             }
+        }}
 
+
+        /// enemies
+        for (int j = enemies.size() - 1; j >= 0; j--) {
+            if ((TimeUtils.millis() - enemies.get(j).timeLastWouded) > 154) {
+                enemies.get(j).isWouded = false;
+            }
+            if (enemies.get(j).health == 0) {
+                for (int k = MathUtils.random(2, 9); k >= 0; k--) {
+                    fragments.add(new Fragment(enemies.get(j).x, enemies.get(j).y));
+                }
+                money+=MoneyFactor;
+                enemies.get(j).width = 0;
+                enemies.remove(j);
+                break;
+            }
+
+
+            if (enemies.get(j).BelowTheScreen()) {
+                timeRedSpawn = TimeUtils.millis();
+                money -= 4 + MoneyFactor;
+                enemies.remove(j);
+                break;
+
+            }
+            //если наш корабль столкнулся с врагом
+            if (enemies.get(j).overlap(ship,  enemyPixmap, shipsPixmap)) {
+                EmeniesDone = 0;
+                timeRedSpawn = TimeUtils.millis();
+                GameState = GAME_OWER;
+                StopGame();
+                break;
+            }
+            for (int i = shots.size() - 1; i >= 0; i--) {
+
+
+                if (shots.get(i).overlap(enemies.get(j))) {
+                    if (enemies.get(j).health > 0) {
+                        enemies.get(j).health--;
+                        enemies.get(j).isWouded = true;
+                        enemies.get(j).timeLastWouded = TimeUtils.millis();
+
+                    }
+                    shots.get(i).isoverlab = true;
+                    isgame = true;
+                }
+
+            }
         }
-        ship.rotationSpeed=(ship.vX-ship.CheckVx)*100;
+
 
         for (int i = boosts.size() - 1; i >= 0; i--) {
-            if (ship.overlab(boosts.get(i))) {
+            if (ship.overlap(boosts.get(i))) {
 
                 if (boosts.get(i).type == 1) {
                     timeGreenSpawn = TimeUtils.millis();
@@ -403,6 +427,17 @@ public class ScreenGame implements Screen {
         }
 
 
+        /// delete
+        for (int i = shots.size() - 1; i >= 0; i--) {
+            if (shots.get(i).isoverlab || shots.get(i).OutOfscreen()) {
+                shots.get(i).width = 0;
+                shots.get(i).height = 0;
+                if (TimeUtils.millis() >= timeLastSpawnShots + timeShotsInterval) {
+                    shots.remove(i);
+                    break;
+                }
+            }
+        }
         for (int i = boosts.size() - 1; i >= 0; i--) {
             if (boosts.get(i).OutOfscreen()) boosts.remove(i);
         }
@@ -412,18 +447,18 @@ public class ScreenGame implements Screen {
             if (fragments.get(e).OutOfscreen()) fragments.remove(e);
         }
 
-        if (enemies.isEmpty() && isgame && EmeniesCount == EmeniesMAX) {
+        if (enemies.isEmpty() && bosses.isEmpty()&&isgame && EmeniesCount == EmeniesMAX+BossCount) {
             timeGreenSpawn = TimeUtils.millis();
             GameState = GAME_OWER;
             StopGame();
 
         }
-
-
-
-
+        ship.rotationSpeed=(ship.vX-ship.CheckVx)*100;
+        ship.type=main.ShipSkin;
+        strmoney=money+"";
+        btnMoney.changeText(strmoney);
+        /// draw
         batch.setProjectionMatrix(camera.combined);
-
         batch.begin();
 
         for (GameBackground bg : bg) {
@@ -432,27 +467,20 @@ public class ScreenGame implements Screen {
         for (Fragment f : fragments) {
             batch.draw(imgFragments[f.type1][f.type2], f.scrX(), f.scrY(), f.width, f.height);
         }
-
         for (Enemy e : enemies) {
-            if (e.EmenyDead) {
+            if(e.isWouded){
+                batch.draw(imgEnemyWouded[e.type][e.phase], e.scrX(), e.scrY(), e.width, e.height);}
+            else batch.draw(imgEnemy[e.type][e.phase], e.scrX(), e.scrY(), e.width, e.height);
+
+        }
+        for (Boss e : bosses) {
+            if (e.Dead||e.isWouded) {
                 batch.draw(imgEnemyDead[e.phase], e.scrX(), e.scrY(),e.width/2,e.height/2, e.width, e.height,1,1,e.rotation);
             }
-            //else {
-            if (e.EnemyIsBoss && !e.EmenyDead) {
-                if(e.isWouded){
-
-                    batch.draw(imgEnemyDead[e.phase],e.scrX(), e.scrY(),e.width/2,e.height/2, e.width, e.height,1,1,e.rotation);}
-
-                   else batch.draw(imgEnemyBoses[e.phase], e.scrX(), e.scrY(),e.width/2,e.height/2, e.width, e.height,1,1,e.rotation);
-            }
-            if ( !e.EnemyIsBoss&&!e.EmenyDead) {
-                if(e.isWouded){
-                    batch.draw(imgEnemyWouded[e.type][e.phase], e.scrX(), e.scrY(), e.width, e.height);}
-                else batch.draw(imgEnemy[e.type][e.phase], e.scrX(), e.scrY(), e.width, e.height);
-
+            else {
+                batch.draw(imgEnemyBoses[e.phase], e.scrX(), e.scrY(), e.width / 2, e.height / 2, e.width, e.height, 1, 1, e.rotation);
             }
         }
-
 
         for (Shot s : shots) {
             batch.draw(imgShotatlas[main.ShotsShots], s.scrX(), s.scrY(), s.width, s.height);
@@ -462,6 +490,7 @@ public class ScreenGame implements Screen {
         }
 
         batch.draw(imgShipatlas[main.ShipSkin][ship.phase], ship.scrX(), ship.scrY(), ship.width/2,ship.height/2, ship.width, ship.height,1,1,ship.rotation);
+
         if (GameState == GAME_OWER) {
             batch.draw(imgGrayBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
         }
@@ -525,24 +554,29 @@ public class ScreenGame implements Screen {
 
     @Override
     public void dispose() {
-
+        batch.dispose();
+        font70.dispose();
+        shipsPixmap.dispose();
+        enemyPixmap.dispose();
+        enemyDeadPixmap.dispose();
+        enemyWoudedPixmap.dispose();
+        BossPixmap.dispose();
     }
 
 
     public void spavnEnemy() {
         if (TimeUtils.millis() > timeLastSpawnEnemy + timeEnemyInterval) {
-            if (EmeniesCount < EmeniesMAX) {
+            if (EmeniesCount <= EmeniesMAX) {
                 enemies.add(new Enemy());
-                if (EmeniesCount >= EmeniesMAX - 4 ) {
-                    enemies.get(enemies.size() - 1 ).EnemyIsBoss = true;
-                    enemies.get(enemies.size() - 1).height = enemies.get(enemies.size() - 1).width = MathUtils.random(200f, 300);
-
-
-                    enemies.get(enemies.size() - 1).health = MathUtils.random(25 * (ShotCount + 1), 25 * (ShotCount + 1));
-                    enemies.get(enemies.size() - 1).vX = MathUtils.random(-2.211f, 2f);
-                }
-
-
+                timeLastSpawnEnemy = TimeUtils.millis();
+                EmeniesCount += 1;
+            }
+        }
+    }
+    public void spavnBoss() {
+        if (TimeUtils.millis() > timeLastSpawnEnemy + timeEnemyInterval) {
+            if (EmeniesCount > EmeniesMAX&& EmeniesCount<EmeniesMAX+BossCount) {
+                bosses.add(new Boss());
                 timeLastSpawnEnemy = TimeUtils.millis();
                 EmeniesCount += 1;
             }
@@ -550,7 +584,7 @@ public class ScreenGame implements Screen {
     }
 
     public void spavnShot() {
-        if (TimeUtils.millis() > timeLastSpawnShots + timeShotsInterval && !enemies.isEmpty()) {
+        if (TimeUtils.millis() > timeLastSpawnShots + timeShotsInterval && EmeniesCount<=EmeniesMAX+BossCount) {
 
             if (ShotCount == 0) {
                 shots.add(new Shot(ship.scrX() + ship.width / 2 - (ship.rotation)*ship.width/90, ship.scrY() + 0.85f*ship.height));
@@ -569,41 +603,43 @@ public class ScreenGame implements Screen {
 
         }
 
+
     }
 
     private void MoveShots() {
 
 
 
+        int j =- ShotCount;
+        for(int r =(ShotEven==0? shots.size()-ShotCount*2:shots.size()-(ShotCount*2+1));r<shots.size();r++){
 
 
+            shots.get(r).vX=j;
 
-           int j =- ShotCount;
-           for(int r =(ShotEven==0? shots.size()-ShotCount*2:shots.size()-(ShotCount*2+1));r<shots.size();r++){
+            shots.get(r).move();
+            j++;
+            if(ShotEven==0){
 
-
-               shots.get(r).vX=j;
-
-               shots.get(r).move();
-               j++;
-              if(ShotEven==0){
-
-               if (j == 0) j=1;}
+                if (j == 0) j=1;}
 
 
-             }
+        }
 
 
-      int e = 0;
-          while(e <(ShotEven==0? shots.size()-ShotCount*2:shots.size()-ShotCount*2-1))  {
+        int e = 0;
+        while(e <(ShotEven==0? shots.size()-ShotCount*2:shots.size()-ShotCount*2-1))  {
 
-               shots.get(e).move(shots.get(e).vX);
+            shots.get(e).move(shots.get(e).vX);
             e++;
 
         }
 
 
     }
+
+
+
+
 
 
 
@@ -633,76 +669,33 @@ public class ScreenGame implements Screen {
 
 
 
-    public void sortTable() {
 
 
-        for (int i = 0; i < players.length-1; i++) {
-            for (int j = 0; j < players.length-i-1 ; j++) {
-                if (players[j].level < players[j + 1].level) {
-                    Player p = players[j];
-                    players[j] = players[j + 1];
-                    players[j + 1] = p;
-                }
-                if (players[j].level == players[j + 1].level) {
-                    if (players[j].money < players[j + 1].money) {
-                        Player p = players[j];
-                        players[j] = players[j + 1];
-                        players[j + 1] = p;
-                    }
-                }
-
-            }
-        }
-    }
-
-    private void LoadTable() {
-        Preferences prefs = Gdx.app.getPreferences("TableRecords");
-        for (int i=0; i<players.length;i++){
-            players[i].name= prefs.getString("name"+i,"Noname");
-            players[i].level=prefs.getInteger("level"+i,0);
-            players[i].money=prefs.getInteger("money"+i,0);
-        }
-    }
 
 
-    private void saveTable() {
 
-
-        Preferences prefs = Gdx.app.getPreferences("TableRecords");
-        for (int i=0; i<players.length;i++){
-           // main.writeToSheet("level"+"B"+Integer.toString(i+1), Integer.toString( players[i].level));
-           // main.writeToSheet("monety"+"C"+Integer.toString(i+1), Integer.toString(players[i].money));
-           // main.writeToSheet("name"+"A"+Integer.toString(i+1), players[i].name);
-            prefs.putString("name"+i, players[i].name);
-            prefs.putInteger("level"+i, players[i].level);
-            prefs.putInteger("money"+i,players[i].money);
-
-        }
-        prefs.flush();
-    }
 
 
     public void GameClear(){
+        if(money>0){
 
         main.Allmoney+=money;
-        main.player.money+=money;
+        main.player.money= main.Allmoney;}
         if(iscomplited()){level+=1;main.player.level+=1;}
-        if (main.player.level>players[players.length-1].level||(main.player.level==players[players.length-1].level&&main.player.money>=players[players.length-1].money)){
-            players[players.length-1].copy(main.player);
-            sortTable();
-            saveTable();
 
 
-        }
+
+
 
 
 
         SaveGame();
         money=0;
-        btnMoney.changeText(money);
+        btnMoney.changeText(strmoney);
         main.setScreen(main.screenMenu);
         FonMusic.stop();
         enemies.clear();
+        bosses.clear();
         boosts.clear();
         shots.clear();
         fragments.clear();
@@ -732,16 +725,16 @@ public class ScreenGame implements Screen {
         GameState=GAME;
 
         for (GameBackground bg : bg) bg.move();
-
         spavnEnemy();
         spavnShot();
+        if(EmeniesCount>EmeniesMAX)spavnBoss();
 
-
-        //
         for (Enemy e : enemies) {
             e.move() ;
 
-
+        }
+        for (Boss b : bosses){
+            b.move();
         }
         spavnBoost();
         for(Boost b: boosts)b.move();

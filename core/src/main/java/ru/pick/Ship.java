@@ -9,14 +9,15 @@ public class Ship extends Object {
 
 
 
-    public int phase, nPhases =12;
+
     private long timeLastPhase;
     private long timePhaseInterval=150;
     public float rotation=0;
     public float rotationSpeed;
-    public float rotationPoint;
+
     public  float CheckVx;
-    private float MaxVx=1;
+
+
 
 
 
@@ -25,8 +26,18 @@ public class Ship extends Object {
         width=350;
         height=350;
 
+        nPhases =12;
+        imgHeight= imgWidth=800;
+
+
+
 
     }
+
+
+
+
+
 
 
 

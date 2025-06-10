@@ -120,9 +120,9 @@ public class SpaceButton {
     public void changeText(int money) {
         this.text = money > 0 ? "" + money : "0";
         GlyphLayout glyphLayout = new GlyphLayout(font, text);
-        widht = glyphLayout.width;
+        widht = glyphLayout.width;}
 
-    }
+
 
     public void changePhases() {
         phase = 0;

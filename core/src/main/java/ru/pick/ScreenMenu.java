@@ -49,7 +49,7 @@ public class ScreenMenu implements Screen  {
     TextureRegion[][] imgButtons = new  TextureRegion[3][3];
     Texture imgBGAtlas;
 
-    Enemy MenuEnemy;
+    Boss MenuEnemy;
 
 
     public ScreenMenu(Main main) {
@@ -99,7 +99,7 @@ public class ScreenMenu implements Screen  {
 
 
 
-        MenuEnemy=new Enemy();
+        MenuEnemy=new Boss();
         MenuEnemy.MenuEnemy=true;
 
 

@@ -41,12 +41,12 @@ public class Main extends Game {
     public ScreenLeaderboard screenLeaderboard;
     public ScreenAbout screenAbout;
     public Music FonMusic;
-    public  int level=1;
+    public  int level;
     public  int ShipSkin;
     public  int ShotsShots;
     public int ShotEven;
     public int ShotsBostCount;
-    public int Allmoney=10000;
+    public int Allmoney;
     public boolean isFonMusic=true;
     public boolean isActionSounds=true;
     public Player player;

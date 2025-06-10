@@ -2,9 +2,11 @@ package ru.pick;
 
 
 public class Player {
-    String name = "Noname";
-    int level=1;
-    int money;
+    public String firebaseId;
+    public String name = "Noname";
+    public int level;
+    public int money;
+    public int rank;
 
     public void copy(Player p){
         name=p.name;
@@ -13,7 +15,7 @@ public class Player {
     }
     public void clear() {
         money=0;
-        level=1;
+        level=0;
 
 
 
@@ -23,12 +25,12 @@ public class Player {
     public Player() {
         }
 
-        // Конструктор с параметрами (опционально)
 
 
-        // Геттеры и сеттеры (обязательно для Firebase)
-
-
+    public void savePlayerToFirebase(Player player){
+        FirebaseManager firebase = FirebaseService.create();
+        firebase.savePlayer(player);
+    }
 
    public void setMoney(int money) {
             this.money = money;
@@ -49,7 +51,7 @@ public class Player {
    public void setLevel(int level) {
             this.level= level;
         }
-    }
+  }
 
 
 
