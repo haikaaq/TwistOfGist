@@ -4,11 +4,13 @@ import static ru.pick.Main.SCR_WIDTH;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 
 public class SpaceButton {
     float x, y;
@@ -23,6 +25,7 @@ public class SpaceButton {
     public boolean isHover = false;
     private boolean isImageButton = false;
     public boolean SetScreenButton;
+    public boolean wrapEnabled;
     public int type;
     private boolean wasTouched;
     public float imgWidhtCoefficient;
@@ -36,6 +39,8 @@ public class SpaceButton {
         GlyphLayout glyphLayout = new GlyphLayout(font, text);
         widht = glyphLayout.width;
         height = glyphLayout.height;
+        glyphLayout.setText(font, text);
+
     }
 
 
@@ -118,6 +123,9 @@ public class SpaceButton {
 
 
     }
+
+
+
 
     public void changeText(int money) {
         this.text = money < 1000 ? "" + money : money+"k";

@@ -21,7 +21,7 @@ public class Player {
 
     }
 
-    // Пустой конструктор (обязательно для Firebase)
+
     public Player() {
         }
 

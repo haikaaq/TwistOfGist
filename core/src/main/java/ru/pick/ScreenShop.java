@@ -464,7 +464,7 @@ public class ScreenShop implements Screen {
 
     if (ShotsBostCount>0){
         int j =- ShotsBostCount;
-        for(int r =(ShotEven==0? shots.size()-ShotsBostCount*2:shots.size()-(ShotsBostCount*2+1));r<shots.size();r++){
+        for(int r =Math.abs(ShotEven==0? shots.size()-ShotsBostCount*2:shots.size()-(ShotsBostCount*2+1));r<shots.size();r++){
 
             shots.get(r).vX=j;
             shots.get(r).move();

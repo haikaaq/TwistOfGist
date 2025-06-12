@@ -41,6 +41,7 @@ public class ScreenGame implements Screen {
     private long timeLastSpawnBoost, timeBoostInterval = 9000;
     private long timeGreenSpawn, timeGreen = 700;
     private long timeRedSpawn, timeRed = 700;
+    private long timeExplosions;
     private long timeStartGame;
     public int level;
     private float earthAlpha = 1.0f;
@@ -104,7 +105,7 @@ public class ScreenGame implements Screen {
     SpaceButton btnMoney;
     Sound sndExplosion;
     Sound sndBlaster;
-    Sound sndPlus;
+
     Music FonMusic;
     SpaceButton btnBack;
     SpaceButton btnGetMoney;
@@ -247,6 +248,7 @@ public class ScreenGame implements Screen {
 
 
 
+
         SaveGame();
         //касания и управление
         if (Gdx.input.justTouched()) {
@@ -345,7 +347,7 @@ public class ScreenGame implements Screen {
                         bosses.get(j).vY = -7.69f;
                         // btnMoney.changeText(strmoney);
                         EmeniesDone += 1;
-                        if (main.isActionSounds) sndExplosion.play();
+                        if (main.isActionSounds) timeExplosions=TimeUtils.millis();
                         bosses.get(j).health = -1;
 
                     }
@@ -403,7 +405,7 @@ public class ScreenGame implements Screen {
                 money+=MoneyFactor;
                 enemies.get(j).width = 0;
                 SumCoastEnemyes+=(4-enemies.get(j).type)*main.BasicSkinCoast;
-                System.out.println(SumCoastEnemyes);
+                timeExplosions=TimeUtils.millis();
                 enemies.remove(j);
                 break;
             }
@@ -456,7 +458,10 @@ public class ScreenGame implements Screen {
             }
         }
 
+        if (TimeUtils.millis()==timeExplosions){
 
+            sndExplosion.play();
+        }
         for (int i = boosts.size() - 1; i >= 0; i--) {
             if (ship.overlap(boosts.get(i))) {
 
@@ -538,6 +543,8 @@ public class ScreenGame implements Screen {
         ship.type=main.ShipSkin;
         strmoney=money+"";
         btnMoney.changeText(strmoney);
+
+
         /// draw
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
@@ -876,6 +883,7 @@ public class ScreenGame implements Screen {
         if(money>0){
         main.Allmoney+=money;
         main.player.money= main.Allmoney;}
+
         if(iscomplited()&&main.level<=currentlevel.MaxLevel)
         {   level+=1;
             main.level=level;
@@ -959,7 +967,7 @@ public class ScreenGame implements Screen {
     Preferences prefs = Gdx.app.getPreferences("игровые ресурсы");
 
         prefs.putInteger("деньги игрока",main.Allmoney);
-      //  prefs.putInteger("игровой уровень",main.level);
+        prefs.putInteger("игровой уровень",main.level);
 
         prefs.flush();}
 
@@ -967,7 +975,7 @@ public class ScreenGame implements Screen {
         Preferences prefs = Gdx.app.getPreferences("игровые ресурсы");
 
         main.Allmoney= prefs.getInteger("деньги игрока",main.Allmoney);
-      //  main.level=prefs.getInteger("игровой уровень", main.level);
+        main.level=prefs.getInteger("игровой уровень", main.level);
 
 
 
@@ -1041,7 +1049,7 @@ public class ScreenGame implements Screen {
         @Override
         public boolean touchUp(int screenX, int screenY, int pointer, int button) {
             ship.rotation=0;
-            //ship.CheckVx=ship.vX;
+
             ship.stop();
             return false;
         }

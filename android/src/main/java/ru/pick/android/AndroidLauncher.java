@@ -41,6 +41,7 @@ public class AndroidLauncher extends AndroidApplication {
 
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         FirebaseDatabase.getInstance().setLogLevel(Logger.Level.DEBUG);
+        initialize(new Main(), configuration);
 
         OrientationHelper.setListener(new OrientationHelper.OrientationListener() {
 
@@ -72,7 +73,7 @@ public class AndroidLauncher extends AndroidApplication {
                     OrientationHelper.ScreenOrientation.PORTRAIT;
             }
         });
-        initialize(new Main(), configuration);
+
        //
 
     }

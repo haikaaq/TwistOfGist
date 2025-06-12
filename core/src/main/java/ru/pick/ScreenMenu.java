@@ -131,7 +131,10 @@ public class ScreenMenu implements Screen  {
         if(btnShop.SetScreenButton)main.setScreen(main.screenShop);
         if(btnPlay.SetScreenButton){
             main.setScreen(main.screenNumLevel);
-            if (main.isFonMusic)FonMusic.play();
+            if (main.isFonMusic){
+                FonMusic.setLooping(true);
+                FonMusic.play();
+            }
             FonMusic.setVolume(0.3f);
             GameState=GAME;
             return;

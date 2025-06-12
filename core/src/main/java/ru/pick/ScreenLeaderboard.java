@@ -4,7 +4,6 @@ import static ru.pick.Main.SCR_HEIGHT;
 import static ru.pick.Main.SCR_WIDTH;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -25,6 +24,7 @@ public class ScreenLeaderboard implements Screen {
     private BitmapFont font;
     private BitmapFont font32;
     Texture imgBG;
+    Texture imgPBT;
     private InputKeyboard keyboard;
     public static boolean Iskeyboard=true;
     Texture imgBackAtlas;
@@ -50,8 +50,8 @@ public class ScreenLeaderboard implements Screen {
 
         imgBackAtlas= new Texture("buttonsLeftRight.png");
         imgBG=new Texture("bgleadbd.png");
+        imgPBT =new Texture("leaderboardBT.png");
         btnBack = new SpaceButton(10,1500,90,90,0);
-
         btnLead = new SpaceButton(font,"Leaderboard",SCR_HEIGHT-20);
         btnName = new SpaceButton(font,"ENTER YOUR NAME",SCR_HEIGHT/2+100);
         btnPlace =new SpaceButton(font,"You are in "+main.player.rank+" place",SCR_HEIGHT/4);
@@ -125,11 +125,13 @@ public class ScreenLeaderboard implements Screen {
             for (int i = 0; i < topPlayers.size(); i++) {
 
                 Player p = topPlayers.get(i);
+                batch.draw(imgPBT,60,SCR_HEIGHT - 260 - 68 * (i+1),SCR_WIDTH-120,70);
                 font.draw(batch, (i + 1) + ". " + p.name, 100, SCR_HEIGHT - 260 - 68 * i);
                 font.draw(batch, "" + p.level, 500, SCR_HEIGHT - 260 - 68 * i);
                 if(p.money<100000){
                 font.draw(batch, ( p.money+""), 700, SCR_HEIGHT - 260 - 68 * i);}
                 else font.draw(batch, ( p.money/1000+"k"), 700, SCR_HEIGHT - 260 - 68 * i);
+
 
             }
         }

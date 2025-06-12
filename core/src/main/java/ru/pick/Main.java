@@ -44,12 +44,12 @@ public class Main extends Game {
     public ScreenAbout screenAbout;
     public ScreenNumLevel screenNumLevel;
     public Music FonMusic;
-    public  int level=5;
+    public  int level=4;
     public  int ShipSkin;
     public  int ShotsShots;
     public int ShotEven;
     public int ShotsBostCount;
-    public int Allmoney=288393;
+    public int Allmoney;
     public int BasicSkinCoast=300;
     public int BasicBoostCoast=100;
     public int BasicShotCoast=50;

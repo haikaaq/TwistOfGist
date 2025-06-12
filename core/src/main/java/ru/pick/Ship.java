@@ -64,19 +64,22 @@ public class Ship extends Object {
         super.move();
         //if (vX>MaxVx)vX=MaxVx;
         rotationSpeed=(vX-CheckVx)*2;
-
+        if (Math.abs(rotationSpeed)<0.7f)rotationSpeed=rotationSpeed/200;
         rotation-=rotationSpeed;
-        rotationSpeed = MathUtils.clamp(rotationSpeed, -MAX_ROTATION_SPEED, MAX_ROTATION_SPEED);
 
-// Применяем поворот с ограничением угла
+
+
+      /* rotationSpeed = MathUtils.clamp(rotationSpeed, -MAX_ROTATION_SPEED, MAX_ROTATION_SPEED);
+
         float newRotation = rotation - rotationSpeed;
-        float baseRotation = 0f; // Базовый угол (прямо по курсу)
+        float baseRotation = 0f;
 
 // Ограничиваем отклонение от базового угла
         if (Math.abs(newRotation - baseRotation) > MAX_ROTATION_ANGLE) {
             newRotation = baseRotation + (MAX_ROTATION_ANGLE * Math.signum(newRotation - baseRotation));
         }
         rotation = newRotation;
+*/
 
         changePhase();
         OutOfScreen();
