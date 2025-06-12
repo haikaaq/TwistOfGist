@@ -3,7 +3,6 @@ package ru.pick;
 import static ru.pick.Main.*;
 import static ru.pick.ScreenLeaderboard.*;
 
-import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -144,7 +143,7 @@ public class ScreenMenu implements Screen  {
 
             if(btnLeaderboard.SetScreenButton){
                 main.setScreen(main.screenLeaderboard);
-                Iskeyboard=true;
+                iskeyboard =true;
             }
 
             if(btnExit.SetScreenButton){

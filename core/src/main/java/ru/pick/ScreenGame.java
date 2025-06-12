@@ -124,15 +124,16 @@ public class ScreenGame implements Screen {
         this.main = main;
         batch = main.batch;
         camera = main.camera;
-        loadLevel(level);
+        MoneyFactor =1;
+        LoadGame();
+        loadLevel(main.level);
         touch = main.touch;
         font70 = main.font70;
         font32 = main.font32;
         level = main.level;
         FonMusic = main.FonMusic;
         Allmoney = main.Allmoney;
-        MoneyFactor =1;
-        loadLevel(main.level);
+
 
         Gdx.input.setInputProcessor(new Processor());
         imgMN = new Texture("moneta.png");
@@ -144,6 +145,7 @@ public class ScreenGame implements Screen {
         imgShipsatlas = new Texture("atlas.png");
         imgFragmentatlas = new Texture("fragments.png");
         imgEnemyes = new Texture(currentlevel.enemyPath);
+        System.out.println(currentlevel.enemyPath);
 
         imgEnemyesWouded = new Texture("woundedemenies.png");
         imgEnemyesBoses = new Texture("atlasboss.png");
@@ -234,7 +236,7 @@ public class ScreenGame implements Screen {
     public void show() {
         timeStartGame =TimeUtils.millis();
         LoadGame();
-        loadLevel(level);
+        loadLevel(main.level);
 
 
     }
@@ -889,7 +891,7 @@ public class ScreenGame implements Screen {
             main.level=level;
             main.player.level=level;
         }
-        loadLevel(level);
+        loadLevel(main.level);
 
 
 

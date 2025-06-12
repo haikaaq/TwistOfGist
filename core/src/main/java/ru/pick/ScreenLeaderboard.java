@@ -26,7 +26,7 @@ public class ScreenLeaderboard implements Screen {
     Texture imgBG;
     Texture imgPBT;
     private InputKeyboard keyboard;
-    public static boolean Iskeyboard=true;
+    public static boolean iskeyboard =true;
     Texture imgBackAtlas;
     TextureRegion[] imgBack = new TextureRegion[2];
 
@@ -79,7 +79,11 @@ public class ScreenLeaderboard implements Screen {
         changeButtons();
         leaderboard();
         getplase();
-       // btnPlace.changeText("You are in "+main.player.rank+" place");
+       if(main.player.rank<1||main.player.rank>10){
+        btnPlace.changeText("You are not in top 10");}
+       else{
+           btnPlace.changeText("You are in "+main.player.rank+" place");
+       }
 
         if(Gdx.input.justTouched()){
 
@@ -97,12 +101,12 @@ public class ScreenLeaderboard implements Screen {
                 main.player.money= main.Allmoney;
                 main.player.level= main.level;
 
-                Iskeyboard =false;
+                iskeyboard =false;
             }
 
         }
 
-        if (Iskeyboard) keyboard.start();
+        if (iskeyboard) keyboard.start();
         main.player.savePlayerToFirebase(main.player);
 
 
@@ -115,7 +119,7 @@ public class ScreenLeaderboard implements Screen {
         batch.draw(imgBack[btnBack.type],btnBack.imgX,btnBack.imgY,btnBack.imgWidht,btnBack.imgHeight);
 
 
-        if(!Iskeyboard) {
+        if(!iskeyboard) {
             font.draw(batch, "NAME" , 100, SCR_HEIGHT - 160 );
             font.draw(batch, "LEVEL" , 400, SCR_HEIGHT - 160 );
             font.draw(batch, "MONEY" , 645, SCR_HEIGHT - 160 );
