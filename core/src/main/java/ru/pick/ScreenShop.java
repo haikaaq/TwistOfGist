@@ -21,27 +21,27 @@ import java.util.List;
 public class ScreenShop implements Screen {
     private static int SHOP=0,SKIN=1,SHOTS=2,BOOST=3;
     private long timeLastSpawnShots, timeShotsInterval = 300;
-    private int ShotEven=0;
-    public int ShipSkin=0;
-    public int ShotsShots;
-    public int ShotsBostCount;
-    private int ShipDistance;
-    private int ScreenShipNum=0;
-    private int ScreenBoostNum=0;
-    private int ScreenSHOTSNum=0;
-    private int BuyBoostLevel=0;
-    private int BuyShotLevel=0;
-    private int BuyShipLevel=0;
-    private int RealBoostCount;
-    private int RealShotEven;
-    private int RealShotsSkin;
-    private int RealShipSkin;
-    private int MinBoostLevel=0;
-    private int MinSkinLevel=0;
-    private int MinShotsLevel =0;
-    private int ScreenState=SHOP;
-    private boolean IsNewShipSkin;
-    private boolean  IsNewShotSkin;
+    private int shotEven =0;
+    public int shipSkin =0;
+    public int shotsShots;
+    public int shotsBostCount;
+    private int shipDistance;
+    private int screenShipNum =0;
+    private int screenBoostNum =0;
+    private int screenSHOTSNum =0;
+    private int buyBoostLevel =0;
+    private int buyShotLevel =0;
+    private int buyShipLevel =0;
+    private int realBoostCount;
+    private int realShotEven;
+    private int realShotsSkin;
+    private int realShipSkin;
+    private int minBoostLevel =0;
+    private int minSkinLevel =0;
+    private int minShotsLevel =0;
+    private int screenState =SHOP;
+    private boolean isNewShipSkin;
+    private boolean isNewShotSkin;
     private long timeRedSpawn, timeRed=700;
     private long timeGreenSpawn, timeGreen=700;
 
@@ -97,7 +97,7 @@ public class ScreenShop implements Screen {
         imgBG=new Texture("bgshop.png");
         imgBG2=new Texture("bgmenu2.png");
         imgLongButtonAtlas=new Texture("LongButton.png");
-        btnAllmoney= new  SpaceButton(font,""+(main.Allmoney>=1000? main.Allmoney:main.Allmoney/1000+'k'),SCR_WIDTH-120,1550);
+        btnAllmoney= new  SpaceButton(font,""+(main.allmoney >=1000? main.allmoney :main.allmoney /1000+'k'),SCR_WIDTH-120,1550);
         btnBack = new SpaceButton(10,1500,90,90,0);
 
 
@@ -171,105 +171,105 @@ public class ScreenShop implements Screen {
 
 
 
-            if(btnBack.SetScreenButton){
-                if (ScreenState==SHOP)main.setScreen(main.screenMenu);
-               else ScreenState=SHOP;
+            if(btnBack.setScreenButton){
+                if (screenState ==SHOP)main.setScreen(main.screenMenu);
+               else screenState =SHOP;
             }
-            if(btnShots.SetScreenButton&&ScreenState==SHOP){
-                ScreenState=SHOTS;
+            if(btnShots.setScreenButton && screenState ==SHOP){
+                screenState =SHOTS;
 
             }
-            if(btnBoosts.SetScreenButton&&ScreenState==SHOP){
-                ScreenState=BOOST;
+            if(btnBoosts.setScreenButton && screenState ==SHOP){
+                screenState =BOOST;
             }
-            if(btnSkins.SetScreenButton&&ScreenState==SHOP){
-                ScreenState=SKIN;
+            if(btnSkins.setScreenButton && screenState ==SHOP){
+                screenState =SKIN;
 
                // ChangeShip();
             }
-            if (btnRight.SetScreenButton&&ship.x==SCR_WIDTH/2){
+            if (btnRight.setScreenButton &&ship.x==SCR_WIDTH/2){
 
-               if (ScreenState==BOOST){
+               if (screenState ==BOOST){
                    ChangePlusShots();
 
                }
-               if (ScreenState==SKIN){
+               if (screenState ==SKIN){
                    ChangeShip(btnRight);
 
                }
 
-               if (ScreenState==SHOTS){
+               if (screenState ==SHOTS){
                    ChangeShot(btnRight);
 
                 }
             }
-            if (btnLeft.SetScreenButton&&ship.x==SCR_WIDTH/2){
+            if (btnLeft.setScreenButton &&ship.x==SCR_WIDTH/2){
 
-                if (ScreenState==BOOST) {
+                if (screenState ==BOOST) {
                     ChangeMinusShots();
 
                 }
-                if (ScreenState==SKIN){
+                if (screenState ==SKIN){
                     ChangeShip(btnLeft);
 
                 }
-                if (ScreenState==SHOTS){
+                if (screenState ==SHOTS){
                     ChangeShot(btnLeft);
 
 
                 }
             }
-            if (btnBuy.SetScreenButton){
-                if (main.Allmoney>=price()){
+            if (btnBuy.setScreenButton){
+                if (main.allmoney >=price()){
 
 
-                    if (ScreenState==BOOST) {
-                        if(ScreenBoostNum<=1&&price()!=0){
-                        MinBoostLevel-=1;
+                    if (screenState ==BOOST) {
+                        if(screenBoostNum <=1&&price()!=0){
+                        minBoostLevel -=1;
                         timeGreenSpawn=TimeUtils.millis();
-                        main.Allmoney-=price();
-                        BuyBoostLevel=0;
-                        ScreenBoostNum=0;
-                        main.ShotsBostCount=ShotsBostCount;
-                        main.ShotEven=ShotEven;}
+                        main.allmoney -=price();
+                        buyBoostLevel =0;
+                        screenBoostNum =0;
+                        main.shotsBostCount = shotsBostCount;
+                        main.shotEven = shotEven;}
                         if (price()==0){
-                            main.ShotsBostCount=ShotsBostCount;
-                            main.ShotEven=ShotEven;
+                            main.shotsBostCount = shotsBostCount;
+                            main.shotEven = shotEven;
                             timeGreenSpawn=TimeUtils.millis();
                         }
-                        if(ScreenBoostNum>1)timeRedSpawn=TimeUtils.millis();}
-                    if (ScreenState==SKIN){
-                        if(ScreenShipNum==1&&price()!=0) {
-                        MinSkinLevel-=1;
-                        BuyShipLevel=0;
+                        if(screenBoostNum >1)timeRedSpawn=TimeUtils.millis();}
+                    if (screenState ==SKIN){
+                        if(screenShipNum ==1&&price()!=0) {
+                        minSkinLevel -=1;
+                        buyShipLevel =0;
                         timeGreenSpawn=TimeUtils.millis();
-                        main.Allmoney-=price();
-                        ScreenShipNum=0;
-                        main.ShipSkin=ShipSkin ;}
+                        main.allmoney -=price();
+                        screenShipNum =0;
+                        main.shipSkin = shipSkin;}
                         if (price()==0){
-                            main.ShipSkin=ShipSkin;
+                            main.shipSkin = shipSkin;
                             timeGreenSpawn=TimeUtils.millis();
                         }
-                        if(ScreenShipNum>1)timeRedSpawn=TimeUtils.millis();
+                        if(screenShipNum >1)timeRedSpawn=TimeUtils.millis();
 
 
 
                     }
-                    if (ScreenState==SHOTS){
-                        if(ScreenSHOTSNum==1&&price()!=0) {
-                            BuyShotLevel=0;
-                            MinShotsLevel -=1;
+                    if (screenState ==SHOTS){
+                        if(screenSHOTSNum ==1&&price()!=0) {
+                            buyShotLevel =0;
+                            minShotsLevel -=1;
                             timeGreenSpawn=TimeUtils.millis();
-                            main.Allmoney-=price();
-                            ScreenSHOTSNum=0;
-                            main.ShotsShots=ShotsShots;
+                            main.allmoney -=price();
+                            screenSHOTSNum =0;
+                            main.shotsShots = shotsShots;
                         }
                         if (price()==0){
-                            main.ShotsShots=ShotsShots;
+                            main.shotsShots = shotsShots;
                             timeGreenSpawn=TimeUtils.millis();
                         }
 
-                        if(ScreenSHOTSNum>1)timeRedSpawn=TimeUtils.millis();
+                        if(screenSHOTSNum >1)timeRedSpawn=TimeUtils.millis();
 
 
 
@@ -294,40 +294,40 @@ public class ScreenShop implements Screen {
         btnLeft.changePhases();
         btnRight.changePhases();
         ///действия
-        btnAllmoney.changeText(main.Allmoney);
+        btnAllmoney.changeText(main.allmoney);
         spavnShot();
 
         MoveShots();
         //if(!IsShipMove)
         moveship(0);
         btnBuy.changeText("buy for "+price()+ " coins");
-        if (ScreenState==BOOST&&price()==0) {
+        if (screenState ==BOOST&&price()==0) {
             btnBuy.changeText("get it");
            }
-        if (ScreenState==SKIN&&price()==0) {
+        if (screenState ==SKIN&&price()==0) {
             btnBuy.changeText("get it");
         }
-        if (ScreenState==SHOTS&price()==0) {
+        if (screenState ==SHOTS&price()==0) {
             btnBuy.changeText("get it");
         }
 
 
-        if (ScreenState==SHOP){
-            ShotsBostCount= main.ShotsBostCount;
-            ShotEven=main.ShotEven;
-            ShipSkin= main.ShipSkin;
-            ShotsShots = main.ShotsShots;
+        if (screenState ==SHOP){
+            shotsBostCount = main.shotsBostCount;
+            shotEven =main.shotEven;
+            shipSkin = main.shipSkin;
+            shotsShots = main.shotsShots;
         }
-        if (ScreenState==BOOST){
-            ShotsBostCount=RealBoostCount;
-            ShotEven=RealShotEven;
+        if (screenState ==BOOST){
+            shotsBostCount = realBoostCount;
+            shotEven = realShotEven;
         }
-        if (ScreenState==SHOTS){
-            ShotsShots= RealShotsSkin;
+        if (screenState ==SHOTS){
+            shotsShots = realShotsSkin;
 
         }
-        if (ScreenState==SKIN){
-            ShipSkin= RealShipSkin;
+        if (screenState ==SKIN){
+            shipSkin = realShipSkin;
 
         }
 
@@ -352,7 +352,7 @@ public class ScreenShop implements Screen {
 
 
 
-        if (ScreenState==SCREEN){
+        if (screenState ==SCREEN){
             batch.draw(imgLongButton[btnSkins.phase],btnSkins.imgX,btnSkins.imgY,btnSkins.imgWidht,btnSkins.imgHeight);
             batch.draw(imgLongButton[btnShots.phase],btnShots.imgX,btnShots.imgY,btnShots.imgWidht,btnShots.imgHeight);
             batch.draw(imgLongButton[btnBoosts.phase],btnBoosts.imgX,btnBoosts.imgY,btnBoosts.imgWidht,btnBoosts.imgHeight);
@@ -362,26 +362,26 @@ public class ScreenShop implements Screen {
             btnBoosts.font.draw(batch,btnBoosts.text,btnBoosts.x,btnBoosts.y);
 
             for(Shot s : shots) {
-                batch.draw(imgShotatlas[main.ShotsShots],s.scrX() , s.scrY(), s.width,s.height);}
+                batch.draw(imgShotatlas[main.shotsShots],s.scrX() , s.scrY(), s.width,s.height);}
 
-            batch.draw(imgShipatlas[main.ShipSkin][ship.phase],ship.scrX(),ship.scrY(),ship.width,ship.height );
+            batch.draw(imgShipatlas[main.shipSkin][ship.phase],ship.scrX(),ship.scrY(),ship.width,ship.height );
 
         }
-        if (!(ScreenState==SCREEN)){
+        if (!(screenState ==SCREEN)){
             batch.draw(imgBack[btnRight.type],btnRight.imgX,btnRight.imgY,btnRight.imgWidht,btnRight.imgHeight);
             batch.draw(imgBack[btnLeft.type],btnLeft.imgX,btnLeft.imgY,btnLeft.imgWidht,btnLeft.imgHeight);
             btnBuy.font.draw(batch,btnBuy.text,btnBuy.x,btnBuy.y);
 
             for(Shot s : shots) {
-                batch.draw(imgShotatlas[ShotsShots],s.scrX() , s.scrY(), s.width,s.height);}
+                batch.draw(imgShotatlas[shotsShots],s.scrX() , s.scrY(), s.width,s.height);}
 
-            batch.draw(imgShipatlas[ShipSkin][ship.phase],ship.scrX(),ship.scrY(),ship.width,ship.height );
+            batch.draw(imgShipatlas[shipSkin][ship.phase],ship.scrX(),ship.scrY(),ship.width,ship.height );
         }
 
         if (timeGreen()) batch.draw(imgGreen, 0, 0, SCR_WIDTH, SCR_HEIGHT);
         if (timeRed()) batch.draw(imgRed, 0, 0, SCR_WIDTH, SCR_HEIGHT);
         font.draw(batch, "Shop", 350, SCR_HEIGHT-20);
-        btnAllmoney.font.draw(batch,main.Allmoney<1000? btnAllmoney.text:main.Allmoney/1000+"k",btnAllmoney.x,btnAllmoney.y);
+        btnAllmoney.font.draw(batch,main.allmoney <1000? btnAllmoney.text:main.allmoney /1000+"k",btnAllmoney.x,btnAllmoney.y);
 
         batch.draw(imgBack[btnBack.type],btnBack.imgX,btnBack.imgY,btnBack.imgWidht,btnBack.imgHeight);
         batch.draw(main.screenMenu.imgMN,btnAllmoney.x-70,btnAllmoney.y-58,50,50);
@@ -407,9 +407,9 @@ public class ScreenShop implements Screen {
 
     private int price(){
 
-        if (ScreenState==BOOST&&BuyBoostLevel>0) return main.BasicBoostCoast*(BuyBoostLevel+Math.abs(MinBoostLevel));
-        if (ScreenState==SKIN&&BuyShipLevel>0) return main.BasicSkinCoast*(BuyShipLevel+Math.abs(MinSkinLevel));
-        if (ScreenState==SHOTS&&BuyShotLevel>0) return main.BasicShotCoast*(BuyShotLevel+Math.abs(MinShotsLevel));
+        if (screenState ==BOOST&& buyBoostLevel >0) return main.basicBoostCoast *(buyBoostLevel +Math.abs(minBoostLevel));
+        if (screenState ==SKIN&& buyShipLevel >0) return main.basicSkinCoast *(buyShipLevel +Math.abs(minSkinLevel));
+        if (screenState ==SHOTS&& buyShotLevel >0) return main.basicShotCoast *(buyShotLevel +Math.abs(minShotsLevel));
         else return 0;
 
 
@@ -443,12 +443,12 @@ public class ScreenShop implements Screen {
     private void spavnShot(){
         if(TimeUtils.millis()>timeLastSpawnShots+timeShotsInterval) {
 
-            if (ShotsBostCount == 0) {
+            if (shotsBostCount == 0) {
                 shots.add(new Shot(ship.scrX() + ship.width / 2, ship.scrY() + 245));
 
             }
 
-            for (int i = 0; i < (ShotEven==0?ShotsBostCount*2:(ShotsBostCount*2+1)); i++) {
+            for (int i = 0; i < (shotEven ==0? shotsBostCount *2:(shotsBostCount *2+1)); i++) {
                 shots.add(new Shot(ship.scrX() + ship.width / 2, ship.scrY() + 245));
 
 
@@ -462,19 +462,19 @@ public class ScreenShop implements Screen {
     }
     public void MoveShots() {
 
-    if (ShotsBostCount>0){
-        int j =- ShotsBostCount;
-        for(int r =Math.abs(ShotEven==0? shots.size()-ShotsBostCount*2:shots.size()-(ShotsBostCount*2+1));r<shots.size();r++){
+    if (shotsBostCount >0){
+        int j =-shotsBostCount;
+        for(int r = Math.abs(shotEven ==0? shots.size()- shotsBostCount *2:shots.size()-(shotsBostCount *2+1)); r<shots.size(); r++){
 
             shots.get(r).vX=j;
             shots.get(r).move();
             j++;
-            if(ShotEven==0){
+            if(shotEven ==0){
                 if (j == 0) j=1;}
 
         }
         int e = 0;
-        while(e <(ShotEven==0? shots.size()-ShotsBostCount*2:shots.size()-ShotsBostCount*2-1))  {
+        while(e <(shotEven ==0? shots.size()- shotsBostCount *2:shots.size()- shotsBostCount *2-1))  {
 
             shots.get(e).move(shots.get(e).vX);
             e++;
@@ -490,7 +490,7 @@ public class ScreenShop implements Screen {
 
 
     private void MoveShip(SpaceButton b) {
-       ShipDistance=0;
+       shipDistance =0;
        if (b==btnRight) ship.vX=-40;
        else ship.vX=40;
     };
@@ -500,21 +500,21 @@ public class ScreenShop implements Screen {
 
     private void ChangePlusShots(){
 
-        if (ShotsShots<=imgShotatlas.length&&ScreenState==BOOST){
+        if (shotsShots <=imgShotatlas.length&& screenState ==BOOST){
 
 
-            if (ShotsBostCount<4) {
-                BuyBoostLevel+=1;
-                ScreenBoostNum+=1;
+            if (shotsBostCount <4) {
+                buyBoostLevel +=1;
+                screenBoostNum +=1;
                 MoveShip(btnRight);
-                if (ShotEven < ShotsBostCount)  ShotEven= ShotsBostCount;
+                if (shotEven < shotsBostCount)  shotEven = shotsBostCount;
                 else {
-                    ShotEven= 0;
-                    ShotsBostCount += 1;
+                    shotEven = 0;
+                    shotsBostCount += 1;
 
                 }
-                RealBoostCount =ShotsBostCount;
-                RealShotEven = ShotEven;
+                realBoostCount = shotsBostCount;
+                realShotEven = shotEven;
             }
 
         }
@@ -525,35 +525,40 @@ public class ScreenShop implements Screen {
     }
 
     private void ChangeMinusShots() {
-        if (ShotsShots <=imgShotatlas.length && ScreenState == BOOST) {
+        if (shotsShots <=imgShotatlas.length && screenState == BOOST) {
 
-            if (ShotsBostCount>=0) {
-                if (BuyBoostLevel>MinBoostLevel){
-                    BuyBoostLevel-=1;
-                    ScreenBoostNum-=1;
+            if (shotsBostCount >=0) {
+                if (buyBoostLevel > minBoostLevel){
+                    buyBoostLevel -=1;
+                    screenBoostNum -=1;
                     MoveShip(btnLeft);}
-                if (ShotEven >= ShotsBostCount) ShotEven = 0;
+                if (shotEven >= shotsBostCount) shotEven = 0;
                 else {
-                    ShotEven = ShotsBostCount;
-                    ShotsBostCount -= 1;
+                    shotEven = shotsBostCount;
+                    shotsBostCount -= 1;
                 }
-                RealBoostCount =ShotsBostCount;
-                RealShotEven = ShotEven;
+                realBoostCount = shotsBostCount;
+                realShotEven = shotEven;
             }
         }
     }
     public void moveship(int a) {
-        if (ShipDistance>=-(SCR_WIDTH+ship.width)&&ShipDistance<=(SCR_WIDTH+ship.width)){
+        if (shipDistance >=-(SCR_WIDTH+ship.width)&& shipDistance <=(SCR_WIDTH+ship.width)){
         ship.x+=ship.vX;
-        ShipDistance+=ship.vX;
-        if(ScreenState==SKIN){
-            if(ShipDistance<-SCR_WIDTH+ship.width/2&& IsNewShipSkin){ShipSkin+=1 ; RealShipSkin=ShipSkin; IsNewShipSkin=false;}
-            if(ShipDistance>SCR_WIDTH-ship.width/2&& IsNewShipSkin) {ShipSkin-=1;RealShipSkin=ShipSkin; IsNewShipSkin=false;}
+        shipDistance +=ship.vX;
+        if(screenState ==SKIN){
+            if(shipDistance <-SCR_WIDTH+ship.width/2&& isNewShipSkin){
+                shipSkin +=1 ; realShipSkin = shipSkin; isNewShipSkin =false;}
+            if(shipDistance >SCR_WIDTH-ship.width/2&& isNewShipSkin) {
+                shipSkin -=1;
+                realShipSkin = shipSkin; isNewShipSkin =false;}
 
         }
-        if(ScreenState==SHOTS){
-                if(ShipDistance<-SCR_WIDTH+ship.width/2&& IsNewShotSkin){ShotsShots+=1 ; RealShotsSkin=ShotsShots ; IsNewShotSkin=false;}
-                if(ShipDistance>SCR_WIDTH-ship.width/2&& IsNewShotSkin) {ShotsShots-=1; RealShotsSkin=ShotsShots; IsNewShotSkin=false;}
+        if(screenState ==SHOTS){
+                if(shipDistance <-SCR_WIDTH+ship.width/2&& isNewShotSkin){
+                    shotsShots +=1 ; realShotsSkin = shotsShots; isNewShotSkin =false;}
+                if(shipDistance >SCR_WIDTH-ship.width/2&& isNewShotSkin) {
+                    shotsShots -=1; realShotsSkin = shotsShots; isNewShotSkin =false;}
         }
 
         if(ship.x<-ship.width/2){ ship.x=SCR_WIDTH+ship.width/2;}}
@@ -565,24 +570,24 @@ public class ScreenShop implements Screen {
     }
     private void ChangeShip(SpaceButton b) {
         if (b == btnRight) {
-            if (ShipSkin < imgShipatlas.length-1 && ScreenState == SKIN) {
-                IsNewShipSkin=true;
-                BuyShipLevel += 1;
-                ScreenShipNum+=1;
+            if (shipSkin < imgShipatlas.length-1 && screenState == SKIN) {
+                isNewShipSkin =true;
+                buyShipLevel += 1;
+                screenShipNum +=1;
                 MoveShip(btnRight);
             }
 
         }
 
         if (b == btnLeft) {
-                if (ShipSkin > 0 && ScreenState == SKIN) {
+                if (shipSkin > 0 && screenState == SKIN) {
 
-                    if (BuyShipLevel >= MinSkinLevel) {
-                        BuyShipLevel -= 1;
-                        ScreenShipNum-=1;
+                    if (buyShipLevel >= minSkinLevel) {
+                        buyShipLevel -= 1;
+                        screenShipNum -=1;
                         MoveShip(btnLeft);
-                        if (IsNewShipSkin)ShipSkin-=1;
-                        IsNewShipSkin=true;
+                        if (isNewShipSkin) shipSkin -=1;
+                        isNewShipSkin =true;
 
                     }
 
@@ -591,11 +596,11 @@ public class ScreenShop implements Screen {
      }
     private void ChangeShot(SpaceButton b) {
         if (b == btnRight) {
-            if (ShotsShots < imgShotatlas.length-1&& ScreenState == SHOTS) {
-                IsNewShotSkin=true;
+            if (shotsShots < imgShotatlas.length-1&& screenState == SHOTS) {
+                isNewShotSkin =true;
 
-                BuyShotLevel += 1;
-                ScreenSHOTSNum+=1;
+                buyShotLevel += 1;
+                screenSHOTSNum +=1;
                 MoveShip(btnRight);
 
 
@@ -603,13 +608,13 @@ public class ScreenShop implements Screen {
 
             }}
         if (b == btnLeft) {
-            if (ShotsShots >= 0 && ScreenState == SHOTS) {
+            if (shotsShots >= 0 && screenState == SHOTS) {
 
-                if (BuyShotLevel > MinShotsLevel) {
+                if (buyShotLevel > minShotsLevel) {
 
-                    IsNewShotSkin=true;
-                    BuyShotLevel -= 1;
-                    ScreenSHOTSNum-=1;
+                    isNewShotSkin =true;
+                    buyShotLevel -= 1;
+                    screenSHOTSNum -=1;
 
                     MoveShip(btnLeft);
 
@@ -622,20 +627,20 @@ public class ScreenShop implements Screen {
    private void SaveShop(){
             Preferences prefs = Gdx.app.getPreferences("игровые ресурсы");
 
-            prefs.putInteger("скин космолета",main.ShipSkin);
-            prefs.putInteger("скин выстрела",main.ShotsShots);
-            prefs.putInteger("четность",main.ShotEven);
-            prefs.putInteger("количество выстрелов",main.ShotsBostCount);
+            prefs.putInteger("скин космолета",main.shipSkin);
+            prefs.putInteger("скин выстрела",main.shotsShots);
+            prefs.putInteger("четность",main.shotEven);
+            prefs.putInteger("количество выстрелов",main.shotsBostCount);
           //  prefs.putInteger();
             prefs.flush();}
 
    private void LoadShop() {
         Preferences prefs = Gdx.app.getPreferences("TableRecords");
 
-            main.ShotsShots= prefs.getInteger("скин выстрела",0);
-            main.ShotEven=prefs.getInteger("четность",0);
-            main.ShotsBostCount=prefs.getInteger("количество выстрелов",0);
-            main.ShipSkin=prefs.getInteger("скин космолета",0);
+            main.shotsShots = prefs.getInteger("скин выстрела",0);
+            main.shotEven =prefs.getInteger("четность",0);
+            main.shotsBostCount =prefs.getInteger("количество выстрелов",0);
+            main.shipSkin =prefs.getInteger("скин космолета",0);
 
 
     }

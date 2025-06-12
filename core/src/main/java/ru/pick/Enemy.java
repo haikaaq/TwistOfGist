@@ -6,7 +6,6 @@ import static ru.pick.ScreenGame.*;
 
 
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.TimeUtils;
 
 public class Enemy extends Object {
 
@@ -36,7 +35,7 @@ public class Enemy extends Object {
             rotationSpeed=0;
             width=height=MathUtils.random(180f,250);
              vX= MathUtils.random(-0.5000f,0.50000f);
-             health= MathUtils.random(3*(ShotCount+1),11*(ShotCount+1));
+             health= MathUtils.random(3*(shotCount +1),11*(shotCount +1));
              vY= MathUtils.random(-2.99f,-0.78f);}
 
 

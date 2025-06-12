@@ -2,10 +2,9 @@ package ru.pick;
 
 import static ru.pick.Main.SCR_HEIGHT;
 import static ru.pick.Main.SCR_WIDTH;
-import static ru.pick.ScreenGame.ShotCount;
+import static ru.pick.ScreenGame.shotCount;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.TimeUtils;
 
 public class Boss extends Object {
 
@@ -33,7 +32,7 @@ public class Boss extends Object {
             spin= MathUtils.randomBoolean()?-1:1;
             height= width=MathUtils.random(300f,400);
             vY=MathUtils.random(-0.2f,-0.09f);
-            health= MathUtils.random(15*(ShotCount+1),25*(ShotCount+1));
+            health= MathUtils.random(15*(shotCount +1),25*(shotCount +1));
             vX= MathUtils.random(-1.5f,1.5f);
             nPhases=6;
             if(Dead){

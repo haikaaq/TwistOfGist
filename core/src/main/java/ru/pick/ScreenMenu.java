@@ -21,7 +21,7 @@ public class ScreenMenu implements Screen  {
     private OrthographicCamera camera;
     private Vector3 touch;
     private BitmapFont font70;
-    private long TimeLastChangeBg,TimeChangeBg= 700;
+    private long timeLastChangeBg, timeChangeBg = 700;
     private int phaseBg;
 
 
@@ -95,7 +95,7 @@ public class ScreenMenu implements Screen  {
         btnShop = new SpaceButton(0,950,200,170,2);
 
         btnExit = new SpaceButton(font70,"x",20,SCR_HEIGHT-30);
-        btnAllmoney= new  SpaceButton(font70,""+main.Allmoney,SCR_WIDTH-120,1550);
+        btnAllmoney= new  SpaceButton(font70,""+main.allmoney,SCR_WIDTH-120,1550);
 
 
 
@@ -125,28 +125,28 @@ public class ScreenMenu implements Screen  {
         btnLeaderboard.ButtonsState(Mousepose.x,Mousepose.y);
         btnExit.ButtonsState(Mousepose.x,Mousepose.y);
 
-        if(btnAbout.SetScreenButton)main.setScreen(main.screenAbout);
-        if(btnSetting.SetScreenButton)main.setScreen(main.screenSettings);
-        if(btnShop.SetScreenButton)main.setScreen(main.screenShop);
-        if(btnPlay.SetScreenButton){
+        if(btnAbout.setScreenButton)main.setScreen(main.screenAbout);
+        if(btnSetting.setScreenButton)main.setScreen(main.screenSettings);
+        if(btnShop.setScreenButton)main.setScreen(main.screenShop);
+        if(btnPlay.setScreenButton){
             main.setScreen(main.screenNumLevel);
             if (main.isFonMusic){
                 FonMusic.setLooping(true);
                 FonMusic.play();
             }
             FonMusic.setVolume(0.3f);
-            GameState=GAME;
+            gameState =GAME;
             return;
         }
 
 
 
-            if(btnLeaderboard.SetScreenButton){
+            if(btnLeaderboard.setScreenButton){
                 main.setScreen(main.screenLeaderboard);
                 iskeyboard =true;
             }
 
-            if(btnExit.SetScreenButton){
+            if(btnExit.setScreenButton){
                 Gdx.app.exit();
             }
 
@@ -170,7 +170,7 @@ public class ScreenMenu implements Screen  {
 
 
 
-        btnAllmoney.changeText(main.Allmoney);
+        btnAllmoney.changeText(main.allmoney);
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         batch.draw(imgBG[phaseBg], 0, 0, SCR_WIDTH, SCR_HEIGHT);
@@ -189,7 +189,7 @@ public class ScreenMenu implements Screen  {
         btnLeaderboard.font.draw(batch,btnLeaderboard.text,btnLeaderboard.x,btnLeaderboard.y);
         btnExit.font.draw(batch,btnExit.text,btnExit.x,btnExit.y);
         btnLevel.font.draw(batch,btnLevel.text,btnLevel.x,btnLevel.y);
-        btnAllmoney.font.draw(batch,main.Allmoney<1000? btnAllmoney.text:main.Allmoney/1000+"k",btnAllmoney.x,btnAllmoney.y);
+        btnAllmoney.font.draw(batch,main.allmoney <1000? btnAllmoney.text:main.allmoney /1000+"k",btnAllmoney.x,btnAllmoney.y);
 
         batch.draw(imgMN,btnAllmoney.x-70,btnAllmoney.y-58,50,50);
 
@@ -203,10 +203,10 @@ public class ScreenMenu implements Screen  {
     }
 
     public void changePhase() {
-     if( TimeUtils.millis()>=TimeChangeBg+TimeLastChangeBg){
+     if( TimeUtils.millis()>= timeChangeBg +timeLastChangeBg){
          phaseBg+=1;
          if( phaseBg==4) phaseBg=0;
-         TimeLastChangeBg=TimeUtils.millis();
+         timeLastChangeBg=TimeUtils.millis();
 
           }
     }

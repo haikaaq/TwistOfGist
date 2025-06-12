@@ -3,14 +3,9 @@ package ru.pick;
 import static ru.pick.Main.SCR_WIDTH;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Align;
 
 public class SpaceButton {
     float x, y;
@@ -24,7 +19,7 @@ public class SpaceButton {
     public boolean isPressed = false;
     public boolean isHover = false;
     private boolean isImageButton = false;
-    public boolean SetScreenButton;
+    public boolean setScreenButton;
     public boolean wrapEnabled;
     public int type;
     private boolean wasTouched;
@@ -143,7 +138,7 @@ public class SpaceButton {
 
     public void ButtonsState(float x,float y) {
         isPressed = false;
-        SetScreenButton = false;
+        setScreenButton = false;
         isHover = false;
 
 
@@ -152,7 +147,7 @@ public class SpaceButton {
         }
         if (wasTouched && (!Gdx.input.justTouched()) && hit(x,y)) {
 
-            SetScreenButton = true;
+            setScreenButton = true;
             wasTouched = false;
 
         }

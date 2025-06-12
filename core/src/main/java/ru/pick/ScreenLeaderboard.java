@@ -98,7 +98,7 @@ public class ScreenLeaderboard implements Screen {
             }
             if (keyboard.touch(touch.x,touch.y)){
                 main.player.name=keyboard.getText();
-                main.player.money= main.Allmoney;
+                main.player.money= main.allmoney;
                 main.player.level= main.level;
 
                 iskeyboard =false;

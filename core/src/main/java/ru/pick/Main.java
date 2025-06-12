@@ -3,20 +3,11 @@ package ru.pick;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.net.HttpRequestBuilder;
-import com.badlogic.gdx.utils.I18NBundle;
-
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import ru.pick.ScreenGame.*;
 
 
 public class Main extends Game {
@@ -28,7 +19,7 @@ public class Main extends Game {
     public static final int SCREEN=0,JOYSTIK=1,JOYSTIK_LEFT=2,JOYSTIK_RIGHT=3,ACCELEROMETER=4;
     public static int controls=SCREEN;
     public static final int GAME_OWER=1,GAME=0;
-    public static int GameState=GAME;
+    public static int gameState =GAME;
 
     public SpriteBatch batch;
     public OrthographicCamera camera;
@@ -45,14 +36,14 @@ public class Main extends Game {
     public ScreenNumLevel screenNumLevel;
     public Music FonMusic;
     public  int level=4;
-    public  int ShipSkin;
-    public  int ShotsShots;
-    public int ShotEven;
-    public int ShotsBostCount;
-    public int Allmoney;
-    public int BasicSkinCoast=300;
-    public int BasicBoostCoast=100;
-    public int BasicShotCoast=50;
+    public  int shipSkin;
+    public  int shotsShots;
+    public int shotEven;
+    public int shotsBostCount;
+    public int allmoney;
+    public int basicSkinCoast =300;
+    public int basicBoostCoast =100;
+    public int basicShotCoast =50;
     public boolean isFonMusic=true;
     public boolean isActionSounds=true;
     public Player player;
