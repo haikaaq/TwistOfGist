@@ -4,6 +4,7 @@ import static ru.pick.Main.*;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
@@ -18,58 +19,56 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ScreenGame implements Screen {
-
     private float JSwidth = SCR_WIDTH / 3, JSheight = SCR_WIDTH / 3;
     //координаты центра джостика
-
     private final Main main;
-    private final SpriteBatch batch;
+    private Levels.Level currentlevel;
+    protected final SpriteBatch batch;
     private final OrthographicCamera camera;
     private final Vector3 touch;
-
     private final BitmapFont font70;
     private final BitmapFont font32;
-    private long timeLastSpawnEnemy, timeEnemyInterval = 1450;
-   // private static long timeLastEnemyWoud, timeEnemyWounded = 60;
-    private long timeLastSpawnShots, timeShotsInterval = 190;
+    private InputKeyboard keyboard;
+    private long timeLastSpawnEnemy;
+    private long timeLastSpawnShots;
     private long timeLastSpawnBoost, timeBoostInterval = 9000;
     private long timeGreenSpawn, timeGreen = 700;
     private long timeRedSpawn, timeRed = 700;
+    private long timeStartGame;
+    public int level;
+    private float earthAlpha = 1.0f;
 
-    public int level ;
-    public int EmeniesMAX = MathUtils.random(4, 7);
+    public boolean isShots=true;
+
     private int EmeniesDone = 0;
     private int EmeniesCount = 0;
-    private int BossCount =4;
+    private int SumCoastEnemyes;
+
+
 
     public static int ShotCount;
-
     private int ShotEven;
     private int InitialShotCount;
     private int InitialEven;
-
-
     private int money;
     private String strmoney=money+"";
-
-
+    private String strKB="";
     private boolean isgame;
-
     public int ShipSkin;
     public int Allmoney;
     public int ShotsShots;
     public int MoneyFactor;
-
+    public boolean isBoss=true;
     Texture imgJS;
     Texture imgMN;
-    Texture imgBG;
+
     Texture imgBG2;
     Texture imgRED;
     Texture imgShipsatlas;
@@ -79,9 +78,10 @@ public class ScreenGame implements Screen {
     Texture imgEnemyesBoses;
     Texture imgEnemyesDead;
     Texture imgEnemyesWouded;
+    Texture imgEarthAtlas;
     Texture imgLongButtonAtlas;
-
     Texture imgMinus;
+    Texture imgBG;
     Texture imgPlus;
     Texture imgGreen;
     Texture imgGrayBG;
@@ -100,20 +100,16 @@ public class ScreenGame implements Screen {
     TextureRegion[] imgShotatlas = new TextureRegion[5];
     TextureRegion[][] imgEnemyWouded = new TextureRegion[5][12];
     TextureRegion[] imgLongButton = new  TextureRegion[3];
-
-
+    TextureRegion[] imgEarth= new TextureRegion[4];
     SpaceButton btnMoney;
-
-
     Sound sndExplosion;
     Sound sndBlaster;
     Sound sndPlus;
     Music FonMusic;
-
     SpaceButton btnBack;
     SpaceButton btnGetMoney;
-
     Ship ship;
+    Earth earth;
     GameBackground[] bg = new GameBackground[2];
     List<Enemy> enemies = new ArrayList<>();
     List<Boss> bosses = new ArrayList<>();
@@ -122,11 +118,12 @@ public class ScreenGame implements Screen {
     List<Boost> boosts = new ArrayList<>();
 
 
+
     public ScreenGame(Main main) {
         this.main = main;
         batch = main.batch;
         camera = main.camera;
-
+        loadLevel(level);
         touch = main.touch;
         font70 = main.font70;
         font32 = main.font32;
@@ -134,19 +131,24 @@ public class ScreenGame implements Screen {
         FonMusic = main.FonMusic;
         Allmoney = main.Allmoney;
         MoneyFactor =1;
+        loadLevel(main.level);
 
         Gdx.input.setInputProcessor(new Processor());
         imgMN = new Texture("moneta.png");
         imgJS = new Texture("js.png");
-        imgBG = new Texture("bggame.png");
+        imgBG = new Texture(currentlevel.backgroundPath);
+
+
         imgBG2 = new Texture("bgmenu2.png");
         imgShipsatlas = new Texture("atlas.png");
         imgFragmentatlas = new Texture("fragments.png");
-        imgEnemyes = new Texture("enemyes.png");
+        imgEnemyes = new Texture(currentlevel.enemyPath);
+
         imgEnemyesWouded = new Texture("woundedemenies.png");
         imgEnemyesBoses = new Texture("atlasboss.png");
         imgEnemyesDead = new Texture("emenyesDead.png");
         imgLongButtonAtlas=new Texture("LongButton.png");
+        imgEarthAtlas = new Texture("earthatlas.png");
         imgRED = new Texture("red.png");
         imgMinus = new Texture("minus.png");
         imgPlus = new Texture("plus.png");
@@ -154,15 +156,9 @@ public class ScreenGame implements Screen {
         imgGrayBG = new Texture("GrayBG.png");
         imgShotsatlas = new Texture("shots.png");
         imgLogo = new Texture("logo.png");
-        //Pixmap
-
-
-
+        keyboard = new InputKeyboard(font70,SCR_WIDTH,SCR_HEIGHT*3/4,11);
 
         shipsPixmap = new Pixmap(Gdx.files.internal("atlas.png"));
-
-
-
         enemyPixmap = new Pixmap(Gdx.files.internal("enemyes.png"));
 
         if (!imgEnemyesBoses.getTextureData().isPrepared()) {
@@ -170,58 +166,50 @@ public class ScreenGame implements Screen {
         }
         BossPixmap = imgEnemyesBoses.getTextureData().consumePixmap();
 
-
-
         if (!imgEnemyesDead.getTextureData().isPrepared()) {
             imgEnemyesDead.getTextureData().prepare();
         }
         enemyDeadPixmap = imgEnemyesDead.getTextureData().consumePixmap();
 
-
         for (int j = 0; j < imgShipatlas.length; j++) {
             for (int i = 0; i < imgShipatlas[j].length; i++) {
                 imgShipatlas[j][i] = new TextureRegion(imgShipsatlas, (i < 7 ? i : 12 - i) * 800, (j) * 800, 800, 800);
-            }
-        }
+            }}
 
         for (int j = 0; j < imgEnemy.length; j++) {
             for (int i = 0; i < imgEnemy[j].length; i++) {
                 imgEnemy[j][i] = new TextureRegion(imgEnemyes, (i < 7 ? i : 12 - i) * 800, (j) * 800, 800, 800);
-            }
-        }
+            }}
         for (int j = 0; j < imgEnemyWouded.length; j++) {
             for (int i = 0; i < imgEnemyWouded[j].length; i++) {
                 imgEnemyWouded[j][i] = new TextureRegion(imgEnemyesWouded, (i < 7 ? i : 12 - i) * 800, (j) * 800, 800, 800);
-            }
-        }
+            }}
 
 
         for (int e = 0; e < imgEnemyDead.length; e++) {
 
                 imgEnemyDead[e] = new TextureRegion(imgEnemyesDead, (e) * 450, 0, 450, 450);
-
         }
 
         for (int j = 0; j < imgFragments.length; j++) {
             for (int i = 0; i < imgFragments[j].length; i++) {
 
                 imgFragments[j][i] = new TextureRegion(imgFragmentatlas, (i) * 480, (j) * 480, 480, 480);
-            }
-
-        }
+            }}
         for (int i = 0; i < imgShotatlas.length; i++) {
             imgShotatlas[i] = new TextureRegion(imgShotsatlas, (i) * 100, 0, 100, 350);
-
         }
-
         for (int e = 0; e < imgEnemyBoses.length; e++) {
-
             imgEnemyBoses[e] = new TextureRegion(imgEnemyesBoses, (e) *450, 0, 450, 450);
         }
         for (int e = 0; e < imgLongButton.length; e++) {
 
             imgLongButton[e] = new TextureRegion(imgLongButtonAtlas, 0, (e)*193, 497, 193);
         }
+        for (int j = 0; j < imgEarth.length; j++) {
+
+                imgEarth[j] = new TextureRegion(imgEarthAtlas, (j ) * 740, 0, 740, 740);
+            }
 
 
         btnBack = new SpaceButton(font70, "Back", 30, 1550);
@@ -230,28 +218,22 @@ public class ScreenGame implements Screen {
 
         sndExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
         sndBlaster = Gdx.audio.newSound(Gdx.files.internal("blaster.mp3"));
-
         ShipSkin = main.ShipSkin;
         ShotsShots = main.ShotsShots;
         InitialShotCount = main.ShotsBostCount;
         InitialEven = main.ShotEven;
-
         bg[0] = new GameBackground(0, 0);
         bg[1] = new GameBackground(0, SCR_HEIGHT);
-
-
         ship = new Ship(SCR_WIDTH / 2, SCR_HEIGHT / 5);
-
-
-
-
-        LoadGame();
 
 
     }
 
 
     public void show() {
+        timeStartGame =TimeUtils.millis();
+        LoadGame();
+        loadLevel(level);
 
 
     }
@@ -262,6 +244,7 @@ public class ScreenGame implements Screen {
         ShotEven = main.ShotEven;
         ship.CheckVx = ship.vX;
         ship.type = main.ShipSkin;
+
 
 
         SaveGame();
@@ -275,23 +258,73 @@ public class ScreenGame implements Screen {
                 main.ShotsBostCount = ShotCount;
                 StopGame();
             }
+            if(currentlevel.isTapLevel){
+                for(Enemy e:enemies){
+                    if(e.hit(touch.x,touch.y)){
+                        e.health--;
+                        e.isWouded = true;
+                        e.timeLastWouded = TimeUtils.millis();
+                    }
+                }
+            }
+
             if (btnGetMoney.hit(touch.x, touch.y)) {
                 if (GameState == GAME_OWER) {
                     main.ShotsBostCount = InitialShotCount;
                     main.ShotEven = InitialEven;
                     GameClear();
-
-                     gameStart();
+                    gameStart();
                 }
 
             }
+            if (keyboard.touch(touch.x, touch.y)) strKB = keyboard.getText();
         }
         btnGetMoney.changePhases();
-        if (controls == ACCELEROMETER) {
-            ship.vX = -Gdx.input.getAccelerometerX() * 4;
-            ship.vY = -Gdx.input.getAccelerometerY() * 4;
+        if (currentlevel.controls == ACCELEROMETER) {
+            final float deadzone=0.2f;
+            float rawX = Gdx.input.getAccelerometerX();
+            float rawY = Gdx.input.getAccelerometerY();
+            if(Math.abs(rawX)<=deadzone)rawX=0;
+            if(Math.abs(rawY)<=deadzone)rawY=0;
+            if (OrientationHelper.getOrientation() == OrientationHelper.ScreenOrientation.LANDSCAPE) {
+                ship.vY = -rawX * 4;
+                ship.vX = rawY * 3;
+            }
+            else  {
+                ship.vX = -rawX * 4;
+                ship.vY = -rawY * 4;
+            }
         }
+        if (currentlevel.isAccelerometrLevel){
+            final float deadzone=0.2f;
+            float rawX = Gdx.input.getAccelerometerX();
+            float rawY = Gdx.input.getAccelerometerY();
+            if(Math.abs(rawX)<=deadzone)rawX=0;
+            if(Math.abs(rawY)<=deadzone)rawY=0;
+            for(Shot s: shots) {
+                if (OrientationHelper.getOrientation() == OrientationHelper.ScreenOrientation.LANDSCAPE) {
 
+                    s.vY = -rawX * 3;
+
+                } else {
+
+                    s.vY = -rawY * 3;
+                }
+            }
+        }
+        if(level==0){
+            if (earth.overlap(ship)){
+
+                earth.nPhases=4;
+
+            }
+
+            earth.move();
+        }
+        if (currentlevel.isKeyboard) {
+            keyboard();
+
+        }
 
         //события
         if (GameState == GAME) {
@@ -302,58 +335,63 @@ public class ScreenGame implements Screen {
 
         ///bosses
 
-        if (EmeniesCount>EmeniesMAX){
-        for (int j = bosses.size() - 1; j >= 0; j--) {
-            if ((TimeUtils.millis() - bosses.get(j).timeLastWouded) > 154) {
-                bosses.get(j).isWouded = false;
-            }
-            if (bosses.get(j).health <= 0) {
-                bosses.get(j).Dead = true;
-                bosses.get(j).vY = -7.69f;
-               // btnMoney.changeText(strmoney);
-                EmeniesDone += 1;
-                if (main.isActionSounds) sndExplosion.play();
-                bosses.get(j).health = -1;
-
-            }
-
-
-            if (bosses.get(j).BelowTheScreen()) {
-                money += MoneyFactor*2;
-               // btnMoney.changeText(strmoney);
-                bosses.remove(j);
-
-                break;
-
-            }
-            if (bosses.get(j).overlap(ship, ((bosses.get(j).isWouded || bosses.get(j).Dead) ? enemyDeadPixmap : BossPixmap), shipsPixmap)) {
-                EmeniesDone = 0;
-                timeRedSpawn = TimeUtils.millis();
-                GameState = GAME_OWER;
-                StopGame();
-                break;
-            }
-            for (int i = shots.size() - 1; i >= 0; i--) {
-
-
-                if (shots.get(i).overlap(bosses.get(j))) {
-                    if (bosses.get(j).health > 0) {
-                        bosses.get(j).health--;
-                        bosses.get(j).isWouded = true;
-                        bosses.get(j).timeLastWouded = TimeUtils.millis();
+            if (EmeniesCount > currentlevel.enemiesMax) {
+                for (int j = bosses.size() - 1; j >= 0; j--) {
+                    if ((TimeUtils.millis() - bosses.get(j).timeLastWouded) > 154) {
+                        bosses.get(j).isWouded = false;
+                    }
+                    if (bosses.get(j).health == 0) {
+                        bosses.get(j).Dead = true;
+                        bosses.get(j).vY = -7.69f;
+                        // btnMoney.changeText(strmoney);
+                        EmeniesDone += 1;
+                        if (main.isActionSounds) sndExplosion.play();
+                        bosses.get(j).health = -1;
 
                     }
-                    shots.get(i).isoverlab = true;
-                    isgame = true;
+
+
+                    if (bosses.get(j).BelowTheScreen()) {
+                        money += MoneyFactor * 2;
+
+                        bosses.remove(j);
+
+                        break;
+
+                    }
+                    if (bosses.get(j).overlap(ship, ((bosses.get(j).isWouded || bosses.get(j).Dead) ? enemyDeadPixmap : BossPixmap), shipsPixmap)) {
+                        EmeniesDone = 0;
+                        timeRedSpawn = TimeUtils.millis();
+                        GameState = GAME_OWER;
+                        StopGame();
+                        break;
+                    }
+                    for (int i = shots.size() - 1; i >= 0; i--) {
+
+
+                        if (shots.get(i).overlap(bosses.get(j))) {
+                            if (bosses.get(j).health > 0) {
+                                bosses.get(j).health--;
+                                bosses.get(j).isWouded = true;
+                                bosses.get(j).timeLastWouded = TimeUtils.millis();
+
+                            }
+                            shots.get(i).isoverlab = true;
+                            isgame = true;
+                        }
+
+
+                    }
                 }
-
-
             }
-        }}
 
 
         /// enemies
         for (int j = enemies.size() - 1; j >= 0; j--) {
+            if(currentlevel.isRexlexLevel&&enemies.get(j).y<SCR_HEIGHT/3)
+
+                enemies.get(j).vY-=0.15f;
+
             if ((TimeUtils.millis() - enemies.get(j).timeLastWouded) > 154) {
                 enemies.get(j).isWouded = false;
             }
@@ -361,18 +399,30 @@ public class ScreenGame implements Screen {
                 for (int k = MathUtils.random(2, 9); k >= 0; k--) {
                     fragments.add(new Fragment(enemies.get(j).x, enemies.get(j).y));
                 }
+                EmeniesDone += 1;
                 money+=MoneyFactor;
                 enemies.get(j).width = 0;
+                SumCoastEnemyes+=(4-enemies.get(j).type)*main.BasicSkinCoast;
+                System.out.println(SumCoastEnemyes);
                 enemies.remove(j);
                 break;
             }
 
 
             if (enemies.get(j).BelowTheScreen()) {
-                timeRedSpawn = TimeUtils.millis();
-                money -= 4 + MoneyFactor;
-                enemies.remove(j);
-                break;
+               if(currentlevel.isRexlexLevel){
+                   EmeniesDone+=1;
+                   money+=MoneyFactor;
+               }
+               else {
+                   {
+                       timeRedSpawn = TimeUtils.millis();
+                       money -= (4 + MoneyFactor);
+                   }
+               }
+                   enemies.remove(j);
+                   break;
+
 
             }
             //если наш корабль столкнулся с врагом
@@ -383,20 +433,26 @@ public class ScreenGame implements Screen {
                 StopGame();
                 break;
             }
-            for (int i = shots.size() - 1; i >= 0; i--) {
 
+                for (int i = shots.size() - 1; i >= 0; i--) {
 
-                if (shots.get(i).overlap(enemies.get(j))) {
-                    if (enemies.get(j).health > 0) {
-                        enemies.get(j).health--;
-                        enemies.get(j).isWouded = true;
-                        enemies.get(j).timeLastWouded = TimeUtils.millis();
+                if(!currentlevel.isTapLevel) {
+                    if (!currentlevel.isRexlexLevel) {
+                        if (shots.get(i).overlap(enemies.get(j))) {
+                            if (enemies.get(j).health > 0) {
+                                enemies.get(j).health--;
+                                enemies.get(j).isWouded = true;
+                                enemies.get(j).timeLastWouded = TimeUtils.millis();
 
+                            }
+                            shots.get(i).isoverlab = true;
+                            isgame = true;
+                        }
+
+                    } else {
+                        shots.get(i).vY = -16;
                     }
-                    shots.get(i).isoverlab = true;
-                    isgame = true;
                 }
-
             }
         }
 
@@ -427,14 +483,39 @@ public class ScreenGame implements Screen {
         }
 
 
+
         /// delete
         for (int i = shots.size() - 1; i >= 0; i--) {
-            if (shots.get(i).isoverlab || shots.get(i).OutOfscreen()) {
-                shots.get(i).width = 0;
-                shots.get(i).height = 0;
-                if (TimeUtils.millis() >= timeLastSpawnShots + timeShotsInterval) {
-                    shots.remove(i);
-                    break;
+            if (currentlevel.isRexlexLevel){
+                if (ship.overlap(shots.get(i))) {
+                    shots.get(i).width = 0;
+                    shots.get(i).height = 0;
+                    GameState=GAME_OWER;
+
+
+
+                }
+                if (shots.get(i).OutOfscreen()) {
+                    shots.get(i).width = 0;
+                    shots.get(i).height = 0;
+
+                    if (TimeUtils.millis() >= timeLastSpawnShots + currentlevel.timeShotsInterval) {
+                        shots.remove(i);
+                        break;
+                    }
+
+
+                }
+
+            }
+            else {
+                if (shots.get(i).isoverlab || shots.get(i).OutOfscreen()) {
+                    shots.get(i).width = 0;
+                    shots.get(i).height = 0;
+                    if (TimeUtils.millis() >= timeLastSpawnShots + currentlevel.timeShotsInterval) {
+                        shots.remove(i);
+                        break;
+                    }
                 }
             }
         }
@@ -447,7 +528,7 @@ public class ScreenGame implements Screen {
             if (fragments.get(e).OutOfscreen()) fragments.remove(e);
         }
 
-        if (enemies.isEmpty() && bosses.isEmpty()&&isgame && EmeniesCount == EmeniesMAX+BossCount) {
+        if (enemies.isEmpty() && bosses.isEmpty()&&isgame && EmeniesCount == currentlevel.enemiesMax+ currentlevel.bossCount) {
             timeGreenSpawn = TimeUtils.millis();
             GameState = GAME_OWER;
             StopGame();
@@ -463,6 +544,20 @@ public class ScreenGame implements Screen {
 
         for (GameBackground bg : bg) {
             batch.draw(imgBG, bg.x, bg.y, bg.width, bg.height);
+        }
+        if(level==0){
+            if(earth.nPhases==1) {batch.draw(imgEarth[earth.phase], earth.scrX(), earth.scrY(),earth.width,earth.height);}
+            else {
+                earthAlpha -= 0.004f; // Уменьшаем прозрачность каждый кадр
+                if (earthAlpha < 0) {
+                    earthAlpha = 0;
+                    isShots=true;
+                }
+
+                batch.setColor(1, 1, 1, earthAlpha);
+                batch.draw(imgEarth[earth.phase], earth.scrX(), earth.scrY(),earth.width,earth.height);
+                batch.setColor(1, 1, 1, 1); // Сбрасываем настройки цвета
+            }
         }
         for (Fragment f : fragments) {
             batch.draw(imgFragments[f.type1][f.type2], f.scrX(), f.scrY(), f.width, f.height);
@@ -501,14 +596,15 @@ public class ScreenGame implements Screen {
             batch.draw(imgGreen, 0, 0, SCR_WIDTH, SCR_HEIGHT);
         }
 
-        if (controls == JOYSTIK_LEFT) {
+        if (currentlevel.controls == JOYSTIK_LEFT) {
             batch.draw(imgJS, 0, 0, SCR_WIDTH / 3, SCR_WIDTH / 3);
         }
-        if (controls == JOYSTIK_RIGHT) {
+        if (currentlevel.controls == JOYSTIK_RIGHT) {
             batch.draw(imgJS, 2 * SCR_WIDTH / 3, 0, SCR_WIDTH / 3, SCR_WIDTH / 3);
             JSwidth = (SCR_WIDTH - SCR_WIDTH / 6) * 2;
         }
 
+        keyboard.draw(batch);
 
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         btnMoney.font.draw(batch, btnMoney.text, btnMoney.x, btnMoney.y);
@@ -565,26 +661,47 @@ public class ScreenGame implements Screen {
 
 
     public void spavnEnemy() {
-        if (TimeUtils.millis() > timeLastSpawnEnemy + timeEnemyInterval) {
-            if (EmeniesCount <= EmeniesMAX) {
+        long currentTime = TimeUtils.millis();
+
+        // Проверяем, что прошло время до первого спавна
+        if (currentTime - timeStartGame < currentlevel.timeFirstSpawnEnemy) {
+            return;
+        }
+
+        // Проверяем интервал между спавнами
+        if (currentTime - timeLastSpawnEnemy >= currentlevel.timeSpawnInterval) {
+            if (EmeniesCount < currentlevel.enemiesMax) {
                 enemies.add(new Enemy());
-                timeLastSpawnEnemy = TimeUtils.millis();
-                EmeniesCount += 1;
+                timeLastSpawnEnemy = currentTime; // Фиксируем время последнего спавна
+                EmeniesCount++;
+
             }
         }
+
     }
     public void spavnBoss() {
-        if (TimeUtils.millis() > timeLastSpawnEnemy + timeEnemyInterval) {
-            if (EmeniesCount > EmeniesMAX&& EmeniesCount<EmeniesMAX+BossCount) {
+        long currentTime = TimeUtils.millis();
+
+        // Проверяем, что прошло время до первого спавна
+        if (currentTime - timeStartGame < currentlevel.timeFirstSpawnEnemy||!isBoss) {
+            return;
+        }
+
+        // Проверяем интервал между спавнами
+        if ((currentTime - timeLastSpawnEnemy >= currentlevel.timeSpawnInterval)) {
+            if (enemies.isEmpty() && EmeniesCount < currentlevel.enemiesMax + currentlevel.bossCount) {
+
                 bosses.add(new Boss());
-                timeLastSpawnEnemy = TimeUtils.millis();
-                EmeniesCount += 1;
+                timeLastSpawnEnemy = currentTime; // Фиксируем время последнего спавна
+                EmeniesCount++;
+
             }
         }
-    }
 
+
+    }
     public void spavnShot() {
-        if (TimeUtils.millis() > timeLastSpawnShots + timeShotsInterval && EmeniesCount<=EmeniesMAX+BossCount) {
+        if ((TimeUtils.millis() > timeLastSpawnShots + currentlevel.timeShotsInterval)&&isShots) {
 
             if (ShotCount == 0) {
                 shots.add(new Shot(ship.scrX() + ship.width / 2 - (ship.rotation)*ship.width/90, ship.scrY() + 0.85f*ship.height));
@@ -605,8 +722,40 @@ public class ScreenGame implements Screen {
 
 
     }
+    public void spavnShotLevel6() {
+        if ((TimeUtils.millis() > timeLastSpawnShots + currentlevel.timeShotsInterval)) {
+            for (Enemy e : enemies) {
+
+                if (e.y > SCR_HEIGHT / 3) {
+                     e.vY-=0.1f;
+
+                    if (ShotCount == 0) {
+                        shots.add(new Shot(e.scrX() + e.width / 2, e.scrY() ));
+
+
+                    }
+
+                    for (int i = 0; i < (ShotEven == 0 ? ShotCount * 2 : (ShotCount * 2 + 1)); i++) {
+                        shots.add(new Shot(e.scrX() + e.width / 2, e.scrY()));
+
+
+                    }
+                    timeLastSpawnShots = TimeUtils.millis();
+                    if (main.isActionSounds) sndBlaster.play();
+
+
+                }
+
+
+            }
+        }
+
+
+    }
 
     private void MoveShots() {
+
+        if(!shots.isEmpty()){
 
 
 
@@ -629,17 +778,47 @@ public class ScreenGame implements Screen {
         int e = 0;
         while(e <(ShotEven==0? shots.size()-ShotCount*2:shots.size()-ShotCount*2-1))  {
 
+
             shots.get(e).move(shots.get(e).vX);
+
             e++;
 
         }
 
 
+    }}
+
+
+
+    public void keyboard(){
+        if (!isBoss&&EmeniesDone==currentlevel.enemiesMax&&(TimeUtils.millis()-timeStartGame)>currentlevel.timeSpawnInterval) {
+            System.out.println("" + SumCoastEnemyes);
+            if (!keyboard.isKeyboardShow) {
+
+                if(strKB.isEmpty())keyboard.start();
+
+
+
+            }
+            if (strKB.equals("" + SumCoastEnemyes)) {
+                isBoss = true;
+                timeGreenSpawn=TimeUtils.millis();
+                strKB="a";
+
+
+            }
+            else if (!strKB.isEmpty()) {
+                GameState = GAME_OWER;
+                timeRedSpawn=TimeUtils.millis();
+            }
+
+
+            // if (keyboard.isKeyboardShow) {
+
+
+           // }
+        }
     }
-
-
-
-
 
 
 
@@ -660,15 +839,31 @@ public class ScreenGame implements Screen {
         for(Shot s : shots) s.stop();
         for (Fragment f:fragments) f.stop();
         SaveGame();
+    }
 
 
+
+
+    private void loadLevel(int level){
+
+
+        currentlevel =Levels.LEVELS[level];
+        if (currentlevel.controls==ACCELEROMETER||currentlevel.isAccelerometrLevel) {
+            OrientationHelper.lockCurrentOrientation();
+        } else {
+            OrientationHelper.unlock(); // Разрешаем автоповорот
+        }
+        if (level==0) {
+            isShots=false;
+            earth = new Earth(SCR_WIDTH/2,1120);
+        }
+        isShots=currentlevel.isShots;
+        isBoss=currentlevel.isBoss;
+        if(currentlevel.isKeyboard) {
+            strKB = "";
 
         }
-
-
-
-
-
+    }
 
 
 
@@ -677,11 +872,17 @@ public class ScreenGame implements Screen {
 
 
     public void GameClear(){
-        if(money>0){
 
+        if(money>0){
         main.Allmoney+=money;
         main.player.money= main.Allmoney;}
-        if(iscomplited()){level+=1;main.player.level+=1;}
+        if(iscomplited()&&main.level<=currentlevel.MaxLevel)
+        {   level+=1;
+            main.level=level;
+            main.player.level=level;
+        }
+        loadLevel(level);
+
 
 
 
@@ -715,7 +916,8 @@ public class ScreenGame implements Screen {
 
 
     public boolean iscomplited(){
-        return (EmeniesMAX-EmeniesDone<=6&&enemies.isEmpty());
+        return (bosses.isEmpty()&&enemies.isEmpty()&&EmeniesCount==currentlevel.enemiesMax+currentlevel.bossCount);
+
 
     }
 
@@ -726,8 +928,9 @@ public class ScreenGame implements Screen {
 
         for (GameBackground bg : bg) bg.move();
         spavnEnemy();
-        spavnShot();
-        if(EmeniesCount>EmeniesMAX)spavnBoss();
+        if(currentlevel.isRexlexLevel)spavnShotLevel6();
+        else spavnShot();
+        spavnBoss();
 
         for (Enemy e : enemies) {
             e.move() ;
@@ -756,7 +959,7 @@ public class ScreenGame implements Screen {
     Preferences prefs = Gdx.app.getPreferences("игровые ресурсы");
 
         prefs.putInteger("деньги игрока",main.Allmoney);
-        prefs.putInteger("игровой уровень",main.level);
+      //  prefs.putInteger("игровой уровень",main.level);
 
         prefs.flush();}
 
@@ -764,22 +967,11 @@ public class ScreenGame implements Screen {
         Preferences prefs = Gdx.app.getPreferences("игровые ресурсы");
 
         main.Allmoney= prefs.getInteger("деньги игрока",main.Allmoney);
-        main.level=prefs.getInteger("игровой уровень", main.level);
+      //  main.level=prefs.getInteger("игровой уровень", main.level);
 
 
 
     }
-
-
-
-
-
-
-/*
-    private void gameOver(String name) {
-
-
-    */
 
     private boolean timeRed(){
 
@@ -814,7 +1006,7 @@ public class ScreenGame implements Screen {
         @Override
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (GameState==GAME)   {
-            if (controls == SCREEN) {
+            if (currentlevel.controls == SCREEN) {
                 touch.set(screenX, screenY, 0);
                 camera.unproject(touch);
                 ship.touch(touch);
@@ -828,7 +1020,7 @@ public class ScreenGame implements Screen {
 
 
                 }
-            if (controls == JOYSTIK_LEFT||controls==JOYSTIK_RIGHT) {
+            if (currentlevel.controls == JOYSTIK_LEFT||controls==JOYSTIK_RIGHT) {
                 touch.set(screenX, screenY, 0);
                 camera.unproject(touch);
                 //проверяем попали ли мы касанием в круг используя формулу графика окружности
@@ -864,19 +1056,24 @@ public class ScreenGame implements Screen {
         @Override
         public boolean touchDragged(int screenX, int screenY, int pointer) {
          if (GameState==GAME)   {
-            if(controls==SCREEN){
+            if(currentlevel.controls==SCREEN){
             touch.set(screenX,screenY,0);
             camera.unproject(touch);
             ship.touch(touch);
              ship.move();
               }
-            if (controls == JOYSTIK_LEFT||controls==JOYSTIK_RIGHT) {
+            if (currentlevel.controls == JOYSTIK_LEFT||currentlevel.controls==JOYSTIK_RIGHT) {
                 touch.set(screenX, screenY, 0);
                 camera.unproject(touch);
                 //проверяем попали ли мы касанием в круг
                 if (Math.pow(touch.x - JSwidth / 2, 2) + Math.pow(touch.y - JSheight / 2, 2) <= Math.pow(150, 2)) {
                     ship.vX = (touch.x - JSwidth / 2) / 19;
                     ship.vY = (touch.y - JSheight / 2) / 19;
+                }
+                else {
+                    ship.vX = (touch.x - JSwidth / 2) / 25;
+                    ship.vY = (touch.y - JSheight / 2) / 25;
+
                 }
             }
         // }
@@ -888,17 +1085,7 @@ public class ScreenGame implements Screen {
 
             return false;
         }
-        private void Woud(Enemy e, Shot s)  {
 
-
-
-             if(Math.abs(s.y-e.y)<=100 &&Math.abs(s.x-e.x)<=100){
-            e.isWouded=true;
-            }
-             else e.isWouded=false;
-
-
-        }
         @Override
         public boolean mouseMoved(int screenX, int screenY) {
             return false;

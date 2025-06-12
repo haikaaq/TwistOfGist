@@ -60,6 +60,10 @@ public class Enemy extends Object {
         return y<=height/2;
     }
 
+    boolean hit(float tx, float ty) {
+
+        return scrX() < tx && tx < scrX() + width && ty > scrY() && ty < scrY() + height;
+    }
 
     public void OutOfScreen(){
         if (x>=SCR_WIDTH-width/2) { x= SCR_WIDTH-width/2; vX-=2*vX;}

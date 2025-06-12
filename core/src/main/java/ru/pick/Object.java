@@ -31,7 +31,7 @@ public class Object {
 
    }
 
-    public int getAtlasX() {
+   public int getAtlasX() {
        return 0;
     }
 

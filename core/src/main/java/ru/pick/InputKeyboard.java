@@ -180,8 +180,7 @@ public class InputKeyboard {
                 break;
             default: // ввод символов
                 if(text.length()< enterTextLength) text += letters.charAt(i);
-                //if(text.length() == 1 && letters.equals(LETTERS_EN_CAPS)) letters = LETTERS_EN_LOW;
-                //if(text.length() == 1 && letters.equals(LETTERS_RU_CAPS)) letters = LETTERS_RU_LOW;
+
                 setCharsKBD();
         }
     }

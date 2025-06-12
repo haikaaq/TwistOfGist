@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ public class ScreenLeaderboard implements Screen {
     Texture imgBG;
     private InputKeyboard keyboard;
     public static boolean Iskeyboard=true;
+    Texture imgBackAtlas;
+    TextureRegion[] imgBack = new TextureRegion[2];
 
     SpaceButton btnBack;
     SpaceButton btnLead;
@@ -45,9 +48,10 @@ public class ScreenLeaderboard implements Screen {
 
 
 
+        imgBackAtlas= new Texture("buttonsLeftRight.png");
         imgBG=new Texture("bgleadbd.png");
+        btnBack = new SpaceButton(10,1500,90,90,0);
 
-        btnBack = new SpaceButton(font,"Back",30,SCR_HEIGHT-20);
         btnLead = new SpaceButton(font,"Leaderboard",SCR_HEIGHT-20);
         btnName = new SpaceButton(font,"ENTER YOUR NAME",SCR_HEIGHT/2+100);
         btnPlace =new SpaceButton(font,"You are in "+main.player.rank+" place",SCR_HEIGHT/4);
@@ -55,6 +59,10 @@ public class ScreenLeaderboard implements Screen {
         keyboard = new InputKeyboard(font,SCR_WIDTH,SCR_HEIGHT*3/4,11);
 
 
+        for (int e = 0; e < imgBack.length; e++) {
+
+            imgBack[e] = new TextureRegion(imgBackAtlas, (e) * 200, 0, 200, 200);
+        }
 
 
 
@@ -68,8 +76,10 @@ public class ScreenLeaderboard implements Screen {
 
     @Override
     public void render(float delta) {
+        changeButtons();
         leaderboard();
         getplase();
+       // btnPlace.changeText("You are in "+main.player.rank+" place");
 
         if(Gdx.input.justTouched()){
 
@@ -102,28 +112,26 @@ public class ScreenLeaderboard implements Screen {
         keyboard.draw(batch);
 
         btnLead.font.draw(batch,btnLead.text,btnLead.x,btnLead.y);
-        btnBack.font.draw(batch,btnBack.text,btnBack.x,btnBack.y);
-        btnPlace.font.draw(batch,btnPlace.text,btnPlace.x,btnPlace.y);
+        batch.draw(imgBack[btnBack.type],btnBack.imgX,btnBack.imgY,btnBack.imgWidht,btnBack.imgHeight);
+
+
         if(!Iskeyboard) {
             font.draw(batch, "NAME" , 100, SCR_HEIGHT - 160 );
             font.draw(batch, "LEVEL" , 400, SCR_HEIGHT - 160 );
             font.draw(batch, "MONEY" , 645, SCR_HEIGHT - 160 );
 
-            btnPlace.changeText("You are in "+main.player.rank+" place");
+
+            btnPlace.font.draw(batch,btnPlace.text,btnPlace.x,btnPlace.y);
             for (int i = 0; i < topPlayers.size(); i++) {
 
                 Player p = topPlayers.get(i);
-                font.draw(batch, (i+1) + ". " + p.name, 100, SCR_HEIGHT - 260 - 68 * i);
+                font.draw(batch, (i + 1) + ". " + p.name, 100, SCR_HEIGHT - 260 - 68 * i);
                 font.draw(batch, "" + p.level, 500, SCR_HEIGHT - 260 - 68 * i);
-                font.draw(batch, "" + p.money, 700, SCR_HEIGHT - 260 - 68 * i);
-                System.out.println( (i+1) + ". " + p.name+"   "
-                    + p.level+ " " + p.money);
+                if(p.money<100000){
+                font.draw(batch, ( p.money+""), 700, SCR_HEIGHT - 260 - 68 * i);}
+                else font.draw(batch, ( p.money/1000+"k"), 700, SCR_HEIGHT - 260 - 68 * i);
+
             }
-          /*  for (int i = 0; i < main.screenGame.players.length - 1; i++) {
-                font.draw(batch, main.screenGame.players[i].name , 100, SCR_HEIGHT - 260 - 68 * i);
-                font.draw(batch,""+ main.screenGame.players[i].level ,500, SCR_HEIGHT - 260 - 68 * i);
-                font.draw(batch,""+ main.screenGame.players[i].money , 700, SCR_HEIGHT - 260 - 68 * i);
-            }*/
         }
         else btnName.font.draw(batch,btnName.text,btnName.x,btnName.y);
         batch.end();
@@ -160,16 +168,17 @@ public class ScreenLeaderboard implements Screen {
 
     public void leaderboard(){
         FirebaseManager firebase = FirebaseService.create();
-        firebase.getTop10ByLevel(new FirebaseManager.SortedLeaderboardCallback() {
+        firebase.getTop10ByLevel(new FirebaseManager.SortedLeaderboardCallback()  {
 
 
             @Override
             public void onSuccess(List<Player> players) {
+
                 // Сохраняем игроков в поле класса
                 Gdx.app.postRunnable(() -> {
                     topPlayers = players;
                 });
-                System.out.println("все хорошо");
+
 
 
             }
@@ -178,7 +187,8 @@ public class ScreenLeaderboard implements Screen {
             public void onError(String message) {
                 Gdx.app.error("Leaderboard", message);
             }
-        });
+        },false);
+
     }
     /* private void LoadTable() {
         Preferences prefs = Gdx.app.getPreferences("TableRecords");
@@ -203,9 +213,10 @@ public class ScreenLeaderboard implements Screen {
     }
 
      */
-    public void savePlayer(Player player){
+    public void changeButtons (){
         FirebaseManager firebase = FirebaseService.create();
-        firebase.savePlayer(player);
+        if(firebase.isOnline()) btnPlace.changeText("You are in "+main.player.rank+"place");
+        else btnPlace.changeText("You are offline");
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 
 
@@ -20,6 +21,8 @@ public class ScreenAbout implements Screen {
     private BitmapFont font;
     Texture imgBG;
     Texture imgBG2;
+    Texture imgBackAtlas;
+    TextureRegion[] imgBack = new TextureRegion[2];
     boolean is1=true;
     boolean is2=false;
 
@@ -31,6 +34,7 @@ public class ScreenAbout implements Screen {
     SpaceButton btnText3;
     SpaceButton btnText4;
 
+
     public ScreenAbout(Main main) {
         this.main = main;
         batch= main.batch;
@@ -39,8 +43,10 @@ public class ScreenAbout implements Screen {
         font=main.font70;
         imgBG=new Texture("bgabout0.png");
         imgBG2=new Texture("bgabout1.png");
+        imgBackAtlas= new Texture("buttonsLeftRight.png");
 
-        btnBack = new SpaceButton(font,"Back",30,1550);
+
+        btnBack = new SpaceButton(10,1500,90,90,0);
         btnRight = new SpaceButton(font,"ooo",SCR_WIDTH-80,SCR_HEIGHT/2 );
         btnLeft  = new SpaceButton(font,"ooo",10,SCR_HEIGHT/2);
         btnText1= new SpaceButton(font,"you have to shoot at enemies", 950);
@@ -48,6 +54,10 @@ public class ScreenAbout implements Screen {
         btnText3= new SpaceButton(font,"you get coins for each level", 950);
         btnText4= new SpaceButton(font,"even if you lost", 150);
 
+        for (int e = 0; e < imgBack.length; e++) {
+
+            imgBack[e] = new TextureRegion(imgBackAtlas, (e) * 200, 0, 200, 200);
+        }
 
 
 
@@ -67,6 +77,7 @@ public class ScreenAbout implements Screen {
 
     @Override
     public void render(float delta) {
+
         if(Gdx.input.justTouched()){
             touch.set(Gdx.input.getX(),Gdx.input.getY(),0);
             camera.unproject(touch);
@@ -97,10 +108,10 @@ public class ScreenAbout implements Screen {
         }
         btnLeft.font.draw(batch,btnLeft.text,btnLeft.x,btnLeft.y);
         btnRight.font.draw(batch,btnRight.text,btnRight.x,btnRight.y);
-        
+
+        batch.draw(imgBack[btnBack.type],btnBack.imgX,btnBack.imgY,btnBack.imgWidht,btnBack.imgHeight);
 
 
-        btnBack.font.draw(batch,btnBack.text,btnBack.x,btnBack.y);
 
         batch.end();
     }

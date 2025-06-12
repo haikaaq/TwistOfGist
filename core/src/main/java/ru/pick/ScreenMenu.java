@@ -27,7 +27,7 @@ public class ScreenMenu implements Screen  {
 
 
 
-
+    SpaceButton btnLevel;
     SpaceButton btnPlay;
     SpaceButton btnSetting;
     SpaceButton btnLeaderboard;
@@ -61,7 +61,7 @@ public class ScreenMenu implements Screen  {
 
         FonMusic= main.FonMusic;
 
-
+        LanguageManager.loadBundles();
         imgEnemyesBoses = new Texture("atlasboss.png");
         imgLongButtonAtlas=new Texture("LongButton.png");
         imgButtonsAtlas=new Texture("AtlasButtons.png");
@@ -87,15 +87,16 @@ public class ScreenMenu implements Screen  {
                 imgButtons[j][i] = new TextureRegion(imgButtonsAtlas, i  * 209, (j) * 180, 209, 180);
             }
         }
-        btnPlay = new SpaceButton(font70, "PLAY",imgLongButtonAtlas,SCR_HEIGHT/3.6f,4.2f);
-        btnLeaderboard = new SpaceButton(font70,"leaderboard",250);
+        btnPlay = new SpaceButton(font70, LanguageManager.get("play"),imgLongButtonAtlas,SCR_HEIGHT/3.6f,4.2f);
+        btnLeaderboard = new SpaceButton(font70,LanguageManager.get("leaderboard"),250);
+        btnLevel=new SpaceButton(font70,LanguageManager.get("level")+" "+main.level,1540);
 
         btnAbout = new SpaceButton(0,1140,200,170,0);
         btnSetting = new SpaceButton(SCR_WIDTH-200,1140,200,170,1);
         btnShop = new SpaceButton(0,950,200,170,2);
 
         btnExit = new SpaceButton(font70,"x",20,SCR_HEIGHT-30);
-        btnAllmoney= new  SpaceButton(font70,""+main.Allmoney,SCR_WIDTH-100,1550);
+        btnAllmoney= new  SpaceButton(font70,""+main.Allmoney,SCR_WIDTH-120,1550);
 
 
 
@@ -129,10 +130,11 @@ public class ScreenMenu implements Screen  {
         if(btnSetting.SetScreenButton)main.setScreen(main.screenSettings);
         if(btnShop.SetScreenButton)main.setScreen(main.screenShop);
         if(btnPlay.SetScreenButton){
-            main.setScreen(main.screenGame);
+            main.setScreen(main.screenNumLevel);
             if (main.isFonMusic)FonMusic.play();
             FonMusic.setVolume(0.3f);
             GameState=GAME;
+            return;
         }
 
 
@@ -152,9 +154,7 @@ public class ScreenMenu implements Screen  {
 
 
 
-        MenuEnemy.y=SCR_HEIGHT/5;
-        MenuEnemy.width=MenuEnemy.height=SCR_WIDTH;
-        MenuEnemy.x=12*SCR_WIDTH/15;
+
 
 
         MenuEnemy.move();
@@ -162,6 +162,9 @@ public class ScreenMenu implements Screen  {
         btnAbout.changePhases();
         btnShop.changePhases();
         btnPlay.changePhases();
+        btnPlay.changeText(LanguageManager.get("play"));
+        btnLeaderboard.changeText(LanguageManager.get("leaderboard"));
+        btnLevel.changeText(LanguageManager.get("level")+" "+main.level);
 
 
 
@@ -183,10 +186,11 @@ public class ScreenMenu implements Screen  {
         btnPlay.font.draw(batch,btnPlay.text,btnPlay.x,btnPlay.y);
         btnLeaderboard.font.draw(batch,btnLeaderboard.text,btnLeaderboard.x,btnLeaderboard.y);
         btnExit.font.draw(batch,btnExit.text,btnExit.x,btnExit.y);
+        btnLevel.font.draw(batch,btnLevel.text,btnLevel.x,btnLevel.y);
         btnAllmoney.font.draw(batch,main.Allmoney<1000? btnAllmoney.text:main.Allmoney/1000+"k",btnAllmoney.x,btnAllmoney.y);
 
         batch.draw(imgMN,btnAllmoney.x-70,btnAllmoney.y-58,50,50);
-        font70.draw(batch,"level "+main.player.level,370,1540);
+
 
         batch.end();
         try {

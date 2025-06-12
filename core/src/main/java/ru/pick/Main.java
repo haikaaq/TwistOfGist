@@ -10,8 +10,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.net.HttpRequestBuilder;
+import com.badlogic.gdx.utils.I18NBundle;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import ru.pick.ScreenGame.*;
@@ -40,16 +42,21 @@ public class Main extends Game {
     public ScreenSettings screenSettings;
     public ScreenLeaderboard screenLeaderboard;
     public ScreenAbout screenAbout;
+    public ScreenNumLevel screenNumLevel;
     public Music FonMusic;
-    public  int level;
+    public  int level=5;
     public  int ShipSkin;
     public  int ShotsShots;
     public int ShotEven;
     public int ShotsBostCount;
-    public int Allmoney;
+    public int Allmoney=288393;
+    public int BasicSkinCoast=300;
+    public int BasicBoostCoast=100;
+    public int BasicShotCoast=50;
     public boolean isFonMusic=true;
     public boolean isActionSounds=true;
     public Player player;
+
 
 
 
@@ -71,6 +78,7 @@ public class Main extends Game {
         screenLeaderboard = new ScreenLeaderboard(this);
         screenAbout = new ScreenAbout(this);
         screenShop = new ScreenShop(this);
+        screenNumLevel = new ScreenNumLevel(this);
 
         player = new Player();
         setScreen(screenMenu);

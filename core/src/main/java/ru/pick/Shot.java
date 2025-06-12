@@ -6,6 +6,7 @@ import static ru.pick.ScreenGame.ShotCount;
 
 public class Shot extends Object {
     public int type;
+    public boolean isInverse;
 
 
     public boolean isoverlab= false;
@@ -20,6 +21,7 @@ public class Shot extends Object {
         width = 40;
         height = 50;
         vY = 16;
+        if (isInverse)vY=-16;
         vX= (type == 0) ? ShotCount : 0;
 
 

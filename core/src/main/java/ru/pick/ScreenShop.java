@@ -63,6 +63,7 @@ public class ScreenShop implements Screen {
     Texture imgGreen;
     Texture imgRed;
     Texture imgLongButtonAtlas;
+    Texture imgBackAtlas;
 
     SpaceButton btnBack;
     SpaceButton btnSkins;
@@ -74,6 +75,7 @@ public class ScreenShop implements Screen {
 
 
 
+    TextureRegion[] imgBack = new TextureRegion[2];
     TextureRegion[] imgLongButton = new  TextureRegion[3];
     TextureRegion[][] imgShipatlas = new TextureRegion[5][12];
     TextureRegion[] imgShotatlas = new TextureRegion[4];
@@ -88,14 +90,16 @@ public class ScreenShop implements Screen {
         touch= main.touch;
         font=main.font70;
         font32=main.font32;
+        imgBackAtlas= new Texture("buttonsLeftRight.png");
 
         imgGreen= new Texture("green.png");
         imgRed =new Texture("red.png");
         imgBG=new Texture("bgshop.png");
         imgBG2=new Texture("bgmenu2.png");
         imgLongButtonAtlas=new Texture("LongButton.png");
-        btnAllmoney= new  SpaceButton(font,""+(main.Allmoney>=1000? main.Allmoney:main.Allmoney/1000+'k'),SCR_WIDTH-100,1550);
-        btnBack = new SpaceButton(font,"Back",30,SCR_HEIGHT-50);
+        btnAllmoney= new  SpaceButton(font,""+(main.Allmoney>=1000? main.Allmoney:main.Allmoney/1000+'k'),SCR_WIDTH-120,1550);
+        btnBack = new SpaceButton(10,1500,90,90,0);
+
 
         btnBoosts= new SpaceButton(font,"BOOSTS",imgLongButtonAtlas,229,1.4f);
 
@@ -105,10 +109,9 @@ public class ScreenShop implements Screen {
 
 
         btnBuy = new SpaceButton(font,"buy for "+price()+ " coins",255);
-        btnRight = new SpaceButton(font32,"ooo",SCR_WIDTH-80,SCR_HEIGHT/2 );
-        btnLeft  = new SpaceButton(font32,"ooo",10,SCR_HEIGHT/2);
-        btnLeft.widht +=50;
-        btnRight.widht +=50;
+        btnLeft = new SpaceButton(10,SCR_HEIGHT/2,100,100,0);;
+        btnRight = new SpaceButton(SCR_WIDTH-100,SCR_HEIGHT/2,100,100,1);
+
 
 
 
@@ -117,7 +120,10 @@ public class ScreenShop implements Screen {
         imgPlus= new Texture("plus.png");
 
 
+        for (int e = 0; e < imgBack.length; e++) {
 
+            imgBack[e] = new TextureRegion(imgBackAtlas, (e) * 200, 0, 200, 200);
+        }
 
         for (int j = 0; j < imgShipatlas.length; j++) {
             for (int i = 0; i < imgShipatlas[j].length; i++) {
@@ -163,6 +169,8 @@ public class ScreenShop implements Screen {
 
 
 
+
+
             if(btnBack.SetScreenButton){
                 if (ScreenState==SHOP)main.setScreen(main.screenMenu);
                else ScreenState=SHOP;
@@ -180,7 +188,7 @@ public class ScreenShop implements Screen {
                // ChangeShip();
             }
             if (btnRight.SetScreenButton&&ship.x==SCR_WIDTH/2){
-               // btnBuy.changeText("buy for "+price()+ " coins");
+
                if (ScreenState==BOOST){
                    ChangePlusShots();
 
@@ -288,6 +296,7 @@ public class ScreenShop implements Screen {
         ///действия
         btnAllmoney.changeText(main.Allmoney);
         spavnShot();
+
         MoveShots();
         //if(!IsShipMove)
         moveship(0);
@@ -359,8 +368,8 @@ public class ScreenShop implements Screen {
 
         }
         if (!(ScreenState==SCREEN)){
-            btnRight.font.draw(batch,btnRight.text,btnRight.x,btnRight.y);
-           btnLeft.font.draw(batch,btnLeft.text,btnLeft.x,btnLeft.y);
+            batch.draw(imgBack[btnRight.type],btnRight.imgX,btnRight.imgY,btnRight.imgWidht,btnRight.imgHeight);
+            batch.draw(imgBack[btnLeft.type],btnLeft.imgX,btnLeft.imgY,btnLeft.imgWidht,btnLeft.imgHeight);
             btnBuy.font.draw(batch,btnBuy.text,btnBuy.x,btnBuy.y);
 
             for(Shot s : shots) {
@@ -372,9 +381,9 @@ public class ScreenShop implements Screen {
         if (timeGreen()) batch.draw(imgGreen, 0, 0, SCR_WIDTH, SCR_HEIGHT);
         if (timeRed()) batch.draw(imgRed, 0, 0, SCR_WIDTH, SCR_HEIGHT);
         font.draw(batch, "Shop", 350, SCR_HEIGHT-20);
-        btnAllmoney.font.draw(batch,btnAllmoney.text,btnAllmoney.x,btnAllmoney.y);
+        btnAllmoney.font.draw(batch,main.Allmoney<1000? btnAllmoney.text:main.Allmoney/1000+"k",btnAllmoney.x,btnAllmoney.y);
 
-        btnBack.font.draw(batch,btnBack.text,btnBack.x,btnBack.y);
+        batch.draw(imgBack[btnBack.type],btnBack.imgX,btnBack.imgY,btnBack.imgWidht,btnBack.imgHeight);
         batch.draw(main.screenMenu.imgMN,btnAllmoney.x-70,btnAllmoney.y-58,50,50);
         batch.end();
 
@@ -398,9 +407,9 @@ public class ScreenShop implements Screen {
 
     private int price(){
 
-        if (ScreenState==BOOST&&BuyBoostLevel>0) return 100*(BuyBoostLevel+Math.abs(MinBoostLevel));
-        if (ScreenState==SKIN&&BuyShipLevel>0) return 300*(BuyShipLevel+Math.abs(MinSkinLevel));
-        if (ScreenState==SHOTS&&BuyShotLevel>0) return 50*(BuyShotLevel+Math.abs(MinShotsLevel));
+        if (ScreenState==BOOST&&BuyBoostLevel>0) return main.BasicBoostCoast*(BuyBoostLevel+Math.abs(MinBoostLevel));
+        if (ScreenState==SKIN&&BuyShipLevel>0) return main.BasicSkinCoast*(BuyShipLevel+Math.abs(MinSkinLevel));
+        if (ScreenState==SHOTS&&BuyShotLevel>0) return main.BasicShotCoast*(BuyShotLevel+Math.abs(MinShotsLevel));
         else return 0;
 
 
@@ -471,7 +480,7 @@ public class ScreenShop implements Screen {
             e++;
 
         }}
-     else{
+       else{
          for (Shot s: shots)s.move();
     }
     }

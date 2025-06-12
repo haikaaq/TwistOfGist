@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 
 public class SpaceButton {
@@ -98,6 +99,7 @@ public class SpaceButton {
     }
 
 
+
     boolean hit(float tx, float ty) {
         if (isImageButton)
             return imgX < tx && tx < imgX + imgWidht && ty > imgY && ty < imgY + imgHeight;
@@ -118,7 +120,7 @@ public class SpaceButton {
     }
 
     public void changeText(int money) {
-        this.text = money > 0 ? "" + money : "0";
+        this.text = money < 1000 ? "" + money : money+"k";
         GlyphLayout glyphLayout = new GlyphLayout(font, text);
         widht = glyphLayout.width;}
 
