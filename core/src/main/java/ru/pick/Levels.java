@@ -93,7 +93,7 @@ public class Levels {
             1900,
             250,
             0,
-            "the coast of murder",
+            "the cost of murder",
             Level.SCREEN,
             false,
             true,

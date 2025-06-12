@@ -35,7 +35,7 @@ public class Main extends Game {
     public ScreenAbout screenAbout;
     public ScreenNumLevel screenNumLevel;
     public Music FonMusic;
-    public  int level=4;
+    public  int level;
     public  int shipSkin;
     public  int shotsShots;
     public int shotEven;
