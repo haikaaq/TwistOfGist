@@ -9,22 +9,18 @@ public class Shot extends Object {
     public boolean isInverse;
 
 
-    public boolean isoverlab= false;
-
+    public boolean isoverlab = false;
 
 
     public Shot(float x, float y) {
-       super(x,y);
-
+        super(x, y);
 
 
         width = 40;
         height = 50;
         vY = 16;
-        if (isInverse)vY=-16;
-        vX= (type == 0) ? shotCount : 0;
-
-
+        if (isInverse) vY = -16;
+        vX = (type == 0) ? shotCount : 0;
 
 
     }

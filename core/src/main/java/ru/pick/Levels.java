@@ -1,5 +1,6 @@
 package ru.pick;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class Levels {
@@ -12,8 +13,8 @@ public class Levels {
             0,
             1450,
             200,
-            9000 ,
-            "twist of gist",
+            9000,
+            "level0",
             Level.SCREEN,
             false,
             false,
@@ -24,7 +25,7 @@ public class Levels {
             false
 
         ),
-       //1
+        //1
         new Level(
             "bggame.png",
             "enemyes.png",
@@ -32,12 +33,12 @@ public class Levels {
             1,
             1000,
             200,
-            10 ,
-            "the beginning of the path",
+            10,
+            "level1",
             Level.SCREEN,
             false,
             false,
-            true,true,
+            true, true,
             false,
             false,
             false
@@ -53,11 +54,11 @@ public class Levels {
             1000,
             200,
             0,
-            "nothing unusual",
+            "level2",
             Level.SCREEN,
             false,
             false,
-            true,true,
+            true, true,
             false,
             false,
             false
@@ -74,11 +75,11 @@ public class Levels {
             1600,
             300,
             500,
-            "the gravity",
+            "level3",
             Level.ACCELEROMETER,
             false,
             false,
-            true,true,
+            true, true,
             false,
             false,
             false
@@ -93,11 +94,11 @@ public class Levels {
             1900,
             250,
             0,
-            "the cost of murder",
+            "level4",
             Level.SCREEN,
             false,
             true,
-            false,true,
+            false, true,
             false,
             false,
             false
@@ -112,11 +113,11 @@ public class Levels {
             1000,
             150,
             0,
-            "a trick of the eye",
+            "level5",
             Level.SCREEN,
             false,
             false,
-            true,true,
+            true, true,
             false,
             false,
             false
@@ -126,16 +127,16 @@ public class Levels {
         new Level(
             "bggame.png",
             "enemyes.png",
-            60,
+            100,
             0,
             1400,
             200,
             0,
-            "long Level",
+            "level6",
             Level.JOYSTIK_RIGHT,
             false,
             false,
-            true,false,
+            true, true,
             false,
             false,
             false
@@ -151,8 +152,7 @@ public class Levels {
             1400,
             200,
             0,
-            "loоk at in from " +
-                "\n a different angle",
+            "level7",
             Level.SCREEN,
             false,
             false,
@@ -169,16 +169,15 @@ public class Levels {
             "bggame.png",
             "enemyes.png",
             47,
-           5 ,
+            5,
             900,
             120,
             0,
-            "take matters " +
-                "\n into your own hands",
+            "level8",
             Level.SCREEN,
             true,
             false,
-            false,false,
+            true, false,
             true,
             false,
             false
@@ -194,11 +193,11 @@ public class Levels {
             2100,
             300,
             0,
-            "i'm itching to punch" ,
+            "level9",
             Level.SCREEN,
             false,
             false,
-            true,true,
+            true, true,
             false,
             true,
             false
@@ -214,11 +213,11 @@ public class Levels {
             3000,
             2000,
             0,
-            "groundhog day",
+            "level10",
             Level.SCREEN,
             true,
             false,
-            false,false,
+            false, false,
             false,
             false,
             false
@@ -229,7 +228,7 @@ public class Levels {
     };
 
     public static class Level {
-
+        Texture imgEnemyes;
         public final String backgroundPath;
         public final String enemyPath;
         public final int enemiesMax;
@@ -238,8 +237,8 @@ public class Levels {
         public final long timeShotsInterval;
         public final long timeFirstSpawnEnemy;
         public final String numLevel;
-        public static final int SCREEN=0,JOYSTIK=1,JOYSTIK_LEFT=2,JOYSTIK_RIGHT=3,ACCELEROMETER=4;
-        public  final int controls;
+        public static final int SCREEN = 0, JOYSTIK = 1, JOYSTIK_LEFT = 2, JOYSTIK_RIGHT = 3, ACCELEROMETER = 4;
+        public final int controls;
         public boolean isRexlexLevel;
         public final boolean isKeyboard;
         public final boolean isBoss;
@@ -247,29 +246,28 @@ public class Levels {
         public final boolean isSettingLevel;
         public final boolean isTapLevel;
         public final boolean isAccelerometrLevel;
-        public final int MaxLevel=10;
+        public final int MaxLevel = 10;
 
 
-        public Level(String backgroundPathg,String enemyPath, int enemies, int bosses, long spawnEnemy, long spawnShots, long timeFirstSpawnEnemy, String numLevel, int controls,boolean isReflexLevel,boolean isKeyboard,boolean isBoss,boolean isShots,boolean isSettingLevel, boolean isTapLevel,boolean isAccelerometrLevel) {
+        public Level(String backgroundPathg, String enemyPath, int enemies, int bosses, long spawnEnemy, long spawnShots, long timeFirstSpawnEnemy, String numLevel, int controls, boolean isReflexLevel, boolean isKeyboard, boolean isBoss, boolean isShots, boolean isSettingLevel, boolean isTapLevel, boolean isAccelerometrLevel) {
             this.backgroundPath = backgroundPathg;
             this.enemiesMax = enemies;
             this.bossCount = bosses;
             this.timeSpawnInterval = spawnEnemy;
             this.timeShotsInterval = spawnShots;
-            this.timeFirstSpawnEnemy= timeFirstSpawnEnemy;
-            this.numLevel=numLevel;
-            this.controls=controls;
-            this.enemyPath=enemyPath;
-            this.isRexlexLevel=isReflexLevel;
-            this.isKeyboard=isKeyboard;
-            this.isBoss=isBoss;
-            this.isShots=isShots;
-            this.isSettingLevel=isSettingLevel;
-            this.isTapLevel=isTapLevel;
-            this.isAccelerometrLevel=isAccelerometrLevel;
+            this.timeFirstSpawnEnemy = timeFirstSpawnEnemy;
+            this.numLevel = numLevel;
+            this.controls = controls;
+            this.enemyPath = enemyPath;
+            this.isRexlexLevel = isReflexLevel;
+            this.isKeyboard = isKeyboard;
+            this.isBoss = isBoss;
+            this.isShots = isShots;
+            this.isSettingLevel = isSettingLevel;
+            this.isTapLevel = isTapLevel;
+            this.isAccelerometrLevel = isAccelerometrLevel;
+            imgEnemyes = new Texture(enemyPath);
         }
-
-
 
 
     }

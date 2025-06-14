@@ -3,16 +3,19 @@ package ru.pick;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.I18NBundle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LanguageManager {
-    private static I18NBundle currentBundle;
-    private static I18NBundle ruBundle;
-    private static I18NBundle enBundle;
+    public static I18NBundle currentBundle;
+    public static I18NBundle ruBundle;
+    public static I18NBundle enBundle;
 
     // Загружаем оба языка при старте игры
     public static void loadBundles() {
         ruBundle = I18NBundle.createBundle(Gdx.files.internal("i18n/Strings_ru"));
         enBundle = I18NBundle.createBundle(Gdx.files.internal("i18n/Strings_en"));
-        currentBundle = enBundle; // Язык по умолчанию
+        currentBundle = ruBundle; // Язык по умолчанию
     }
 
 
@@ -23,7 +26,7 @@ public class LanguageManager {
             currentBundle = enBundle;
         }
 
-        //updateAllUI();
+
     }
 
     // Получаем строку для текущего языка
@@ -31,18 +34,6 @@ public class LanguageManager {
         return currentBundle.get(key);
     }
 
-   /* // Обновляем все UI-элементы (пример ниже)
-    private static void updateAllUI() {
-        for (LocalizableUI element : uiElements) {
-            element.updateLanguage();
-        }
-    }
+   // Обновляем все UI-элементы (пример ниже)
 
-    // Список всех элементов, которые нужно обновить
-    private static List<LocalizableUI> uiElements = new ArrayList<>();
-
-    // Регистрируем UI-элемент для обновления
-    public static void registerUI(LocalizableUI element) {
-        uiElements.add(element);
-    }*/
 }

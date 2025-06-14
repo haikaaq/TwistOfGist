@@ -66,38 +66,40 @@ public class SpaceButton {
         this.font = font;
         this.text = text;
         isImageButton = true;
-        this.imgWidhtCoefficient=imgWidhtCoefficient;
+        iscenter = true;
+        GlyphLayout glyphLayout = new GlyphLayout(font, text);
+        this.imgWidhtCoefficient = imgWidhtCoefficient;
 
         this.y = y;
-        GlyphLayout glyphLayout = new GlyphLayout(font, text);
+
         this.widht = glyphLayout.width;
         this.x = SCR_WIDTH / 2 - widht / 2;
         this.height = glyphLayout.height;
         this.imgWidht = widht * imgWidhtCoefficient;
-        this.imgHeight = height *3.9f;
+        this.imgHeight = height * 3.9f;
         this.imgY = y - imgHeight / 2 - height / 2;
         this.imgX = x + widht / 2 - imgWidht / 2;
 
     }
-    public SpaceButton(BitmapFont font, String text,float x, float y, float imgWidhtCoefficient) {
+
+    public SpaceButton(BitmapFont font, String text, float x, float y, float imgWidhtCoefficient) {
         this.font = font;
         this.text = text;
         isImageButton = true;
-        this.imgWidhtCoefficient=imgWidhtCoefficient;
+        this.imgWidhtCoefficient = imgWidhtCoefficient;
 
         this.y = y;
-        this.x=x;
+        this.x = x;
         GlyphLayout glyphLayout = new GlyphLayout(font, text);
         this.widht = glyphLayout.width;
 
         this.height = glyphLayout.height;
         this.imgWidht = widht * imgWidhtCoefficient;
-        this.imgHeight = height *3.9f;
+        this.imgHeight = height * 3.9f;
         this.imgY = y - imgHeight / 2 - height / 2;
         this.imgX = x + widht / 2 - imgWidht / 2;
 
     }
-
 
 
     boolean hit(float tx, float ty) {
@@ -115,18 +117,25 @@ public class SpaceButton {
         widht = glyphLayout.width;
         height = glyphLayout.height;
         if (iscenter) this.x = SCR_WIDTH / 2 - widht / 2;
+        if (isImageButton) {
+
+
+            this.imgWidht = widht * imgWidhtCoefficient;
+            this.imgHeight = height * 3.9f;
+            this.imgY = y - imgHeight / 2 - height / 2;
+            this.imgX = x + widht / 2 - imgWidht / 2;
+
+        }
 
 
     }
 
 
-
-
     public void changeText(int money) {
-        this.text = money < 1000 ? "" + money : money+"k";
+        this.text = money < 1000 ? "" + money : money + "k";
         GlyphLayout glyphLayout = new GlyphLayout(font, text);
-        widht = glyphLayout.width;}
-
+        widht = glyphLayout.width;
+    }
 
 
     public void changePhases() {
@@ -136,7 +145,7 @@ public class SpaceButton {
 
     }
 
-    public void ButtonsState(float x,float y) {
+    public void ButtonsState(float x, float y) {
         isPressed = false;
         setScreenButton = false;
         isHover = false;
@@ -145,13 +154,13 @@ public class SpaceButton {
         if (hit(x, y)) {
             isHover = true;
         }
-        if (wasTouched && (!Gdx.input.justTouched()) && hit(x,y)) {
+        if (wasTouched && (!Gdx.input.justTouched()) && hit(x, y)) {
 
             setScreenButton = true;
             wasTouched = false;
 
         }
-        if (hit(x,y) && Gdx.input.justTouched()) {
+        if (hit(x, y) && Gdx.input.justTouched()) {
             isPressed = true;
             wasTouched = true;
 

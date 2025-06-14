@@ -18,13 +18,13 @@ import java.util.List;
 
 import ru.pick.FirebaseDesktop;
 import ru.pick.FirebaseManager;
-import ru.pick.LocalLeaderBoard;
+
 import ru.pick.Player;
 
 public class FirebaseAndroid implements FirebaseManager {
     private final Context context;
     private final DatabaseReference database;
-
+    public boolean online;
     public FirebaseAndroid(Context context) {
         this.context = context;
 
@@ -50,16 +50,19 @@ public class FirebaseAndroid implements FirebaseManager {
                     Gdx.app.log("Firebase", "Player saved! ID: " + player.firebaseId);
                 })
                 .addOnFailureListener(e -> {
-                    Gdx.app.error("Firebase", "Save failed: " + e.getMessage());
+                    online=false;
+                   // Gdx.app.error("Firebase", "Save failed: " + e.getMessage());
                 });
         }
         // Если ID есть - обновляем существующую
         else {
             database.child(player.firebaseId).setValue(player).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
+                    online=true;
                     Gdx.app.log("Firebase", "Player updated");
                 } else {
-                    Gdx.app.error("Firebase", "Update failed", task.getException());
+                    online=false;
+                   // Gdx.app.error("Firebase", "Update failed", task.getException());
                 }
             });
         }
@@ -67,12 +70,12 @@ public class FirebaseAndroid implements FirebaseManager {
 
 
     @Override
-    public void getTop10ByLevel(SortedLeaderboardCallback callback,boolean forceOnline) {
-        if (!forceOnline && !isOnline()) {
-            List<Player> cached = LocalLeaderBoard.load();
-            callback.onSuccess(cached);
-            return;
-        }
+    public void getTop10ByLevel(SortedLeaderboardCallback callback) {
+       // if (!forceOnline && !isOnline()) {
+           // List<Player> cached = LocalLeaderBoard.load();
+           // callback.onSuccess(cached);
+           // return;
+        //}
 
         FirebaseDatabase.getInstance()
             .getReference()
@@ -81,6 +84,7 @@ public class FirebaseAndroid implements FirebaseManager {
             .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NotNull DataSnapshot snapshot) {
+                    online=true;
                     List<Player> players = new ArrayList<>();
 
                     for (DataSnapshot child : snapshot.getChildren()) {
@@ -101,25 +105,33 @@ public class FirebaseAndroid implements FirebaseManager {
                             return Integer.compare(p2.money, p1.money); // Деньги ↓
                         }
                     });
-                    LocalLeaderBoard.save(players); // Кешируем
+
+                   // LocalLeaderBoard.save(players); // Кешируем
                     callback.onSuccess(players);
 
                 }
 
                 @Override
                 public void onCancelled(@NotNull DatabaseError error) {
-                    List<Player> cached = LocalLeaderBoard.load();
-                    callback.onSuccess(cached);
+                    online=false;
+                    /*List<Player> players = new ArrayList<>();
+                    for(int i=0; i<=10; i++){
+                        players.add(new Player());
+                    }*/
+                    //callback.onSuccess(players);
+
+                    return;
 
                 }
             });
     }
-    public boolean isOnline() {
+
+    /*() {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
 
-    }
+    }*/
 
     @Override
     public void getPlayerRank(Player targetPlayer, PlayerRankCallback callback) {
@@ -158,14 +170,19 @@ public class FirebaseAndroid implements FirebaseManager {
                     if (rank != -1) {
                         callback.onSuccess(rank);
                     } else {
-                        callback.onError("Player not found in leaderboard");
+                        online=false;
+                       // callback.onError("Player not found in leaderboard");
                     }
                 }
 
                 @Override
                 public void onCancelled(@NotNull DatabaseError error) {
-                    callback.onError(error.getMessage());
+                    online=false;
+                    //callback.onError(error.getMessage());
                 }
             });
+    }
+    public boolean isOnline(){
+        return online;
     }
 }

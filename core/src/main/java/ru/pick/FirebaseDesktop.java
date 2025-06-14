@@ -1,5 +1,6 @@
 package ru.pick;
 
+
 import com.badlogic.gdx.Gdx;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -25,12 +26,13 @@ import okhttp3.Response;
 
 public class FirebaseDesktop implements FirebaseManager {
     private static final String DB_URL = "https://twistofgist-default-rtdb.europe-west1.firebasedatabase.app/";
+    public boolean online;
 
     @Override
     public void savePlayer(Player player) {
         OkHttpClient client = new OkHttpClient();
         Gson gson = new Gson();
-        String json = gson.toJson(player); // Автоматическая конвертация объекта в JSON
+        String json = gson.toJson(player);
 
         try {
             if (player.firebaseId == null) {
@@ -51,7 +53,7 @@ public class FirebaseDesktop implements FirebaseManager {
             } else {
                 // Обновляем существующую запись (PATCH для частичного обновления)
                 Request request = new Request.Builder()
-                    .url(DB_URL  + player.firebaseId + ".json")
+                    .url(DB_URL + player.firebaseId + ".json")
                     .patch(RequestBody.create(json, MediaType.get("application/json")))
                     .build();
 
@@ -66,48 +68,8 @@ public class FirebaseDesktop implements FirebaseManager {
     }
 
 
-   // @Override
-   // public void getLeaderboard(FirebaseManager.LeaderboardCallback callback) {
-
-
-          /*  OkHttpClient client = new OkHttpClient();
-            String url = DB_URL + ".json?orderBy=\"level\"&limitToLast=10";
-
-            Request request = new Request.Builder()
-                .url(url)
-                .get()
-                .build();
-
-            client.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    callback.onError(e.getMessage());
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    if (response.isSuccessful()) {
-                        String json = response.body().string();
-                        JsonObject data = new Gson().fromJson(json, JsonObject.class);
-                        List<Player> players = new ArrayList<>();
-
-                        for (Map.Entry<String, JsonElement> entry : data.entrySet()) {
-                            Player player = new Gson().fromJson(entry.getValue(), Player.class);
-                            player.firebaseId = entry.getKey();
-                            players.add(player);
-                        }
-
-                        // Сортировка DESC (REST API возвращает ASC)
-                        players.sort((p1, p2) -> Integer.compare(p2.level, p1.level));
-                        callback.onSuccess(players);
-                    } else {
-                        callback.onError("Ошибка: " + response.code());
-                    }
-                }
-            });*/
-     //   }
     @Override
-    public void getTop10ByLevel(SortedLeaderboardCallback callback, boolean forceOnline) {
+    public void getTop10ByLevel(SortedLeaderboardCallback callback) {
 
         String url = DB_URL + ".json?orderBy=\"level\"&limitToLast=10&print=pretty";
 
@@ -117,7 +79,13 @@ public class FirebaseDesktop implements FirebaseManager {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                callback.onError("network error"+e.getMessage());
+                online = false;
+                List<Player> players = new ArrayList<>();
+                for (int i = 0; i <= 10; i++) {
+                    players.add(new Player());
+                }
+                callback.onSuccess(players);
+
                 System.out.println("oshibka");
             }
 
@@ -148,7 +116,7 @@ public class FirebaseDesktop implements FirebaseManager {
                         int levelCompare = Integer.compare(p2.level, p1.level);
                         return levelCompare != 0 ? levelCompare : Integer.compare(p2.money, p1.money);
                     });
-
+                    online = true;
                     callback.onSuccess(players);
                 } catch (Exception e) {
                     callback.onError("Parsing error: " + e.getMessage());
@@ -156,24 +124,12 @@ public class FirebaseDesktop implements FirebaseManager {
             }
         });
     }
+
     public boolean isOnline() {
-        Process process = null;
-        try {
-            process = Runtime.getRuntime().exec("ping -c 1 google.com");
-        } catch (IOException e) {
-            return false;
-        }
-
-        try {
-            int exitValue = process.waitFor();
-            return exitValue == 0;
-        } catch (InterruptedException e) {
-            return false;
-        }
-
-
-     // Встроенный метод LibGDX
+        return online;
     }
+
+
     @Override
     public void getPlayerRank(Player targetPlayer, PlayerRankCallback callback) {
         String url = DB_URL + ".json?orderBy=\"level\"&limitToLast=10&print=pretty";

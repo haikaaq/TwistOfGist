@@ -17,27 +17,28 @@ public class OrientationHelper {
 
     public interface OrientationListener {
         void lockCurrent();
+
         void unlock();
     }
 
-        public enum ScreenOrientation {
-            PORTRAIT,
-            LANDSCAPE,
-            UNDEFINED
-        }
+    public enum ScreenOrientation {
+        PORTRAIT,
+        LANDSCAPE,
+        UNDEFINED
+    }
 
-        private static OrientationProvider provider;
+    private static OrientationProvider provider;
 
-        public static void setProvider(OrientationProvider provider) {
-            OrientationHelper.provider = provider;
-        }
+    public static void setProvider(OrientationProvider provider) {
+        OrientationHelper.provider = provider;
+    }
 
-        public static ScreenOrientation getOrientation() {
-            return provider != null ? provider.getOrientation() : ScreenOrientation.UNDEFINED;
-        }
+    public static ScreenOrientation getOrientation() {
+        return provider != null ? provider.getOrientation() : ScreenOrientation.UNDEFINED;
+    }
 
-        public interface OrientationProvider {
-            ScreenOrientation getOrientation();
-        }
+    public interface OrientationProvider {
+        ScreenOrientation getOrientation();
+    }
 
 }

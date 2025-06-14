@@ -8,50 +8,49 @@ public class Player {
     public int money;
     public int rank;
 
-    public void copy(Player p){
-        name=p.name;
-        level =p. level;
-        money=p.money;
+    public void copy(Player p) {
+        name = p.name;
+        level = p.level;
+        money = p.money;
     }
-    public void clear() {
-        money=0;
-        level=0;
 
+    public void clear() {
+        money = 0;
+        level = 0;
 
 
     }
 
 
     public Player() {
-        }
+    }
 
 
-
-    public void savePlayerToFirebase(Player player){
+    public void savePlayerToFirebase(Player player) {
         FirebaseManager firebase = FirebaseService.create();
         firebase.savePlayer(player);
     }
 
-   public void setMoney(int money) {
-            this.money = money;
-        }
+    public void setMoney(int money) {
+        this.money = money;
+    }
 
-   public String getName() {
-            return name;
-        }
+    public String getName() {
+        return name;
+    }
 
-   public void setName(String name) {
-            this.name = name;
-        }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-   public int getLevel() {
-            return level;
-        }
+    public int getLevel() {
+        return level;
+    }
 
-   public void setLevel(int level) {
-            this.level= level;
-        }
-  }
+    public void setLevel(int level) {
+        this.level = level;
+    }
+}
 
 
 

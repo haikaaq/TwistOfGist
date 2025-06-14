@@ -44,12 +44,11 @@ public class ScreenGame implements Screen {
     public int level;
     private float earthAlpha = 1.0f;
 
-    public boolean isShots=true;
+    public boolean isShots = true;
 
     private int emeniesDone = 0;
     private int emeniesCount = 0;
-    private int sumCoastEnemyes;
-
+    private int sumCoastEnemyes = 0;
 
 
     public static int shotCount;
@@ -57,14 +56,14 @@ public class ScreenGame implements Screen {
     private int initialShotCount;
     private int initialEven;
     private int money;
-    private String strmoney=money+"";
-    private String strKB="";
+    private String strmoney = money + "";
+    private String strKB = "";
     private boolean isgame;
     public int shipSkin;
     public int allmoney;
     public int shotsShots;
     public int moneyFactor;
-    public boolean isBoss=true;
+    public boolean isBoss = true;
     Texture imgJS;
     Texture imgMN;
 
@@ -84,6 +83,7 @@ public class ScreenGame implements Screen {
     Texture imgPlus;
     Texture imgGreen;
     Texture imgGrayBG;
+    Texture imgBackAtlas;
     Texture imgLogo;
     Pixmap shipsPixmap;
     Pixmap enemyPixmap;
@@ -93,13 +93,14 @@ public class ScreenGame implements Screen {
 
     TextureRegion[][] imgShipatlas = new TextureRegion[5][12];
     TextureRegion[][] imgEnemy = new TextureRegion[5][12];
-    TextureRegion[] imgEnemyBoses = new TextureRegion [6];
+    TextureRegion[] imgEnemyBoses = new TextureRegion[6];
     TextureRegion[] imgEnemyDead = new TextureRegion[10];
     TextureRegion[][] imgFragments = new TextureRegion[4][4];
     TextureRegion[] imgShotatlas = new TextureRegion[5];
     TextureRegion[][] imgEnemyWouded = new TextureRegion[5][12];
-    TextureRegion[] imgLongButton = new  TextureRegion[3];
-    TextureRegion[] imgEarth= new TextureRegion[4];
+    TextureRegion[] imgLongButton = new TextureRegion[3];
+    TextureRegion[] imgEarth = new TextureRegion[4];
+    TextureRegion[] imgBack = new TextureRegion[2];
     SpaceButton btnMoney;
     Sound sndExplosion;
     Sound sndBlaster;
@@ -117,12 +118,11 @@ public class ScreenGame implements Screen {
     List<Boost> boosts = new ArrayList<>();
 
 
-
     public ScreenGame(Main main) {
         this.main = main;
         batch = main.batch;
         camera = main.camera;
-        moneyFactor =1;
+        moneyFactor = 1;
         LoadGame();
         loadLevel(main.level);
         touch = main.touch;
@@ -142,13 +142,14 @@ public class ScreenGame implements Screen {
         imgBG2 = new Texture("bgmenu2.png");
         imgShipsatlas = new Texture("atlas.png");
         imgFragmentatlas = new Texture("fragments.png");
-        imgEnemyes = new Texture(currentlevel.enemyPath);
-        System.out.println(currentlevel.enemyPath);
+        //imgEnemyes = new Texture(currentlevel.enemyPath);
+        imgBackAtlas = new Texture("buttonsLeftRight.png");
+
 
         imgEnemyesWouded = new Texture("woundedemenies.png");
         imgEnemyesBoses = new Texture("atlasboss.png");
         imgEnemyesDead = new Texture("emenyesDead.png");
-        imgLongButtonAtlas=new Texture("LongButton.png");
+        imgLongButtonAtlas = new Texture("LongButton.png");
         imgEarthAtlas = new Texture("earthatlas.png");
         imgRED = new Texture("red.png");
         imgMinus = new Texture("minus.png");
@@ -157,7 +158,7 @@ public class ScreenGame implements Screen {
         imgGrayBG = new Texture("GrayBG.png");
         imgShotsatlas = new Texture("shots.png");
         imgLogo = new Texture("logo.png");
-        keyboard = new InputKeyboard(font70,SCR_WIDTH,SCR_HEIGHT*3/4,11);
+        keyboard = new InputKeyboard(font70, SCR_WIDTH, SCR_HEIGHT * 3 / 4, 11);
 
         shipsPixmap = new Pixmap(Gdx.files.internal("atlas.png"));
         enemyPixmap = new Pixmap(Gdx.files.internal("enemyes.png"));
@@ -175,53 +176,56 @@ public class ScreenGame implements Screen {
         for (int j = 0; j < imgShipatlas.length; j++) {
             for (int i = 0; i < imgShipatlas[j].length; i++) {
                 imgShipatlas[j][i] = new TextureRegion(imgShipsatlas, (i < 7 ? i : 12 - i) * 800, (j) * 800, 800, 800);
-            }}
+            }
+        }
 
-        for (int j = 0; j < imgEnemy.length; j++) {
-            for (int i = 0; i < imgEnemy[j].length; i++) {
-                imgEnemy[j][i] = new TextureRegion(imgEnemyes, (i < 7 ? i : 12 - i) * 800, (j) * 800, 800, 800);
-            }}
+
         for (int j = 0; j < imgEnemyWouded.length; j++) {
             for (int i = 0; i < imgEnemyWouded[j].length; i++) {
                 imgEnemyWouded[j][i] = new TextureRegion(imgEnemyesWouded, (i < 7 ? i : 12 - i) * 800, (j) * 800, 800, 800);
-            }}
+            }
+        }
 
+        for (int e = 0; e < imgBack.length; e++) {
 
+            imgBack[e] = new TextureRegion(imgBackAtlas, (e) * 200, 0, 200, 200);
+        }
         for (int e = 0; e < imgEnemyDead.length; e++) {
 
-                imgEnemyDead[e] = new TextureRegion(imgEnemyesDead, (e) * 450, 0, 450, 450);
+            imgEnemyDead[e] = new TextureRegion(imgEnemyesDead, (e) * 450, 0, 450, 450);
         }
 
         for (int j = 0; j < imgFragments.length; j++) {
             for (int i = 0; i < imgFragments[j].length; i++) {
 
                 imgFragments[j][i] = new TextureRegion(imgFragmentatlas, (i) * 480, (j) * 480, 480, 480);
-            }}
+            }
+        }
         for (int i = 0; i < imgShotatlas.length; i++) {
             imgShotatlas[i] = new TextureRegion(imgShotsatlas, (i) * 100, 0, 100, 350);
         }
         for (int e = 0; e < imgEnemyBoses.length; e++) {
-            imgEnemyBoses[e] = new TextureRegion(imgEnemyesBoses, (e) *450, 0, 450, 450);
+            imgEnemyBoses[e] = new TextureRegion(imgEnemyesBoses, (e) * 450, 0, 450, 450);
         }
         for (int e = 0; e < imgLongButton.length; e++) {
 
-            imgLongButton[e] = new TextureRegion(imgLongButtonAtlas, 0, (e)*193, 497, 193);
+            imgLongButton[e] = new TextureRegion(imgLongButtonAtlas, 0, (e) * 193, 497, 193);
         }
         for (int j = 0; j < imgEarth.length; j++) {
 
-                imgEarth[j] = new TextureRegion(imgEarthAtlas, (j ) * 740, 0, 740, 740);
-            }
+            imgEarth[j] = new TextureRegion(imgEarthAtlas, (j) * 740, 0, 740, 740);
+        }
 
 
-        btnBack = new SpaceButton(font70, "Back", 30, 1550);
-        btnGetMoney = new SpaceButton(font70, "get and exit",imgLongButtonAtlas,  260,1.58f);
+        btnBack = new SpaceButton(10, 1500, 90, 90, 0);
+        btnGetMoney = new SpaceButton(font70, LanguageManager.get("getandexit"), imgLongButtonAtlas, 260, 1.58f);
         btnMoney = new SpaceButton(font70, strmoney, SCR_WIDTH * 4 / 5, btnBack.y);
 
         sndExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
         sndBlaster = Gdx.audio.newSound(Gdx.files.internal("blaster.mp3"));
         shipSkin = main.shipSkin;
         shotsShots = main.shotsShots;
-        initialShotCount = main.shotsBostCount;
+        initialShotCount = main.shotsBoostCount;
         initialEven = main.shotEven;
         bg[0] = new GameBackground(0, 0);
         bg[1] = new GameBackground(0, SCR_HEIGHT);
@@ -232,21 +236,25 @@ public class ScreenGame implements Screen {
 
 
     public void show() {
-        timeStartGame =TimeUtils.millis();
+        shotCount = main.shotsBoostCount;
+        shotEven = main.shotEven;
+        timeStartGame = TimeUtils.millis();
         LoadGame();
         loadLevel(main.level);
-
+        imgEnemyes = currentlevel.imgEnemyes;
+        for (int j = 0; j < imgEnemy.length; j++) {
+            for (int i = 0; i < imgEnemy[j].length; i++) {
+                imgEnemy[j][i] = new TextureRegion(imgEnemyes, (i < 7 ? i : 12 - i) * 800, (j) * 800, 800, 800);
+            }
+        }
+        btnGetMoney.changeText(LanguageManager.get("getandexit"));
 
     }
 
     @Override
     public void render(float delta) {
-        shotCount = main.shotsBostCount;
-        shotEven = main.shotEven;
         ship.CheckVx = ship.vX;
         ship.type = main.shipSkin;
-
-
 
 
         SaveGame();
@@ -257,12 +265,12 @@ public class ScreenGame implements Screen {
             if (btnBack.hit(touch.x, touch.y)) {
                 main.setScreen(main.screenMenu);
                 FonMusic.stop();
-                main.shotsBostCount = shotCount;
+                main.shotsBoostCount = shotCount;
                 StopGame();
             }
-            if(currentlevel.isTapLevel){
-                for(Enemy e:enemies){
-                    if(e.hit(touch.x,touch.y)){
+            if (currentlevel.isTapLevel) {
+                for (Enemy e : enemies) {
+                    if (e.hit(touch.x, touch.y)) {
                         e.health--;
                         e.isWouded = true;
                         e.timeLastWouded = TimeUtils.millis();
@@ -272,7 +280,7 @@ public class ScreenGame implements Screen {
 
             if (btnGetMoney.hit(touch.x, touch.y)) {
                 if (gameState == GAME_OWER) {
-                    main.shotsBostCount = initialShotCount;
+                    main.shotsBoostCount = initialShotCount;
                     main.shotEven = initialEven;
                     GameClear();
                     gameStart();
@@ -283,27 +291,26 @@ public class ScreenGame implements Screen {
         }
         btnGetMoney.changePhases();
         if (currentlevel.controls == ACCELEROMETER) {
-            final float deadzone=0.2f;
+            final float deadzone = 0.2f;
             float rawX = Gdx.input.getAccelerometerX();
             float rawY = Gdx.input.getAccelerometerY();
-            if(Math.abs(rawX)<=deadzone)rawX=0;
-            if(Math.abs(rawY)<=deadzone)rawY=0;
+            if (Math.abs(rawX) <= deadzone) rawX = 0;
+            if (Math.abs(rawY) <= deadzone) rawY = 0;
             if (OrientationHelper.getOrientation() == OrientationHelper.ScreenOrientation.LANDSCAPE) {
                 ship.vY = -rawX * 4;
                 ship.vX = rawY * 3;
-            }
-            else  {
+            } else {
                 ship.vX = -rawX * 4;
                 ship.vY = -rawY * 4;
             }
         }
-        if (currentlevel.isAccelerometrLevel){
-            final float deadzone=0.2f;
+        if (currentlevel.isAccelerometrLevel) {
+            final float deadzone = 0.2f;
             float rawX = Gdx.input.getAccelerometerX();
             float rawY = Gdx.input.getAccelerometerY();
-            if(Math.abs(rawX)<=deadzone)rawX=0;
-            if(Math.abs(rawY)<=deadzone)rawY=0;
-            for(Shot s: shots) {
+            if (Math.abs(rawX) <= deadzone) rawX = 0;
+            if (Math.abs(rawY) <= deadzone) rawY = 0;
+            for (Shot s : shots) {
                 if (OrientationHelper.getOrientation() == OrientationHelper.ScreenOrientation.LANDSCAPE) {
 
                     s.vY = -rawX * 3;
@@ -314,10 +321,10 @@ public class ScreenGame implements Screen {
                 }
             }
         }
-        if(level==0){
-            if (earth.overlap(ship)){
+        if (level == 0) {
+            if (earth.overlap(ship)) {
 
-                earth.nPhases=4;
+                earth.nPhases = 4;
 
             }
 
@@ -337,62 +344,62 @@ public class ScreenGame implements Screen {
 
         ///bosses
 
-            if (emeniesCount > currentlevel.enemiesMax) {
-                for (int j = bosses.size() - 1; j >= 0; j--) {
-                    if ((TimeUtils.millis() - bosses.get(j).timeLastWouded) > 154) {
-                        bosses.get(j).isWouded = false;
-                    }
-                    if (bosses.get(j).health == 0) {
-                        bosses.get(j).Dead = true;
-                        bosses.get(j).vY = -7.69f;
-                        // btnMoney.changeText(strmoney);
-                        emeniesDone += 1;
-                        if (main.isActionSounds) timeExplosions=TimeUtils.millis();
-                        bosses.get(j).health = -1;
+        if (emeniesCount > currentlevel.enemiesMax) {
+            for (int j = bosses.size() - 1; j >= 0; j--) {
+                if ((TimeUtils.millis() - bosses.get(j).timeLastWouded) > 154) {
+                    bosses.get(j).isWouded = false;
+                }
+                if (bosses.get(j).health == 0) {
+                    bosses.get(j).Dead = true;
+                    bosses.get(j).vY = -7.69f;
+                    // btnMoney.changeText(strmoney);
+                    emeniesDone += 1;
+                    if (main.isActionSounds) timeExplosions = TimeUtils.millis();
+                    bosses.get(j).health = -1;
 
-                    }
-
-
-                    if (bosses.get(j).BelowTheScreen()) {
-                        money += moneyFactor * 2;
-
-                        bosses.remove(j);
-
-                        break;
-
-                    }
-                    if (bosses.get(j).overlap(ship, ((bosses.get(j).isWouded || bosses.get(j).Dead) ? enemyDeadPixmap : BossPixmap), shipsPixmap)) {
-                        emeniesDone = 0;
-                        timeRedSpawn = TimeUtils.millis();
-                        gameState = GAME_OWER;
-                        StopGame();
-                        break;
-                    }
-                    for (int i = shots.size() - 1; i >= 0; i--) {
+                }
 
 
-                        if (shots.get(i).overlap(bosses.get(j))) {
-                            if (bosses.get(j).health > 0) {
-                                bosses.get(j).health--;
-                                bosses.get(j).isWouded = true;
-                                bosses.get(j).timeLastWouded = TimeUtils.millis();
+                if (bosses.get(j).BelowTheScreen()) {
+                    money += moneyFactor * 2;
 
-                            }
-                            shots.get(i).isoverlab = true;
-                            isgame = true;
+                    bosses.remove(j);
+
+                    break;
+
+                }
+                if (bosses.get(j).overlap(ship, ((bosses.get(j).isWouded || bosses.get(j).Dead) ? enemyDeadPixmap : BossPixmap), shipsPixmap)) {
+                    emeniesDone = 0;
+                    timeRedSpawn = TimeUtils.millis();
+                    gameState = GAME_OWER;
+                    StopGame();
+                    break;
+                }
+                for (int i = shots.size() - 1; i >= 0; i--) {
+
+
+                    if (shots.get(i).overlap(bosses.get(j))) {
+                        if (bosses.get(j).health > 0) {
+                            bosses.get(j).health--;
+                            bosses.get(j).isWouded = true;
+                            bosses.get(j).timeLastWouded = TimeUtils.millis();
+
                         }
-
-
+                        shots.get(i).isoverlab = true;
+                        isgame = true;
                     }
+
+
                 }
             }
+        }
 
 
         /// enemies
         for (int j = enemies.size() - 1; j >= 0; j--) {
-            if(currentlevel.isRexlexLevel&&enemies.get(j).y<SCR_HEIGHT/3)
+            if (currentlevel.isRexlexLevel && enemies.get(j).y < SCR_HEIGHT / 3)
 
-                enemies.get(j).vY-=0.15f;
+                enemies.get(j).vY -= 0.15f;
 
             if ((TimeUtils.millis() - enemies.get(j).timeLastWouded) > 154) {
                 enemies.get(j).isWouded = false;
@@ -402,33 +409,32 @@ public class ScreenGame implements Screen {
                     fragments.add(new Fragment(enemies.get(j).x, enemies.get(j).y));
                 }
                 emeniesDone += 1;
-                money+= moneyFactor;
+                money += moneyFactor;
                 enemies.get(j).width = 0;
-                sumCoastEnemyes +=(4-enemies.get(j).type)*main.basicSkinCoast;
-                timeExplosions=TimeUtils.millis();
+                sumCoastEnemyes += (4 - enemies.get(j).type) * main.basicSkinCoast;
+                timeExplosions = TimeUtils.millis();
                 enemies.remove(j);
                 break;
             }
 
 
             if (enemies.get(j).BelowTheScreen()) {
-               if(currentlevel.isRexlexLevel){
-                   emeniesDone +=1;
-                   money+= moneyFactor;
-               }
-               else {
-                   {
-                       timeRedSpawn = TimeUtils.millis();
-                       money -= (4 + moneyFactor);
-                   }
-               }
-                   enemies.remove(j);
-                   break;
+                if (currentlevel.isRexlexLevel) {
+                    emeniesDone += 1;
+                    money += moneyFactor;
+                } else {
+                    {
+                        timeRedSpawn = TimeUtils.millis();
+                        money -= (4 + moneyFactor);
+                    }
+                }
+                enemies.remove(j);
+                break;
 
 
             }
             //если наш корабль столкнулся с врагом
-            if (enemies.get(j).overlap(ship,  enemyPixmap, shipsPixmap)) {
+            if (enemies.get(j).overlap(ship, enemyPixmap, shipsPixmap)) {
                 emeniesDone = 0;
                 timeRedSpawn = TimeUtils.millis();
                 gameState = GAME_OWER;
@@ -436,9 +442,9 @@ public class ScreenGame implements Screen {
                 break;
             }
 
-                for (int i = shots.size() - 1; i >= 0; i--) {
+            for (int i = shots.size() - 1; i >= 0; i--) {
 
-                if(!currentlevel.isTapLevel) {
+                if (!currentlevel.isTapLevel) {
                     if (!currentlevel.isRexlexLevel) {
                         if (shots.get(i).overlap(enemies.get(j))) {
                             if (enemies.get(j).health > 0) {
@@ -458,7 +464,7 @@ public class ScreenGame implements Screen {
             }
         }
 
-        if (TimeUtils.millis()==timeExplosions){
+        if (TimeUtils.millis() == timeExplosions) {
 
             sndExplosion.play();
         }
@@ -467,19 +473,25 @@ public class ScreenGame implements Screen {
 
                 if (boosts.get(i).type == 1) {
                     timeGreenSpawn = TimeUtils.millis();
-                    if (shotCount < 4) {
-                        if (shotEven < shotCount) shotEven = shotCount;
-                        else {
 
-                            main.shotsBostCount +=1;
-                            main.shotEven =0;
+                    if (shotCount < 4) {
+                        if (shotEven < shotCount) {
+                            shotEven = shotCount;
                         }
-                    }
+                        else {
+                            shotEven = 0;
+                            shotCount += 1;
+
+                        }
+
+                }
+
+
 
                 } else {
                     timeRedSpawn = TimeUtils.millis();
 
-                    main.shotsBostCount = 0;
+                    main.shotsBoostCount = 0;
                     main.shotEven = 0;
                 }
 
@@ -488,15 +500,13 @@ public class ScreenGame implements Screen {
         }
 
 
-
         /// delete
         for (int i = shots.size() - 1; i >= 0; i--) {
-            if (currentlevel.isRexlexLevel){
+            if (currentlevel.isRexlexLevel) {
                 if (ship.overlap(shots.get(i))) {
                     shots.get(i).width = 0;
                     shots.get(i).height = 0;
-                    gameState =GAME_OWER;
-
+                    gameState = GAME_OWER;
 
 
                 }
@@ -512,8 +522,7 @@ public class ScreenGame implements Screen {
 
                 }
 
-            }
-            else {
+            } else {
                 if (shots.get(i).isoverlab || shots.get(i).OutOfscreen()) {
                     shots.get(i).width = 0;
                     shots.get(i).height = 0;
@@ -533,15 +542,15 @@ public class ScreenGame implements Screen {
             if (fragments.get(e).OutOfscreen()) fragments.remove(e);
         }
 
-        if (enemies.isEmpty() && bosses.isEmpty()&&isgame && emeniesCount == currentlevel.enemiesMax+ currentlevel.bossCount) {
+        if (enemies.isEmpty() && bosses.isEmpty() && isgame && emeniesCount == currentlevel.enemiesMax + currentlevel.bossCount) {
             timeGreenSpawn = TimeUtils.millis();
             gameState = GAME_OWER;
             StopGame();
 
         }
-        ship.rotationSpeed=(ship.vX-ship.CheckVx)*100;
-        ship.type=main.shipSkin;
-        strmoney=money+"";
+        ship.rotationSpeed = (ship.vX - ship.CheckVx) * 100;
+        ship.type = main.shipSkin;
+        strmoney = money + "";
         btnMoney.changeText(strmoney);
 
 
@@ -552,17 +561,18 @@ public class ScreenGame implements Screen {
         for (GameBackground bg : bg) {
             batch.draw(imgBG, bg.x, bg.y, bg.width, bg.height);
         }
-        if(level==0){
-            if(earth.nPhases==1) {batch.draw(imgEarth[earth.phase], earth.scrX(), earth.scrY(),earth.width,earth.height);}
-            else {
+        if (level == 0) {
+            if (earth.nPhases == 1) {
+                batch.draw(imgEarth[earth.phase], earth.scrX(), earth.scrY(), earth.width, earth.height);
+            } else {
                 earthAlpha -= 0.004f; // Уменьшаем прозрачность каждый кадр
                 if (earthAlpha < 0) {
                     earthAlpha = 0;
-                    isShots=true;
+                    isShots = true;
                 }
 
                 batch.setColor(1, 1, 1, earthAlpha);
-                batch.draw(imgEarth[earth.phase], earth.scrX(), earth.scrY(),earth.width,earth.height);
+                batch.draw(imgEarth[earth.phase], earth.scrX(), earth.scrY(), earth.width, earth.height);
                 batch.setColor(1, 1, 1, 1); // Сбрасываем настройки цвета
             }
         }
@@ -570,16 +580,15 @@ public class ScreenGame implements Screen {
             batch.draw(imgFragments[f.type1][f.type2], f.scrX(), f.scrY(), f.width, f.height);
         }
         for (Enemy e : enemies) {
-            if(e.isWouded){
-                batch.draw(imgEnemyWouded[e.type][e.phase], e.scrX(), e.scrY(), e.width, e.height);}
-            else batch.draw(imgEnemy[e.type][e.phase], e.scrX(), e.scrY(), e.width, e.height);
+            if (e.isWouded) {
+                batch.draw(imgEnemyWouded[e.type][e.phase], e.scrX(), e.scrY(), e.width, e.height);
+            } else batch.draw(imgEnemy[e.type][e.phase], e.scrX(), e.scrY(), e.width, e.height);
 
         }
         for (Boss e : bosses) {
-            if (e.Dead||e.isWouded) {
-                batch.draw(imgEnemyDead[e.phase], e.scrX(), e.scrY(),e.width/2,e.height/2, e.width, e.height,1,1,e.rotation);
-            }
-            else {
+            if (e.Dead || e.isWouded) {
+                batch.draw(imgEnemyDead[e.phase], e.scrX(), e.scrY(), e.width / 2, e.height / 2, e.width, e.height, 1, 1, e.rotation);
+            } else {
                 batch.draw(imgEnemyBoses[e.phase], e.scrX(), e.scrY(), e.width / 2, e.height / 2, e.width, e.height, 1, 1, e.rotation);
             }
         }
@@ -591,7 +600,7 @@ public class ScreenGame implements Screen {
             batch.draw(b.type == 1 ? imgPlus : imgMinus, b.scrX(), b.scrY(), b.width, b.height);
         }
 
-        batch.draw(imgShipatlas[main.shipSkin][ship.phase], ship.scrX(), ship.scrY(), ship.width/2,ship.height/2, ship.width, ship.height,1,1,ship.rotation);
+        batch.draw(imgShipatlas[main.shipSkin][ship.phase], ship.scrX(), ship.scrY(), ship.width / 2, ship.height / 2, ship.width, ship.height, 1, 1, ship.rotation);
 
         if (gameState == GAME_OWER) {
             batch.draw(imgGrayBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
@@ -613,20 +622,30 @@ public class ScreenGame implements Screen {
 
         keyboard.draw(batch);
 
-        btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
+        batch.draw(imgBack[btnBack.type], btnBack.imgX, btnBack.imgY, btnBack.imgWidht, btnBack.imgHeight);
         btnMoney.font.draw(batch, btnMoney.text, btnMoney.x, btnMoney.y);
         batch.draw(imgMN, btnMoney.x - 70, btnMoney.y - 58, 50, 50);
-
 
 
         //если игра завершена
         if (gameState == GAME_OWER) {
 
-            batch.draw(imgBG2,0,0,SCR_WIDTH,SCR_HEIGHT);
-            batch.draw(imgLogo,SCR_WIDTH/2-240,1200,480,390);
-            font70.draw(batch, !iscomplited() ? "GAME OVER" : "LEVEL COMPLETED", 0, 900, SCR_WIDTH, Align.center, true);
-            font70.draw(batch, "you collected  " + money + "  coins ", 0, 600, SCR_WIDTH, Align.center, true);
-            batch.draw(imgLongButton[btnGetMoney.phase],btnGetMoney.imgX,btnGetMoney.imgY,btnGetMoney.imgWidht,btnGetMoney.imgHeight);
+            batch.draw(imgBG2, 0, 0, SCR_WIDTH, SCR_HEIGHT);
+            batch.draw(imgLogo, SCR_WIDTH / 2 - 240, 1200, 480, 390);
+            font70.draw(batch, !iscomplited() ? LanguageManager.get("gameover") : LanguageManager.get("levelcomplited"), 0, 900, SCR_WIDTH, Align.center, true);
+            if (money%10 == 1&&money%100!=11) {
+                font70.draw(batch, LanguageManager.get("youcollected") + " " + (Math.max(money, 0)) + " " + LanguageManager.get("coinsY"), 0, 600, SCR_WIDTH, Align.center, true);
+
+            }
+            else if (money %10>= 2&&money %10<= 4&&!(money %100>= 12&&money %100<= 14)) {
+                font70.draw(batch, LanguageManager.get("youcollected") + " " + (Math.max(money, 0)) + " " + LanguageManager.get("coinsI"), 0, 600, SCR_WIDTH, Align.center, true);
+
+            }
+            else  {
+                font70.draw(batch, LanguageManager.get("youcollected") + " " + (Math.max(money, 0)) + " " + LanguageManager.get("coins"), 0, 600, SCR_WIDTH, Align.center, true);
+
+            }
+            batch.draw(imgLongButton[btnGetMoney.phase], btnGetMoney.imgX, btnGetMoney.imgY, btnGetMoney.imgWidht, btnGetMoney.imgHeight);
             btnGetMoney.font.draw(batch, btnGetMoney.text, btnGetMoney.x, btnGetMoney.y);
         }
 
@@ -664,6 +683,7 @@ public class ScreenGame implements Screen {
         enemyDeadPixmap.dispose();
         enemyWoudedPixmap.dispose();
         BossPixmap.dispose();
+
     }
 
 
@@ -679,18 +699,20 @@ public class ScreenGame implements Screen {
         if (currentTime - timeLastSpawnEnemy >= currentlevel.timeSpawnInterval) {
             if (emeniesCount < currentlevel.enemiesMax) {
                 enemies.add(new Enemy());
-                timeLastSpawnEnemy = currentTime; // Фиксируем время последнего спавна
                 emeniesCount++;
+                timeLastSpawnEnemy = currentTime; // Фиксируем время последнего спавна
+
 
             }
         }
 
     }
+
     public void spavnBoss() {
         long currentTime = TimeUtils.millis();
 
         // Проверяем, что прошло время до первого спавна
-        if (currentTime - timeStartGame < currentlevel.timeFirstSpawnEnemy||!isBoss) {
+        if (currentTime - timeStartGame < currentlevel.timeFirstSpawnEnemy || !isBoss) {
             return;
         }
 
@@ -707,37 +729,42 @@ public class ScreenGame implements Screen {
 
 
     }
+
     public void spavnShot() {
-        if ((TimeUtils.millis() > timeLastSpawnShots + currentlevel.timeShotsInterval)&&isShots) {
+        if ((TimeUtils.millis() > timeLastSpawnShots + currentlevel.timeShotsInterval) && isShots) {
 
             if (shotCount == 0) {
-                shots.add(new Shot(ship.scrX() + ship.width / 2 - (ship.rotation)*ship.width/90, ship.scrY() + 0.85f*ship.height));
+                shots.add(new Shot(ship.scrX() + ship.width / 2 - (ship.rotation) * ship.width / 90, ship.scrY() + 0.85f * ship.height));
 
 
             }
 
-            for (int i = 0; i < (shotEven == 0 ? shotCount * 2 : (shotCount * 2 + 1)); i++) {
-                shots.add(new Shot(ship.scrX() + ship.width / 2 - (ship.rotation)*ship.width/90, ship.scrY() + 245));
+            for (int i = 0; i < (shotEven == 0 ? shotCount * 2 :( shotCount * 2 + 1)); i++) {
+                shots.add(new Shot(ship.scrX() + ship.width / 2 - (ship.rotation) * ship.width / 90, ship.scrY() + 245));
 
 
             }
+
+
             timeLastSpawnShots = TimeUtils.millis();
-            if(main.isActionSounds)sndBlaster.play();
+            timeLastSpawnShots = TimeUtils.millis();
+            if (main.isActionSounds) sndBlaster.play();
 
 
         }
 
 
     }
+
     public void spavnShotLevel6() {
         if ((TimeUtils.millis() > timeLastSpawnShots + currentlevel.timeShotsInterval)) {
             for (Enemy e : enemies) {
 
                 if (e.y > SCR_HEIGHT / 3) {
-                     e.vY-=0.1f;
+                    e.vY -= 0.1f;
 
                     if (shotCount == 0) {
-                        shots.add(new Shot(e.scrX() + e.width / 2, e.scrY() ));
+                        shots.add(new Shot(e.scrX() + e.width / 2, e.scrY()));
 
 
                     }
@@ -762,144 +789,128 @@ public class ScreenGame implements Screen {
 
     private void MoveShots() {
 
-        if(!shots.isEmpty()){
+        if (!shots.isEmpty()) {
 
 
+            int j = -shotCount;
+            for (int r = (shotEven == 0 ? shots.size() - shotCount * 2 : shots.size() - (shotCount * 2 + 1)); r < shots.size(); r++) {
 
-        int j =-shotCount;
-        for(int r = (shotEven ==0? shots.size()- shotCount *2:shots.size()-(shotCount *2+1)); r<shots.size(); r++){
+
+                shots.get(r).vX = j;
+
+                shots.get(r).move();
+                j++;
+                if (shotEven == 0) {
+
+                    if (j == 0) j = 1;
+                }
 
 
-            shots.get(r).vX=j;
+            }
 
-            shots.get(r).move();
-            j++;
-            if(shotEven ==0){
 
-                if (j == 0) j=1;}
+            int e = 0;
+            while (e < (shotEven == 0 ? shots.size() - shotCount * 2 : shots.size() - shotCount * 2 - 1)) {
+
+                shots.get(e).move(shots.get(e).vX);
+                e++;
+
+            }
 
 
         }
+    }
 
 
-        int e = 0;
-        while(e <(shotEven ==0? shots.size()- shotCount *2:shots.size()- shotCount *2-1))  {
-
-
-            shots.get(e).move(shots.get(e).vX);
-
-            e++;
-
-        }
-
-
-    }}
-
-
-
-    public void keyboard(){
-        if (!isBoss&& emeniesDone ==currentlevel.enemiesMax&&(TimeUtils.millis()-timeStartGame)>currentlevel.timeSpawnInterval) {
+    public void keyboard() {
+        if (enemies.isEmpty() && emeniesCount >= currentlevel.enemiesMax) {
             System.out.println("" + sumCoastEnemyes);
             if (!keyboard.isKeyboardShow) {
 
-                if(strKB.isEmpty())keyboard.start();
-
+                if (strKB.isEmpty()) keyboard.start();
 
 
             }
             if (strKB.equals("" + sumCoastEnemyes)) {
                 isBoss = true;
-                timeGreenSpawn=TimeUtils.millis();
-                strKB="a";
+                timeGreenSpawn = TimeUtils.millis();
+                strKB = "a";
 
 
-            }
-            else if (!strKB.isEmpty()) {
+            } else if (!strKB.isEmpty() && !isBoss) {
+                sumCoastEnemyes = 0;
                 gameState = GAME_OWER;
-                timeRedSpawn=TimeUtils.millis();
+                timeRedSpawn = TimeUtils.millis();
             }
 
 
             // if (keyboard.isKeyboardShow) {
 
 
-           // }
+            // }
         }
     }
 
 
-
-    public void spavnBoost(){
-        if(TimeUtils.millis()>timeLastSpawnBoost+timeBoostInterval){
+    public void spavnBoost() {
+        if (TimeUtils.millis() > timeLastSpawnBoost + timeBoostInterval) {
             boosts.add(new Boost());
-            timeLastSpawnBoost=TimeUtils.millis();
-            }
+            timeLastSpawnBoost = TimeUtils.millis();
+        }
 
 
     }
 
-    public void StopGame(){
+    public void StopGame() {
         sndExplosion.stop();
         FonMusic.stop();
-        for (Enemy e:enemies) e.stop();
-        for(Boost b : boosts) b.stop();
-        for(Shot s : shots) s.stop();
-        for (Fragment f:fragments) f.stop();
+        for (Enemy e : enemies) e.stop();
+        for (Boost b : boosts) b.stop();
+        for (Shot s : shots) s.stop();
+        for (Fragment f : fragments) f.stop();
         SaveGame();
     }
 
 
+    private void loadLevel(int level) {
 
 
-    private void loadLevel(int level){
-
-
-        currentlevel =Levels.LEVELS[level];
-        if (currentlevel.controls==ACCELEROMETER||currentlevel.isAccelerometrLevel) {
+        currentlevel = Levels.LEVELS[level];
+        if (currentlevel.controls == ACCELEROMETER || currentlevel.isAccelerometrLevel) {
             OrientationHelper.lockCurrentOrientation();
         } else {
             OrientationHelper.unlock(); // Разрешаем автоповорот
         }
-        if (level==0) {
-            isShots=false;
-            earth = new Earth(SCR_WIDTH/2,1120);
+        if (level == 0) {
+            isShots = false;
+            earth = new Earth(SCR_WIDTH / 2, 1120);
         }
-        isShots=currentlevel.isShots;
-        isBoss=currentlevel.isBoss;
-        if(currentlevel.isKeyboard) {
+        isShots = currentlevel.isShots;
+        isBoss = currentlevel.isBoss;
+        if (currentlevel.isKeyboard) {
             strKB = "";
 
         }
     }
 
 
+    public void GameClear() {
 
+        if (money > 0) {
+            main.allmoney += money;
+            main.player.money = main.allmoney;
+        }
 
-
-
-
-    public void GameClear(){
-
-        if(money>0){
-        main.allmoney +=money;
-        main.player.money= main.allmoney;}
-
-        if(iscomplited()&&main.level<=currentlevel.MaxLevel)
-        {   level+=1;
-            main.level=level;
-            main.player.level=level;
+        if (iscomplited() && main.level <= currentlevel.MaxLevel) {
+            level += 1;
+            main.level = level;
+            main.player.level = level;
         }
         loadLevel(main.level);
 
 
-
-
-
-
-
-
         SaveGame();
-        money=0;
+        money = 0;
         btnMoney.changeText(strmoney);
         main.setScreen(main.screenMenu);
         FonMusic.stop();
@@ -908,87 +919,87 @@ public class ScreenGame implements Screen {
         boosts.clear();
         shots.clear();
         fragments.clear();
-        ship.x=SCR_WIDTH/2;
-        ship.y =SCR_HEIGHT/5;
-        shotCount =0;
-        ship.rotationSpeed=0;
-        ship.rotation=0;
+        ship.x = SCR_WIDTH / 2;
+        ship.y = SCR_HEIGHT / 5;
+        shotCount = 0;
+        ship.rotationSpeed = 0;
+        ship.rotation = 0;
 
-        emeniesCount =0;
-        emeniesDone =0;
-
-
-    }
-
-
-
-
-    public boolean iscomplited(){
-        return (bosses.isEmpty()&&enemies.isEmpty()&& emeniesCount ==currentlevel.enemiesMax+currentlevel.bossCount);
+        emeniesCount = 0;
+        emeniesDone = 0;
 
 
     }
 
-    public  void gameStart(){
+
+    public boolean iscomplited() {
+        return (bosses.isEmpty() && enemies.isEmpty() && emeniesCount >= currentlevel.enemiesMax + currentlevel.bossCount);
 
 
-        gameState =GAME;
+    }
+
+    public void gameStart() {
+
+
+        gameState = GAME;
 
         for (GameBackground bg : bg) bg.move();
         spavnEnemy();
-        if(currentlevel.isRexlexLevel)spavnShotLevel6();
+        if (currentlevel.isRexlexLevel) spavnShotLevel6();
         else spavnShot();
         spavnBoss();
 
         for (Enemy e : enemies) {
-            e.move() ;
+            e.move();
 
         }
-        for (Boss b : bosses){
+        for (Boss b : bosses) {
             b.move();
         }
         spavnBoost();
-        for(Boost b: boosts)b.move();
+        for (Boost b : boosts) b.move();
 
         ship.move();
 
 
-        if (shotCount ==0){
-            for ( Shot s: shots) s.move();}
+        if (shotCount == 0) {
+            for (Shot s : shots) s.move();
+        }
 
-        if (shotCount >0){
+        if (shotCount > 0) {
             MoveShots();
 
         }
 
 
     }
-    private void SaveGame(){
-    Preferences prefs = Gdx.app.getPreferences("игровые ресурсы");
 
-        prefs.putInteger("деньги игрока",main.allmoney);
-        prefs.putInteger("игровой уровень",main.level);
+    private void SaveGame() {
+        Preferences prefs = Gdx.app.getPreferences("игровые ресурсы");
 
-        prefs.flush();}
+        prefs.putInteger("деньги игрока", main.allmoney);
+        prefs.putInteger("игровой уровень", main.level);
+
+        prefs.flush();
+    }
 
     private void LoadGame() {
         Preferences prefs = Gdx.app.getPreferences("игровые ресурсы");
 
-        main.allmoney = prefs.getInteger("деньги игрока",main.allmoney);
-        main.level=prefs.getInteger("игровой уровень", main.level);
-
+        main.allmoney = prefs.getInteger("деньги игрока", main.allmoney);
+        main.level = prefs.getInteger("игровой уровень", main.level);
 
 
     }
 
-    private boolean timeRed(){
+    private boolean timeRed() {
 
-        return TimeUtils.millis()-timeRedSpawn<=timeRed;
+        return TimeUtils.millis() - timeRedSpawn <= timeRed;
     }
 
-    private boolean timeGreen(){
+    private boolean timeGreen() {
 
-        return TimeUtils.millis()-timeGreenSpawn<=timeGreen;
+        return TimeUtils.millis() - timeGreenSpawn <= timeGreen;
     }
 
     class Processor implements InputProcessor {
@@ -1013,42 +1024,44 @@ public class ScreenGame implements Screen {
 
         @Override
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (gameState ==GAME)   {
-            if (currentlevel.controls == SCREEN) {
-                touch.set(screenX, screenY, 0);
-                camera.unproject(touch);
-                ship.touch(touch);
+            if (gameState == GAME) {
+                if (currentlevel.controls == SCREEN) {
+                    touch.set(screenX, screenY, 0);
+                    camera.unproject(touch);
+                    ship.touch(touch);
 
-                ship.rotation=0;
-               // ship.CheckVx=ship.vX;
-                 ship.move();
-                 ship.vY/=30;
-                 ship.vY/=70;
-
+                    ship.rotation = 0;
+                    // ship.CheckVx=ship.vX;
+                    ship.move();
+                    ship.vY /= 30;
+                    ship.vY /= 70;
 
 
                 }
-            if (currentlevel.controls == JOYSTIK_LEFT||controls==JOYSTIK_RIGHT) {
-                touch.set(screenX, screenY, 0);
-                camera.unproject(touch);
-                //проверяем попали ли мы касанием в круг используя формулу графика окружности
-                if(Math.pow(touch.x-JSwidth/2,2)+Math.pow(touch.y-JSheight/2,2)<=Math.pow(JSwidth/2,2)){
-                ship.vX=(touch.x-JSwidth/2)/19;
+                if (currentlevel.controls == JOYSTIK_LEFT || controls == JOYSTIK_RIGHT) {
+                    touch.set(screenX, screenY, 0);
+                    camera.unproject(touch);
+                    //проверяем попали ли мы касанием в круг используя формулу графика окружности
+                    if (Math.pow(touch.x - JSwidth / 2, 2) + Math.pow(touch.y - JSheight / 2, 2) <= Math.pow(JSwidth / 2, 2)) {
+                        ship.vX = (touch.x - JSwidth / 2) / 19;
 
-                ship.vY=(touch.y-JSheight/2)/19;}
-                else{ship.stop();
-                ship.vX=ship.vY=0;}
+                        ship.vY = (touch.y - JSheight / 2) / 19;
+                    } else {
+                        ship.stop();
+                        ship.vX = ship.vY = 0;
+                    }
 
-            }}
+                }
+            }
 
-                return false;
+            return false;
 
         }
 
 
         @Override
         public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-            ship.rotation=0;
+            ship.rotation = 0;
 
             ship.stop();
             return false;
@@ -1063,33 +1076,31 @@ public class ScreenGame implements Screen {
 
         @Override
         public boolean touchDragged(int screenX, int screenY, int pointer) {
-         if (gameState ==GAME)   {
-            if(currentlevel.controls==SCREEN){
-            touch.set(screenX,screenY,0);
-            camera.unproject(touch);
-            ship.touch(touch);
-             ship.move();
-              }
-            if (currentlevel.controls == JOYSTIK_LEFT||currentlevel.controls==JOYSTIK_RIGHT) {
-                touch.set(screenX, screenY, 0);
-                camera.unproject(touch);
-                //проверяем попали ли мы касанием в круг
-                if (Math.pow(touch.x - JSwidth / 2, 2) + Math.pow(touch.y - JSheight / 2, 2) <= Math.pow(150, 2)) {
-                    ship.vX = (touch.x - JSwidth / 2) / 19;
-                    ship.vY = (touch.y - JSheight / 2) / 19;
+            if (gameState == GAME) {
+                if (currentlevel.controls == SCREEN) {
+                    touch.set(screenX, screenY, 0);
+                    camera.unproject(touch);
+                    ship.touch(touch);
+                    ship.move();
                 }
-                else {
-                    ship.vX = (touch.x - JSwidth / 2) / 25;
-                    ship.vY = (touch.y - JSheight / 2) / 25;
+                if (currentlevel.controls == JOYSTIK_LEFT || currentlevel.controls == JOYSTIK_RIGHT) {
+                    touch.set(screenX, screenY, 0);
+                    camera.unproject(touch);
+                    //проверяем попали ли мы касанием в круг
+                    if (Math.pow(touch.x - JSwidth / 2, 2) + Math.pow(touch.y - JSheight / 2, 2) <= Math.pow(150, 2)) {
+                        ship.vX = (touch.x - JSwidth / 2) / 19;
+                        ship.vY = (touch.y - JSheight / 2) / 19;
+                    } else {
+                        ship.vX = (touch.x - JSwidth / 2) / 25;
+                        ship.vY = (touch.y - JSheight / 2) / 25;
 
+                    }
                 }
+                // }
+
+
             }
-        // }
-
-
-
-    }
-           // }
+            // }
 
             return false;
         }
@@ -1105,8 +1116,6 @@ public class ScreenGame implements Screen {
             return false;
         }
     }
-
-
 
 
 }

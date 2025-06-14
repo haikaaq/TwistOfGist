@@ -1,4 +1,5 @@
 package ru.pick;
+
 import static ru.pick.Main.SCR_HEIGHT;
 import static ru.pick.Main.SCR_WIDTH;
 
@@ -9,63 +10,52 @@ import com.badlogic.gdx.utils.TimeUtils;
 public class Ship extends Object {
 
 
-
     private static final float MAX_ROTATION_SPEED = 5f;  // Макс. скорость поворота (градусов/кадр)
     private static final float MAX_ROTATION_ANGLE = 70f; // Макс. угол отклонения (градусов)
     private long timeLastPhase;
-    private long timePhaseInterval=150;
-    public float rotation=0;
+    private long timePhaseInterval = 150;
+    public float rotation = 0;
     public float rotationSpeed;
 
-    public  float CheckVx;
+    public float CheckVx;
 
 
+    public Ship(float x, float y) {
+        super(x, y);
+        width = 350;
+        height = 350;
 
-
-
-    public Ship(float x, float y){
-        super(x,y);
-        width=350;
-        height=350;
-
-        nPhases =12;
-        imgHeight= imgWidth=800;
-
-
+        nPhases = 12;
+        imgHeight = imgWidth = 800;
 
 
     }
 
 
-
-
-
-
-
-
-
-    public void changePhase(){
-        if(TimeUtils.millis()> timeLastPhase+timePhaseInterval){
-            timeLastPhase= TimeUtils.millis();
-            phase++;}
-        if(phase == nPhases) phase=0;
+    public void changePhase() {
+        if (TimeUtils.millis() > timeLastPhase + timePhaseInterval) {
+            timeLastPhase = TimeUtils.millis();
+            phase++;
+        }
+        if (phase == nPhases) phase = 0;
 
     }
 
-    public void touch( Vector3 touch){
+    public void touch(Vector3 touch) {
 
-        vX= (touch.x-scrX()-125)/27;
-        vY= (touch.y-scrY()-125)/70;
+        vX = (touch.x - scrX() - 125) / 27;
+        vY = (touch.y - scrY() - 125) / 70;
         OutOfScreen();
 
     }
+
     @Override
     public void move() {
         super.move();
         //if (vX>MaxVx)vX=MaxVx;
-        rotationSpeed=(vX-CheckVx)*2;
-        if (Math.abs(rotationSpeed)<0.7f)rotationSpeed=rotationSpeed/200;
-        rotation-=rotationSpeed;
+        rotationSpeed = (vX - CheckVx) * 2;
+        if (Math.abs(rotationSpeed) < 0.7f) rotationSpeed = rotationSpeed / 200;
+        rotation -= rotationSpeed;
 
 
 
@@ -86,19 +76,25 @@ public class Ship extends Object {
     }
 
 
-
-
-    public void stop(){
-        vX=0;
-        vY=0;
-    }
-    public void OutOfScreen(){
-        if (x>=SCR_WIDTH) { x= SCR_WIDTH;}
-        if (y>= SCR_HEIGHT) { y= SCR_HEIGHT;}
-        if(y<0){ y=0;}
-        if(x<0){ x=0;}
+    public void stop() {
+        vX = 0;
+        vY = 0;
     }
 
+    public void OutOfScreen() {
+        if (x >= SCR_WIDTH) {
+            x = SCR_WIDTH;
+        }
+        if (y >= SCR_HEIGHT) {
+            y = SCR_HEIGHT;
+        }
+        if (y < 0) {
+            y = 0;
+        }
+        if (x < 0) {
+            x = 0;
+        }
+    }
 
 
 }

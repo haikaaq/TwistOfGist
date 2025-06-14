@@ -26,37 +26,39 @@ public class ScreenLeaderboard implements Screen {
     Texture imgBG;
     Texture imgPBT;
     private InputKeyboard keyboard;
-    public static boolean iskeyboard =true;
+    public static boolean iskeyboard = true;
     Texture imgBackAtlas;
+    Texture imgReset;
     TextureRegion[] imgBack = new TextureRegion[2];
 
     SpaceButton btnBack;
     SpaceButton btnLead;
     SpaceButton btnName;
     SpaceButton btnPlace;
+    SpaceButton btnReset;
 
     private List<Player> topPlayers = new ArrayList<>();
 
 
     public ScreenLeaderboard(Main main) {
         this.main = main;
-        batch= main.batch;
-        camera= main.camera;
-        touch= main.touch;
-        font=main.font70;
-        font32=main.font32;
+        batch = main.batch;
+        camera = main.camera;
+        touch = main.touch;
+        font = main.font70;
+        font32 = main.font32;
 
 
-
-        imgBackAtlas= new Texture("buttonsLeftRight.png");
-        imgBG=new Texture("bgleadbd.png");
-        imgPBT =new Texture("leaderboardBT.png");
-        btnBack = new SpaceButton(10,1500,90,90,0);
-        btnLead = new SpaceButton(font,"Leaderboard",SCR_HEIGHT-20);
-        btnName = new SpaceButton(font,"ENTER YOUR NAME",SCR_HEIGHT/2+100);
-        btnPlace =new SpaceButton(font,"You are in "+main.player.rank+" place",SCR_HEIGHT/4);
-
-        keyboard = new InputKeyboard(font,SCR_WIDTH,SCR_HEIGHT*3/4,11);
+        imgReset = new Texture("reset.png");
+        imgBackAtlas = new Texture("buttonsLeftRight.png");
+        imgBG = new Texture("bgleadbd.png");
+        imgPBT = new Texture("leaderboardBT.png");
+        btnBack = new SpaceButton(10, 1500, 90, 90, 0);
+        btnLead = new SpaceButton(font, LanguageManager.get("leaderboard"), SCR_HEIGHT - 20);
+        btnName = new SpaceButton(font, LanguageManager.get("enteryourname"), SCR_HEIGHT / 2 + 100);
+        btnPlace = new SpaceButton(font, LanguageManager.get("Youarein") + " " + main.player.rank + " " + LanguageManager.get("place"), SCR_HEIGHT / 4);
+        btnReset = new SpaceButton(SCR_WIDTH - 100, 1500, 90, 90, 0);
+        keyboard = new InputKeyboard(font, SCR_WIDTH, SCR_HEIGHT * 3 / 4, 11);
 
 
         for (int e = 0; e < imgBack.length; e++) {
@@ -65,43 +67,41 @@ public class ScreenLeaderboard implements Screen {
         }
 
 
-
     }
 
 
     @Override
     public void show() {
-
+        getplase();
+        leaderboard();
     }
 
     @Override
     public void render(float delta) {
-        changeButtons();
-        leaderboard();
-        getplase();
-       if(main.player.rank<1||main.player.rank>10){
-        btnPlace.changeText("You are not in top 10");}
-       else{
-           btnPlace.changeText("You are in "+main.player.rank+" place");
-       }
-
-        if(Gdx.input.justTouched()){
+        // changeButtons();
 
 
-            touch.set(Gdx.input.getX(),Gdx.input.getY(),0);
+        if (Gdx.input.justTouched()) {
+
+
+            touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touch);
-            if(btnBack.hit(touch.x,touch.y)){
-                if(btnBack.hit(touch.x,touch.y)){
+            if (btnBack.hit(touch.x, touch.y)) {
+                if (btnBack.hit(touch.x, touch.y)) {
                     main.setScreen(main.screenMenu);
                 }
 
             }
-            if (keyboard.touch(touch.x,touch.y)){
-                main.player.name=keyboard.getText();
-                main.player.money= main.allmoney;
-                main.player.level= main.level;
+            if (btnReset.hit(touch.x, touch.y)) {
+                leaderboard();
+                getplase();
+            }
+            if (keyboard.touch(touch.x, touch.y)) {
+                main.player.name = keyboard.getText();
+                main.player.money = main.allmoney;
+                main.player.level = main.level;
 
-                iskeyboard =false;
+                iskeyboard = false;
             }
 
         }
@@ -115,53 +115,47 @@ public class ScreenLeaderboard implements Screen {
         batch.draw(imgBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
         keyboard.draw(batch);
 
-        btnLead.font.draw(batch,btnLead.text,btnLead.x,btnLead.y);
-        batch.draw(imgBack[btnBack.type],btnBack.imgX,btnBack.imgY,btnBack.imgWidht,btnBack.imgHeight);
+        btnLead.font.draw(batch, btnLead.text, btnLead.x, btnLead.y);
+        batch.draw(imgBack[btnBack.type], btnBack.imgX, btnBack.imgY, btnBack.imgWidht, btnBack.imgHeight);
+        batch.draw(imgReset, btnReset.imgX, btnReset.imgY, btnReset.imgWidht, btnReset.imgHeight);
+
+        if (!iskeyboard) {
+            font.draw(batch, LanguageManager.get("name"), 100, SCR_HEIGHT - 160);
+            if (LanguageManager.currentBundle == LanguageManager.ruBundle) {
+                font.draw(batch, LanguageManager.get("levelLB"), 280, SCR_HEIGHT - 160);
+            } else {
+                font.draw(batch, LanguageManager.get("levelLB"), 360, SCR_HEIGHT - 160);
+            }
+            font.draw(batch, LanguageManager.get("money"), 620, SCR_HEIGHT - 160);
 
 
-        if(!iskeyboard) {
-            font.draw(batch, "NAME" , 100, SCR_HEIGHT - 160 );
-            font.draw(batch, "LEVEL" , 400, SCR_HEIGHT - 160 );
-            font.draw(batch, "MONEY" , 645, SCR_HEIGHT - 160 );
-
-
-            btnPlace.font.draw(batch,btnPlace.text,btnPlace.x,btnPlace.y);
+            btnPlace.font.draw(batch, btnPlace.text, btnPlace.x, btnPlace.y);
             for (int i = 0; i < topPlayers.size(); i++) {
 
                 Player p = topPlayers.get(i);
-                batch.draw(imgPBT,60,SCR_HEIGHT - 260 - 68 * (i+1),SCR_WIDTH-120,70);
+                batch.draw(imgPBT, 60, SCR_HEIGHT - 260 - 68 * (i + 1), SCR_WIDTH - 120, 70);
                 font.draw(batch, (i + 1) + ". " + p.name, 100, SCR_HEIGHT - 260 - 68 * i);
                 font.draw(batch, "" + p.level, 500, SCR_HEIGHT - 260 - 68 * i);
-                if(p.money<100000){
-                font.draw(batch, ( p.money+""), 700, SCR_HEIGHT - 260 - 68 * i);}
-                else font.draw(batch, ( p.money/1000+"k"), 700, SCR_HEIGHT - 260 - 68 * i);
+                if (p.money < 100000) {
+                    font.draw(batch, (p.money + ""), 700, SCR_HEIGHT - 260 - 68 * i);
+                } else font.draw(batch, (p.money / 1000 + "k"), 700, SCR_HEIGHT - 260 - 68 * i);
 
 
             }
-        }
-        else btnName.font.draw(batch,btnName.text,btnName.x,btnName.y);
+        } else btnName.font.draw(batch, btnName.text, btnName.x, btnName.y);
         batch.end();
     }
 
 
-
-
-
-
-
-
-
-
-    public void getplase(){
+    public void getplase() {
         FirebaseManager firebase = FirebaseService.create();
 
         firebase.getPlayerRank(main.player, new FirebaseManager.PlayerRankCallback() {
+
             @Override
             public void onSuccess(int rank) {
-                // Просто выводим число в лог
-                Gdx.app.log("RANK", "Ваша позиция: " + rank);
 
-                // Или сохраняем в переменную
+
                 main.player.rank = rank;
             }
 
@@ -172,28 +166,36 @@ public class ScreenLeaderboard implements Screen {
         });
     }
 
-    public void leaderboard(){
+    public void leaderboard() {
         FirebaseManager firebase = FirebaseService.create();
-        firebase.getTop10ByLevel(new FirebaseManager.SortedLeaderboardCallback()  {
+        firebase.getTop10ByLevel(new FirebaseManager.SortedLeaderboardCallback() {
 
 
             @Override
             public void onSuccess(List<Player> players) {
-
-                // Сохраняем игроков в поле класса
-                Gdx.app.postRunnable(() -> {
-                    topPlayers = players;
-                });
-
-
-
+                topPlayers = players;
+                if (firebase.isOnline()) {
+                    if (main.player.rank < 1 || main.player.rank > 10) {
+                        btnPlace.changeText(LanguageManager.get("notintop"));
+                    } else {
+                        btnPlace.changeText(LanguageManager.get("Youarein") + " " + main.player.rank + " " + LanguageManager.get("place"));
+                    }
+                } else {
+                    btnPlace.changeText(LanguageManager.get("Youareoffline"));
+                }
             }
 
             @Override
             public void onError(String message) {
-                Gdx.app.error("Leaderboard", message);
+                btnPlace.changeText(LanguageManager.get("Youareoffline"));
+                //  Gdx.app.error("Leaderboard", message);
             }
-        },false);
+        });
+
+
+        btnLead.changeText(LanguageManager.get("leaderboard"));
+        btnName.changeText(LanguageManager.get("enteryourname"));
+
 
     }
     /* private void LoadTable() {
@@ -219,11 +221,24 @@ public class ScreenLeaderboard implements Screen {
     }
 
      */
-    public void changeButtons (){
+   /* public void changeButtons (){
         FirebaseManager firebase = FirebaseService.create();
-        if(firebase.isOnline()) btnPlace.changeText("You are in "+main.player.rank+"place");
-        else btnPlace.changeText("You are offline");
-    }
+        if(firebase.isOnline()) {
+            if(main.player.rank<1||main.player.rank>10){
+                btnPlace.changeText(LanguageManager.get("notintop"));}
+            else{
+                btnPlace.changeText(LanguageManager.get("Youarein")+" "+main.player.rank+" "+LanguageManager.get("place"));
+            }
+        }
+        else{
+            btnPlace.changeText(LanguageManager.get("Youareoffline"));
+        }
+
+
+        btnLead.changeText(LanguageManager.get("leaderboard"));
+        btnName.changeText(LanguageManager.get("enteryourname"));
+
+    }*/
 
     @Override
     public void resize(int width, int height) {
@@ -251,5 +266,4 @@ public class ScreenLeaderboard implements Screen {
     }
 
 
-
-  }
+}

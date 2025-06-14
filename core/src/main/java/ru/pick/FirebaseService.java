@@ -13,8 +13,8 @@ public class FirebaseService {
         try {
             if (Gdx.app.getType() == Application.ApplicationType.Android) {
                 Class<?> clazz = Class.forName("ru.pick.android.FirebaseAndroid");
-               Constructor<?> constructor = clazz.getDeclaredConstructor();
-               return (FirebaseManager) constructor.newInstance();
+                Constructor<?> constructor = clazz.getDeclaredConstructor();
+                return (FirebaseManager) constructor.newInstance();
 
 
             } else {
