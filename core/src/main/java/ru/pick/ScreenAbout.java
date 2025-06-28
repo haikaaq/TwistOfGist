@@ -114,29 +114,29 @@ public class ScreenAbout implements Screen {
 
         if (isS0) {
             batch.draw(imgBG0, 0, 0, SCR_WIDTH, SCR_HEIGHT);
-            batch.draw(imgBack[btnRight.type], btnRight.imgX, btnRight.imgY, btnRight.imgWidht, btnRight.imgHeight);
-            batch.draw(imgBack[btnLeft.type], btnLeft.imgX, btnLeft.imgY, btnLeft.imgWidht, btnLeft.imgHeight);
+            batch.draw(imgBack[btnRight.type], btnRight.imgX, btnRight.imgY, btnRight.imgWidth, btnRight.imgHeight);
+            batch.draw(imgBack[btnLeft.type], btnLeft.imgX, btnLeft.imgY, btnLeft.imgWidth, btnLeft.imgHeight);
             font.draw(batch, LanguageManager.get("history"), 50, SCR_HEIGHT - 100, SCR_WIDTH - 100, Align.center, true);
         }
         if (is1) {
 
             batch.draw(imgBG1, 0, 0, SCR_WIDTH, SCR_HEIGHT);
-            batch.draw(imgBack[btnRight.type], btnRight.imgX, btnRight.imgY, btnRight.imgWidht, btnRight.imgHeight);
-            batch.draw(imgBack[btnLeft.type], btnLeft.imgX, btnLeft.imgY, btnLeft.imgWidht, btnLeft.imgHeight);
+            batch.draw(imgBack[btnRight.type], btnRight.imgX, btnRight.imgY, btnRight.imgWidth, btnRight.imgHeight);
+            batch.draw(imgBack[btnLeft.type], btnLeft.imgX, btnLeft.imgY, btnLeft.imgWidth, btnLeft.imgHeight);
             btnText1.font.draw(batch, btnText1.text, 50, btnText1.y, SCR_WIDTH - 100, Align.center, true);
             btnText2.font.draw(batch, btnText2.text, 50, btnText2.y, SCR_WIDTH - 100, Align.center, true);
 
         }
         if (is2) {
             batch.draw(imgBG2, 0, 0, SCR_WIDTH, SCR_HEIGHT);
-            batch.draw(imgBack[btnRight.type], btnRight.imgX, btnRight.imgY, btnRight.imgWidht, btnRight.imgHeight);
-            batch.draw(imgBack[btnLeft.type], btnLeft.imgX, btnLeft.imgY, btnLeft.imgWidht, btnLeft.imgHeight);
+            batch.draw(imgBack[btnRight.type], btnRight.imgX, btnRight.imgY, btnRight.imgWidth, btnRight.imgHeight);
+            batch.draw(imgBack[btnLeft.type], btnLeft.imgX, btnLeft.imgY, btnLeft.imgWidth, btnLeft.imgHeight);
             btnText3.font.draw(batch, btnText3.text, 50, btnText3.y, SCR_WIDTH - 100, Align.center, true);
             btnText4.font.draw(batch, btnText4.text, 50, btnText4.y, SCR_WIDTH - 100, Align.center, true);
         }
 
 
-        batch.draw(imgBack[btnBack.type], btnBack.imgX, btnBack.imgY, btnBack.imgWidht, btnBack.imgHeight);
+        batch.draw(imgBack[btnBack.type], btnBack.imgX, btnBack.imgY, btnBack.imgWidth, btnBack.imgHeight);
 
 
         batch.end();

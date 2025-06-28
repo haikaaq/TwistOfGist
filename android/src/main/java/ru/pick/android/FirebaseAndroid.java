@@ -27,11 +27,7 @@ public class FirebaseAndroid implements FirebaseManager {
     public boolean online;
     public FirebaseAndroid(Context context) {
         this.context = context;
-
         this.database = FirebaseDatabase.getInstance().getReference();}
-
-
-
 
 
     @Override

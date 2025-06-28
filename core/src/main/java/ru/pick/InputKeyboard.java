@@ -33,7 +33,7 @@ public class InputKeyboard {
     private final Texture imgAtlasKeys; // все изображения кнопок
     private final TextureRegion imgEditText; // поле ввода
     private final TextureRegion imgKeyUP, imgKeyDown; // кнопка выпуклая/вдавленная
-    private final TextureRegion imgKeyBS, imgKeyEnter, imgKeyCL, imgKeySW; // картинки управляющих кноп
+    private final TextureRegion imgKeyBS, imgKeyEnter,imgKeyCL,imgKeySW ; // картинки управляющих кноп
 
     private long timeStartPressKey, timeDurationPressKey = 150; // длительность надавливания кнопки
     private int keyPressed = -1; // код нажатой кнопки

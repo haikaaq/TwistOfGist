@@ -72,13 +72,16 @@ public class ScreenLeaderboard implements Screen {
 
     @Override
     public void show() {
-        getplase();
-        leaderboard();
+
+
     }
 
     @Override
     public void render(float delta) {
-        // changeButtons();
+
+        if(!iskeyboard){
+        leaderboard();
+        getplase();}
 
 
         if (Gdx.input.justTouched()) {
@@ -116,8 +119,8 @@ public class ScreenLeaderboard implements Screen {
         keyboard.draw(batch);
 
         btnLead.font.draw(batch, btnLead.text, btnLead.x, btnLead.y);
-        batch.draw(imgBack[btnBack.type], btnBack.imgX, btnBack.imgY, btnBack.imgWidht, btnBack.imgHeight);
-        batch.draw(imgReset, btnReset.imgX, btnReset.imgY, btnReset.imgWidht, btnReset.imgHeight);
+        batch.draw(imgBack[btnBack.type], btnBack.imgX, btnBack.imgY, btnBack.imgWidth, btnBack.imgHeight);
+        batch.draw(imgReset, btnReset.imgX, btnReset.imgY, btnReset.imgWidth, btnReset.imgHeight);
 
         if (!iskeyboard) {
             font.draw(batch, LanguageManager.get("name"), 100, SCR_HEIGHT - 160);
@@ -262,6 +265,7 @@ public class ScreenLeaderboard implements Screen {
 
     @Override
     public void dispose() {
+        keyboard.dispose();
 
     }
 

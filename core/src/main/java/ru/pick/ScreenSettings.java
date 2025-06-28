@@ -1,16 +1,11 @@
 package ru.pick;
 
-import static ru.pick.Main.ACCELEROMETER;
-import static ru.pick.Main.JOYSTIK;
-import static ru.pick.Main.JOYSTIK_LEFT;
-import static ru.pick.Main.JOYSTIK_RIGHT;
 import static ru.pick.Main.SCREEN;
 import static ru.pick.Main.SCR_HEIGHT;
 import static ru.pick.Main.SCR_WIDTH;
 import static ru.pick.Main.controls;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -84,7 +79,7 @@ public class ScreenSettings implements Screen {
 
         if (curentlevel.isSettingLevel) {
             btnShoot = new SpaceButton(font70, LanguageManager.get("Enemiesareshooting"), 400);
-            btnShoot.widht += 60;
+            btnShoot.width += 60;
         }
 
         btnBack = new SpaceButton(10, 1500, 90, 90, 0);
@@ -94,10 +89,10 @@ public class ScreenSettings implements Screen {
             imgBack[e] = new TextureRegion(imgBackAtlas, (e) * 200, 0, 200, 200);
         }
 
-        btnActionSounds.widht += 60;
-        btnFonMusic.widht += 60;
-        btnEnglish.widht += 60;
-        btnRussian.widht += 60;
+        btnActionSounds.width += 60;
+        btnFonMusic.width += 60;
+        btnEnglish.width += 60;
+        btnRussian.width += 60;
 
 
     }
@@ -193,18 +188,18 @@ public class ScreenSettings implements Screen {
         btnLanguage.font.draw(batch, btnLanguage.text, btnLanguage.x, btnLanguage.y);
         btnRussian.font.draw(batch, btnRussian.text, btnRussian.x, btnRussian.y);
         btnEnglish.font.draw(batch, btnEnglish.text, btnEnglish.x, btnEnglish.y);
-        batch.draw(main.isFonMusic ? imgON : imgOFF, btnFonMusic.x + btnFonMusic.widht, btnFonMusic.y - btnFonMusic.height - 10, 70, 70);
+        batch.draw(main.isFonMusic ? imgON : imgOFF, btnFonMusic.x + btnFonMusic.width, btnFonMusic.y - btnFonMusic.height - 10, 70, 70);
         btnActionSounds.font.draw(batch, btnActionSounds.text, btnActionSounds.x, btnActionSounds.y);
         if (curentlevel.isSettingLevel) {
             btnShoot.font.draw(batch, btnShoot.text, btnShoot.x, btnShoot.y);
         }
         if (curentlevel.isSettingLevel) {
-            batch.draw(curentlevel.isRexlexLevel ? imgON : imgOFF, btnShoot.x + btnShoot.widht, btnShoot.y - btnShoot.height - 10, 70, 70);
+            batch.draw(curentlevel.isRexlexLevel ? imgON : imgOFF, btnShoot.x + btnShoot.width, btnShoot.y - btnShoot.height - 10, 70, 70);
 
         }
-        batch.draw(main.isActionSounds ? imgON : imgOFF, btnActionSounds.x + btnActionSounds.widht, btnActionSounds.y - btnActionSounds.height - 10, 70, 70);
-        batch.draw(LanguageManager.currentBundle == LanguageManager.enBundle ? imgON : imgOFF, btnEnglish.x + btnEnglish.widht, btnEnglish.y - btnEnglish.height - 10, 70, 70);
-        batch.draw(LanguageManager.currentBundle == LanguageManager.ruBundle ? imgON : imgOFF, btnRussian.x + btnRussian.widht, btnRussian.y - btnRussian.height - 10, 70, 70);
+        batch.draw(main.isActionSounds ? imgON : imgOFF, btnActionSounds.x + btnActionSounds.width, btnActionSounds.y - btnActionSounds.height - 10, 70, 70);
+        batch.draw(LanguageManager.currentBundle == LanguageManager.enBundle ? imgON : imgOFF, btnEnglish.x + btnEnglish.width, btnEnglish.y - btnEnglish.height - 10, 70, 70);
+        batch.draw(LanguageManager.currentBundle == LanguageManager.ruBundle ? imgON : imgOFF, btnRussian.x + btnRussian.width, btnRussian.y - btnRussian.height - 10, 70, 70);
 
         // batch.draw(controls==ACCELEROMETER?imgON:imgOFF,btnAccelerometr.x+btnAccelerometr.widht, btnAccelerometr.y-btnAccelerometr.height -10,70,70 );
         /*if (controls==JOYSTIK||controls==JOYSTIK_LEFT||controls==JOYSTIK_RIGHT){
@@ -225,7 +220,7 @@ public class ScreenSettings implements Screen {
             btnFonMusic.y=500;
         }*/
 
-        batch.draw(imgBack[btnBack.type], btnBack.imgX, btnBack.imgY, btnBack.imgWidht, btnBack.imgHeight);
+        batch.draw(imgBack[btnBack.type], btnBack.imgX, btnBack.imgY, btnBack.imgWidth, btnBack.imgHeight);
 
 
         batch.end();

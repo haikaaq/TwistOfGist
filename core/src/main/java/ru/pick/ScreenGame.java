@@ -33,7 +33,7 @@ public class ScreenGame implements Screen {
     private final Vector3 touch;
     private final BitmapFont font70;
     private final BitmapFont font32;
-    private InputKeyboard keyboard;
+    private InputNumKeyboard keyboard;
     private long timeLastSpawnEnemy;
     private long timeLastSpawnShots;
     private long timeLastSpawnBoost, timeBoostInterval = 9000;
@@ -44,7 +44,7 @@ public class ScreenGame implements Screen {
     public int level;
     private float earthAlpha = 1.0f;
 
-    public boolean isShots = true;
+    private boolean isShots = true;
 
     private int emeniesDone = 0;
     private int emeniesCount = 0;
@@ -58,7 +58,7 @@ public class ScreenGame implements Screen {
     private int money;
     private String strmoney = money + "";
     private String strKB = "";
-    private boolean isgame;
+    public boolean isgame;
     public int shipSkin;
     public int allmoney;
     public int shotsShots;
@@ -158,7 +158,7 @@ public class ScreenGame implements Screen {
         imgGrayBG = new Texture("GrayBG.png");
         imgShotsatlas = new Texture("shots.png");
         imgLogo = new Texture("logo.png");
-        keyboard = new InputKeyboard(font70, SCR_WIDTH, SCR_HEIGHT * 3 / 4, 11);
+        keyboard = new InputNumKeyboard(font70, SCR_WIDTH, SCR_HEIGHT , 10);
 
         shipsPixmap = new Pixmap(Gdx.files.internal("atlas.png"));
         enemyPixmap = new Pixmap(Gdx.files.internal("enemyes.png"));
@@ -236,6 +236,8 @@ public class ScreenGame implements Screen {
 
 
     public void show() {
+
+        gameState=GAME;
         shotCount = main.shotsBoostCount;
         shotEven = main.shotEven;
         timeStartGame = TimeUtils.millis();
@@ -263,10 +265,12 @@ public class ScreenGame implements Screen {
             touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touch);
             if (btnBack.hit(touch.x, touch.y)) {
+                main.isPlayMove=false;
                 main.setScreen(main.screenMenu);
                 FonMusic.stop();
                 main.shotsBoostCount = shotCount;
                 StopGame();
+
             }
             if (currentlevel.isTapLevel) {
                 for (Enemy e : enemies) {
@@ -283,7 +287,7 @@ public class ScreenGame implements Screen {
                     main.shotsBoostCount = initialShotCount;
                     main.shotEven = initialEven;
                     GameClear();
-                    gameStart();
+                    main.isPlayMove=true;
                 }
 
             }
@@ -336,8 +340,9 @@ public class ScreenGame implements Screen {
         }
 
         //события
-        if (gameState == GAME) {
 
+
+        if(gameState==GAME){
             gameStart();
         }
 
@@ -491,8 +496,8 @@ public class ScreenGame implements Screen {
                 } else {
                     timeRedSpawn = TimeUtils.millis();
 
-                    main.shotsBoostCount = 0;
-                    main.shotEven = 0;
+                    shotCount = 0;
+                    shotEven = 0;
                 }
 
                 boosts.remove(i);
@@ -622,7 +627,7 @@ public class ScreenGame implements Screen {
 
         keyboard.draw(batch);
 
-        batch.draw(imgBack[btnBack.type], btnBack.imgX, btnBack.imgY, btnBack.imgWidht, btnBack.imgHeight);
+        batch.draw(imgBack[btnBack.type], btnBack.imgX, btnBack.imgY, btnBack.imgWidth, btnBack.imgHeight);
         btnMoney.font.draw(batch, btnMoney.text, btnMoney.x, btnMoney.y);
         batch.draw(imgMN, btnMoney.x - 70, btnMoney.y - 58, 50, 50);
 
@@ -645,7 +650,7 @@ public class ScreenGame implements Screen {
                 font70.draw(batch, LanguageManager.get("youcollected") + " " + (Math.max(money, 0)) + " " + LanguageManager.get("coins"), 0, 600, SCR_WIDTH, Align.center, true);
 
             }
-            batch.draw(imgLongButton[btnGetMoney.phase], btnGetMoney.imgX, btnGetMoney.imgY, btnGetMoney.imgWidht, btnGetMoney.imgHeight);
+            batch.draw(imgLongButton[btnGetMoney.phase], btnGetMoney.imgX, btnGetMoney.imgY, btnGetMoney.imgWidth, btnGetMoney.imgHeight);
             btnGetMoney.font.draw(batch, btnGetMoney.text, btnGetMoney.x, btnGetMoney.y);
         }
 
@@ -941,7 +946,7 @@ public class ScreenGame implements Screen {
     public void gameStart() {
 
 
-        gameState = GAME;
+
 
         for (GameBackground bg : bg) bg.move();
         spavnEnemy();

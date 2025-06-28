@@ -19,14 +19,14 @@ public class Main extends Game {
     public static final int SCREEN = 0, JOYSTIK = 1, JOYSTIK_LEFT = 2, JOYSTIK_RIGHT = 3, ACCELEROMETER = 4;
     public static int controls = SCREEN;
     public static final int GAME_OWER = 1, GAME = 0;
-    public static int gameState = GAME;
+    public static int gameState ;
 
     public SpriteBatch batch;
     public OrthographicCamera camera;
     public Vector3 touch;
     public BitmapFont font70;
     public BitmapFont font32;
-
+    public boolean isPlayMove=true;
     public ScreenMenu screenMenu;
     public ScreenGame screenGame;
     public ScreenShop screenShop;
@@ -35,7 +35,7 @@ public class Main extends Game {
     public ScreenAbout screenAbout;
     public ScreenNumLevel screenNumLevel;
     public Music FonMusic;
-    public int level;
+    public int level=4;
     public int shipSkin;
     public int shotsShots;
     public int shotEven;
@@ -46,6 +46,7 @@ public class Main extends Game {
     public int basicShotCoast = 50;
     public boolean isFonMusic = true;
     public boolean isActionSounds = true;
+    public boolean isFirstRunning;
     public Player player;
 
 
@@ -71,7 +72,13 @@ public class Main extends Game {
 
         player = new Player();
         setScreen(screenMenu);
+        if (FirstRunManager.isFirstRun()) {
+            isFirstRunning=true; // Показываем обучение
+            FirstRunManager.setFirstRunCompleted();
+        } else {
+            isFirstRunning=false;
 
+        }
 
     }
 

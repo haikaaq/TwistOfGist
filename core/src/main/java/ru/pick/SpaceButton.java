@@ -11,19 +11,23 @@ public class SpaceButton {
     float x, y;
     BitmapFont font;
     String text;
-    float widht, height;
-    float imgWidht, imgHeight;
+    float width, height;
+    float imgWidth, imgHeight;
+    float minImgWidth, minImgHeight;
     float imgY, imgX;
     private boolean iscenter;
     public int phase;
     public boolean isPressed = false;
     public boolean isHover = false;
-    private boolean isImageButton = false;
+    private boolean isImageAndTextButton = false;
+    private boolean isOnlyImageButton = false;
     public boolean setScreenButton;
     public boolean wrapEnabled;
     public int type;
+    private int spin=1;
     private boolean wasTouched;
     public float imgWidhtCoefficient;
+    public boolean isMove;
 
 
     public SpaceButton(BitmapFont font, String text, float x, float y) {
@@ -32,7 +36,7 @@ public class SpaceButton {
         this.x = x;
         this.y = y;
         GlyphLayout glyphLayout = new GlyphLayout(font, text);
-        widht = glyphLayout.width;
+        width = glyphLayout.width;
         height = glyphLayout.height;
         glyphLayout.setText(font, text);
 
@@ -44,18 +48,19 @@ public class SpaceButton {
         this.text = text;
         this.y = y;
         GlyphLayout glyphLayout = new GlyphLayout(font, text);
-        widht = glyphLayout.width;
+        width = glyphLayout.width;
         height = glyphLayout.height;
-        this.x = SCR_WIDTH / 2 - widht / 2;
+        this.x = SCR_WIDTH / 2 - width / 2;
         iscenter = true;
     }
 
     public SpaceButton(float x, float y, float widht, float height, int type) {
-        isImageButton = true;
+        isOnlyImageButton = true;
         this.type = type;
-        this.imgWidht = widht;
+        this.imgWidth = widht;
         this.imgHeight = height;
-
+        minImgWidth=imgWidth;
+        minImgHeight=imgHeight;
 
         this.imgX = x;
         this.imgY = y;
@@ -65,65 +70,73 @@ public class SpaceButton {
     public SpaceButton(BitmapFont font, String text, Texture img, float y, float imgWidhtCoefficient) {
         this.font = font;
         this.text = text;
-        isImageButton = true;
+        isImageAndTextButton = true;
         iscenter = true;
         GlyphLayout glyphLayout = new GlyphLayout(font, text);
         this.imgWidhtCoefficient = imgWidhtCoefficient;
 
         this.y = y;
 
-        this.widht = glyphLayout.width;
-        this.x = SCR_WIDTH / 2 - widht / 2;
+        this.width = glyphLayout.width;
+        this.x = SCR_WIDTH / 2 - width / 2;
         this.height = glyphLayout.height;
-        this.imgWidht = widht * imgWidhtCoefficient;
+        this.imgWidth = width * imgWidhtCoefficient;
         this.imgHeight = height * 3.9f;
+
         this.imgY = y - imgHeight / 2 - height / 2;
-        this.imgX = x + widht / 2 - imgWidht / 2;
+        this.imgX = x + width / 2 - imgWidth / 2;
 
     }
 
     public SpaceButton(BitmapFont font, String text, float x, float y, float imgWidhtCoefficient) {
         this.font = font;
         this.text = text;
-        isImageButton = true;
+        isImageAndTextButton = true;
         this.imgWidhtCoefficient = imgWidhtCoefficient;
 
         this.y = y;
         this.x = x;
         GlyphLayout glyphLayout = new GlyphLayout(font, text);
-        this.widht = glyphLayout.width;
+        this.width = glyphLayout.width;
 
         this.height = glyphLayout.height;
-        this.imgWidht = widht * imgWidhtCoefficient;
+        this.imgWidth = width * imgWidhtCoefficient;
         this.imgHeight = height * 3.9f;
         this.imgY = y - imgHeight / 2 - height / 2;
-        this.imgX = x + widht / 2 - imgWidht / 2;
+        this.imgX = x + width / 2 - imgWidth / 2;
 
     }
 
 
     boolean hit(float tx, float ty) {
-        if (isImageButton)
-            return imgX < tx && tx < imgX + imgWidht && ty > imgY && ty < imgY + imgHeight;
+        if (isImageAndTextButton||isOnlyImageButton)
+            return imgX < tx && tx < imgX + imgWidth && ty > imgY && ty < imgY + imgHeight;
 
 
-        else return x < tx && tx < x + widht && ty < y && ty > y - height;
+        else return x < tx && tx < x + width && ty < y && ty > y - height;
     }
 
 
     public void changeText(String text) {
         this.text = text;
         GlyphLayout glyphLayout = new GlyphLayout(font, text);
-        widht = glyphLayout.width;
+        width = glyphLayout.width;
         height = glyphLayout.height;
-        if (iscenter) this.x = SCR_WIDTH / 2 - widht / 2;
-        if (isImageButton) {
+        if (iscenter) this.x = SCR_WIDTH / 2 - width / 2;
+        if (isImageAndTextButton) {
 
 
-            this.imgWidht = widht * imgWidhtCoefficient;
-            this.imgHeight = height * 3.9f;
+            this.minImgWidth = width * imgWidhtCoefficient;
+            this.minImgHeight = height * 3.9f;
+            if(isMove){
+               moveButton(4f,8f, 12);
+            }
+            else{
+                imgHeight=minImgHeight;
+                imgWidth=minImgWidth;
+            }
             this.imgY = y - imgHeight / 2 - height / 2;
-            this.imgX = x + widht / 2 - imgWidht / 2;
+            this.imgX = x + width / 2 - imgWidth / 2;
 
         }
 
@@ -134,7 +147,7 @@ public class SpaceButton {
     public void changeText(int money) {
         this.text = money < 1000 ? "" + money : money + "k";
         GlyphLayout glyphLayout = new GlyphLayout(font, text);
-        widht = glyphLayout.width;
+        width = glyphLayout.width;
     }
 
 
@@ -165,6 +178,17 @@ public class SpaceButton {
             wasTouched = true;
 
         }
+
+    }
+    public void moveButton(float vH,float vW,float coefficient){
+
+        imgWidth +=vW*spin;
+        imgHeight+=vH*spin;
+        if(isOnlyImageButton)imgX-=vW/2f*spin;
+        if((imgWidth-minImgWidth>=minImgWidth/coefficient)||(imgWidth<=minImgWidth)){
+            spin=spin*-1;
+        }
+
 
     }
 }

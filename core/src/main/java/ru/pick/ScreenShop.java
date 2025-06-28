@@ -344,9 +344,9 @@ public class ScreenShop implements Screen {
 
 
         if (screenState == SCREEN) {
-            batch.draw(imgLongButton[btnSkins.phase], btnSkins.imgX, btnSkins.imgY, btnSkins.imgWidht, btnSkins.imgHeight);
-            batch.draw(imgLongButton[btnShots.phase], btnSkins.imgX, btnShots.imgY, btnSkins.imgWidht, btnShots.imgHeight);
-            batch.draw(imgLongButton[btnBoosts.phase], btnSkins.imgX, btnBoosts.imgY, btnSkins.imgWidht, btnBoosts.imgHeight);
+            batch.draw(imgLongButton[btnSkins.phase], btnSkins.imgX, btnSkins.imgY, btnSkins.imgWidth, btnSkins.imgHeight);
+            batch.draw(imgLongButton[btnShots.phase], btnSkins.imgX, btnShots.imgY, btnSkins.imgWidth, btnShots.imgHeight);
+            batch.draw(imgLongButton[btnBoosts.phase], btnSkins.imgX, btnBoosts.imgY, btnSkins.imgWidth, btnBoosts.imgHeight);
 
             btnSkins.font.draw(batch, btnSkins.text, btnSkins.x, btnSkins.y);
             btnShots.font.draw(batch, btnShots.text, btnShots.x, btnShots.y);
@@ -360,8 +360,8 @@ public class ScreenShop implements Screen {
 
         }
         if (!(screenState == SCREEN)) {
-            batch.draw(imgBack[btnRight.type], btnRight.imgX, btnRight.imgY, btnRight.imgWidht, btnRight.imgHeight);
-            batch.draw(imgBack[btnLeft.type], btnLeft.imgX, btnLeft.imgY, btnLeft.imgWidht, btnLeft.imgHeight);
+            batch.draw(imgBack[btnRight.type], btnRight.imgX, btnRight.imgY, btnRight.imgWidth, btnRight.imgHeight);
+            batch.draw(imgBack[btnLeft.type], btnLeft.imgX, btnLeft.imgY, btnLeft.imgWidth, btnLeft.imgHeight);
             btnBuy.font.draw(batch, btnBuy.text, btnBuy.x, btnBuy.y);
 
             for (Shot s : shots) {
@@ -376,7 +376,7 @@ public class ScreenShop implements Screen {
         font.draw(batch, LanguageManager.get("shop"), 330, SCR_HEIGHT - 20);
         btnAllmoney.font.draw(batch, main.allmoney < 1000 ? btnAllmoney.text : main.allmoney / 1000 + "k", btnAllmoney.x, btnAllmoney.y);
 
-        batch.draw(imgBack[btnBack.type], btnBack.imgX, btnBack.imgY, btnBack.imgWidht, btnBack.imgHeight);
+        batch.draw(imgBack[btnBack.type], btnBack.imgX, btnBack.imgY, btnBack.imgWidth, btnBack.imgHeight);
         batch.draw(main.screenMenu.imgMN, btnAllmoney.x - 70, btnAllmoney.y - 58, 50, 50);
         batch.end();
 

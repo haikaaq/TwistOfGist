@@ -26,7 +26,7 @@ public class Shot extends Object {
     }
 
     public boolean OutOfscreen() {
-        return y >= SCR_HEIGHT - height / 2 || x >= SCR_WIDTH - width / 2 || x < width / 2;
+        return (y >= SCR_HEIGHT - height / 2 || x >= SCR_WIDTH - width / 2 || x < width / 2)||(y < - height / 2 );
     }
 
     public void move(float vX) {

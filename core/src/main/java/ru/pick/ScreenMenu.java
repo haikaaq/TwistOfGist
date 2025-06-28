@@ -25,6 +25,7 @@ public class ScreenMenu implements Screen {
     private int phaseBg;
 
 
+    private Levels.Level curentlevel;
     SpaceButton btnLevel;
     SpaceButton btnPlay;
     SpaceButton btnSetting;
@@ -87,7 +88,7 @@ public class ScreenMenu implements Screen {
                 imgButtons[j][i] = new TextureRegion(imgButtonsAtlas, i * 209, (j) * 180, 209, 180);
             }
         }
-        btnPlay = new SpaceButton(font70, LanguageManager.get("play"), imgLongButtonAtlas, SCR_HEIGHT / 3.6f, 4.2f);
+        btnPlay = new SpaceButton(font70, LanguageManager.get("play"), imgLongButtonAtlas, SCR_HEIGHT / 3.6f, 3.8f);
         btnLeaderboard = new SpaceButton(font70, LanguageManager.get("leaderboard"), 250);
         btnLevel = new SpaceButton(font70, LanguageManager.get("level") + " " + main.level, 1540);
 
@@ -113,6 +114,7 @@ public class ScreenMenu implements Screen {
 
     @Override
     public void render(float delta) {
+        curentlevel = Levels.LEVELS[main.level];
         Vector3 Mousepose = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
 
         camera.unproject(Mousepose);
@@ -136,7 +138,7 @@ public class ScreenMenu implements Screen {
                 FonMusic.play();
             }
             FonMusic.setVolume(0.3f);
-            gameState = GAME;
+
             return;
         }
 
@@ -167,14 +169,22 @@ public class ScreenMenu implements Screen {
         batch.draw(imgBG[phaseBg], 0, 0, SCR_WIDTH, SCR_HEIGHT);
 
         changePhase();
+        if(main.isPlayMove&&!main.isFirstRunning)
+        {btnPlay.isMove=true;}
+        else{
+            btnPlay.isMove=false;
+        }
+        if(curentlevel.isKeyboard&&!main.isPlayMove){
+        btnShop.moveButton(4f,4f,12f);}
+
 
         batch.draw(imgEnemyBoses[MenuEnemy.phase], MenuEnemy.scrX(), MenuEnemy.scrY(), MenuEnemy.width / 2, MenuEnemy.height / 2, MenuEnemy.width, MenuEnemy.height, 1, 1, MenuEnemy.rotation);
         batch.draw(imgBG2, 0, 0, SCR_WIDTH, SCR_HEIGHT);
-        batch.draw(imgLogo, SCR_WIDTH / 2 - 240, btnShop.imgY + btnShop.imgWidht / 2 - 29, 480, 390);
-        batch.draw(imgLongButton[btnPlay.phase], btnPlay.imgX, btnPlay.imgY, btnPlay.imgWidht, btnPlay.imgHeight);
-        batch.draw(imgButtons[btnSetting.type][btnSetting.phase], btnSetting.imgX, btnSetting.imgY, btnSetting.imgWidht, btnSetting.imgHeight);
-        batch.draw(imgButtons[btnAbout.type][btnAbout.phase], btnAbout.imgX, btnAbout.imgY, btnAbout.imgWidht, btnAbout.imgHeight);
-        batch.draw(imgButtons[btnShop.type][btnShop.phase], btnShop.imgX, btnShop.imgY, btnShop.imgWidht, btnShop.imgHeight);
+        batch.draw(imgLogo, SCR_WIDTH / 2 - 240, 950 , 480, 390);
+        batch.draw(imgLongButton[btnPlay.phase], btnPlay.imgX, btnPlay.imgY, btnPlay.imgWidth, btnPlay.imgHeight);
+        batch.draw(imgButtons[btnSetting.type][btnSetting.phase], btnSetting.imgX, btnSetting.imgY, btnSetting.imgWidth, btnSetting.imgHeight);
+        batch.draw(imgButtons[btnAbout.type][btnAbout.phase], btnAbout.imgX, btnAbout.imgY, btnAbout.imgWidth, btnAbout.imgHeight);
+        batch.draw(imgButtons[btnShop.type][btnShop.phase], btnShop.imgX, btnShop.imgY, btnShop.imgWidth, btnShop.imgHeight);
 
         btnPlay.font.draw(batch, btnPlay.text, btnPlay.x, btnPlay.y);
         btnLeaderboard.font.draw(batch, btnLeaderboard.text, btnLeaderboard.x, btnLeaderboard.y);
