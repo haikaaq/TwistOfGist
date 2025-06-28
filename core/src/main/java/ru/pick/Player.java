@@ -7,11 +7,13 @@ public class Player {
     public int level;
     public int money;
     public int rank;
+    public String password="12345qdhuznks";
 
     public void copy(Player p) {
         name = p.name;
         level = p.level;
         money = p.money;
+        password=p.password="12345";
     }
 
     public void clear() {

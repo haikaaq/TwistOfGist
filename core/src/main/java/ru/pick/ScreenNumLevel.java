@@ -40,6 +40,12 @@ public class ScreenNumLevel implements Screen {
     }
 
     public void show() {
+        if (!main.isAboutLevel) {
+            loadLevel(main.level);
+        } else {
+            loadLevel(main.aboutLevel);
+
+        }
         beginingTime = TimeUtils.millis();
     }
 
@@ -49,20 +55,28 @@ public class ScreenNumLevel implements Screen {
 
     public void render(float delta) {
         level = main.level;
-        loadLevel(level);
+
 
         if (TimeUtils.millis() - beginingTime > screenTime) {
             main.setScreen(main.screenGame);
             return;
         }
         btnNumLevel.changeText(LanguageManager.get(curentlevel.numLevel));
-        btnLevel.changeText(LanguageManager.get("level") + " " + level);
+        if (main.isAboutLevel) {
+            btnLevel.changeText(LanguageManager.get("level") + " " + main.aboutLevel);
+        } else {
+            btnLevel.changeText(LanguageManager.get("level") + " " + level);
+        }
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
         batch.draw(imgBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
         btnNumLevel.font.draw(batch, btnNumLevel.text, 45, btnNumLevel.y, SCR_WIDTH - 90, Align.center, true);
-        btnLevel.font.draw(batch, LanguageManager.get("level") + " " + main.level, 45, btnLevel.y, SCR_WIDTH - 90, Align.center, true);
+        if (main.isAboutLevel) {
+            btnLevel.font.draw(batch, LanguageManager.get("level") + " " + main.aboutLevel, 45, btnLevel.y, SCR_WIDTH - 90, Align.center, true);
+        } else {
+            btnLevel.font.draw(batch, LanguageManager.get("level") + " " + main.level, 45, btnLevel.y, SCR_WIDTH - 90, Align.center, true);
+        }
         batch.end();
 
     }

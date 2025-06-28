@@ -4,6 +4,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.badlogic.gdx.Gdx;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,7 +28,9 @@ public class FirebaseAndroid implements FirebaseManager {
     public boolean online;
     public FirebaseAndroid(Context context) {
         this.context = context;
-        this.database = FirebaseDatabase.getInstance().getReference();}
+        this.database = FirebaseDatabase.getInstance().getReference();
+
+    }
 
 
     @Override
@@ -36,7 +39,7 @@ public class FirebaseAndroid implements FirebaseManager {
         Gdx.app.log("FirebaseAndroid", "Saving player: " + player.name);
         //   FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-      //  DatabaseReference ref = database.getReference();
+        //  DatabaseReference ref = database.getReference();
 
         // Если у игрока нет ID - создаем новую запись
         if (player.firebaseId == null) {
@@ -47,7 +50,7 @@ public class FirebaseAndroid implements FirebaseManager {
                 })
                 .addOnFailureListener(e -> {
                     online=false;
-                   // Gdx.app.error("Firebase", "Save failed: " + e.getMessage());
+                    // Gdx.app.error("Firebase", "Save failed: " + e.getMessage());
                 });
         }
         // Если ID есть - обновляем существующую
@@ -58,7 +61,7 @@ public class FirebaseAndroid implements FirebaseManager {
                     Gdx.app.log("Firebase", "Player updated");
                 } else {
                     online=false;
-                   // Gdx.app.error("Firebase", "Update failed", task.getException());
+                    // Gdx.app.error("Firebase", "Update failed", task.getException());
                 }
             });
         }
@@ -67,10 +70,10 @@ public class FirebaseAndroid implements FirebaseManager {
 
     @Override
     public void getTop10ByLevel(SortedLeaderboardCallback callback) {
-       // if (!forceOnline && !isOnline()) {
-           // List<Player> cached = LocalLeaderBoard.load();
-           // callback.onSuccess(cached);
-           // return;
+        // if (!forceOnline && !isOnline()) {
+        // List<Player> cached = LocalLeaderBoard.load();
+        // callback.onSuccess(cached);
+        // return;
         //}
 
         FirebaseDatabase.getInstance()
@@ -102,7 +105,7 @@ public class FirebaseAndroid implements FirebaseManager {
                         }
                     });
 
-                   // LocalLeaderBoard.save(players); // Кешируем
+                    // LocalLeaderBoard.save(players); // Кешируем
                     callback.onSuccess(players);
 
                 }
@@ -167,7 +170,7 @@ public class FirebaseAndroid implements FirebaseManager {
                         callback.onSuccess(rank);
                     } else {
                         online=false;
-                       // callback.onError("Player not found in leaderboard");
+                        // callback.onError("Player not found in leaderboard");
                     }
                 }
 

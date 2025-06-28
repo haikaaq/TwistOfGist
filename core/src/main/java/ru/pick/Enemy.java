@@ -1,9 +1,8 @@
 package ru.pick;
 
-import static ru.pick.Main.*;
-
-import static ru.pick.ScreenGame.*;
-
+import static ru.pick.Main.SCR_HEIGHT;
+import static ru.pick.Main.SCR_WIDTH;
+import static ru.pick.ScreenGame.shotCount;
 
 import com.badlogic.gdx.math.MathUtils;
 
@@ -21,7 +20,7 @@ public class Enemy extends Object {
         type = MathUtils.random(0, 4);
 
         nPhases = 12;
-        //  EnemyIsBoss= false;
+
         x = MathUtils.random(width / 2, SCR_WIDTH - width / 2);
         y = MathUtils.random(SCR_HEIGHT + height, SCR_HEIGHT + height + 300);
         isWouded = false;
@@ -54,17 +53,5 @@ public class Enemy extends Object {
         return scrX() < tx && tx < scrX() + width && ty > scrY() && ty < scrY() + height;
     }
 
-    public void OutOfScreen() {
-        if (x >= SCR_WIDTH - width / 2) {
-            x = SCR_WIDTH - width / 2;
-            vX -= 2 * vX;
-        }
-
-        if (x < width / 2) {
-            x = width / 2;
-            vX -= 2 * vX;
-        }
-
-    }
 
 }

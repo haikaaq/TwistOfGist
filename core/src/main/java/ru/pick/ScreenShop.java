@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.ArrayList;
@@ -44,7 +45,8 @@ public class ScreenShop implements Screen {
     private boolean isNewShotSkin;
     private long timeRedSpawn, timeRed = 700;
     private long timeGreenSpawn, timeGreen = 700;
-
+    private long timeWarring = 1100, timeLastWarring;
+    private boolean iswarring = false;
     private Main main;
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -59,11 +61,12 @@ public class ScreenShop implements Screen {
     Texture imgShotsatlas;
     Texture imgPlus;
     Texture imgBG;
-    Texture imgBG2;
+
     Texture imgGreen;
     Texture imgRed;
     Texture imgLongButtonAtlas;
     Texture imgBackAtlas;
+    Texture imgWarring;
 
     SpaceButton btnBack;
     SpaceButton btnSkins;
@@ -95,11 +98,11 @@ public class ScreenShop implements Screen {
         imgGreen = new Texture("green.png");
         imgRed = new Texture("red.png");
         imgBG = new Texture("bgshop.png");
-        imgBG2 = new Texture("bgmenu2.png");
+
         imgLongButtonAtlas = new Texture("LongButton.png");
         btnAllmoney = new SpaceButton(font, "" + (main.allmoney >= 1000 ? main.allmoney : main.allmoney / 1000 + 'k'), SCR_WIDTH - 120, 1550);
         btnBack = new SpaceButton(10, 1500, 90, 90, 0);
-
+        imgWarring = new Texture("warring.png");
 
         btnBoosts = new SpaceButton(font, LanguageManager.get("boosts"), imgLongButtonAtlas, 325, 3.8f);
 
@@ -153,17 +156,19 @@ public class ScreenShop implements Screen {
 
     @Override
     public void render(float delta) {
+
         Vector3 Mousepose = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
 
         camera.unproject(Mousepose);
+        warring();
 
-        btnShots.ButtonsState(Mousepose.x, Mousepose.y);
-        btnSkins.ButtonsState(Mousepose.x, Mousepose.y);
-        btnBoosts.ButtonsState(Mousepose.x, Mousepose.y);
-        btnBuy.ButtonsState(Mousepose.x, Mousepose.y);
-        btnLeft.ButtonsState(Mousepose.x, Mousepose.y);
-        btnRight.ButtonsState(Mousepose.x, Mousepose.y);
-        btnBack.ButtonsState(Mousepose.x, Mousepose.y);
+        btnShots.buttonsState(Mousepose.x, Mousepose.y);
+        btnSkins.buttonsState(Mousepose.x, Mousepose.y);
+        btnBoosts.buttonsState(Mousepose.x, Mousepose.y);
+        btnBuy.buttonsState(Mousepose.x, Mousepose.y);
+        btnLeft.buttonsState(Mousepose.x, Mousepose.y);
+        btnRight.buttonsState(Mousepose.x, Mousepose.y);
+        btnBack.buttonsState(Mousepose.x, Mousepose.y);
 
 
         if (btnBack.setScreenButton) {
@@ -234,7 +239,11 @@ public class ScreenShop implements Screen {
                         main.shotEven = shotEven;
                         timeGreenSpawn = TimeUtils.millis();
                     }
-                    if (screenBoostNum > 1) timeRedSpawn = TimeUtils.millis();
+                    if (screenBoostNum > 1) {
+                        timeRedSpawn = TimeUtils.millis();
+                        iswarring = true;
+                        timeLastWarring = TimeUtils.millis();
+                    }
                 }
                 if (screenState == SKIN) {
                     if (screenShipNum == 1 && price() != 0) {
@@ -249,7 +258,11 @@ public class ScreenShop implements Screen {
                         main.shipSkin = shipSkin;
                         timeGreenSpawn = TimeUtils.millis();
                     }
-                    if (screenShipNum > 1) timeRedSpawn = TimeUtils.millis();
+                    if (screenShipNum > 1) {
+                        timeRedSpawn = TimeUtils.millis();
+                        iswarring = true;
+                        timeLastWarring = TimeUtils.millis();
+                    }
 
 
                 }
@@ -267,7 +280,11 @@ public class ScreenShop implements Screen {
                         timeGreenSpawn = TimeUtils.millis();
                     }
 
-                    if (screenSHOTSNum > 1) timeRedSpawn = TimeUtils.millis();
+                    if (screenSHOTSNum > 1) {
+                        timeRedSpawn = TimeUtils.millis();
+                        iswarring = true;
+                        timeLastWarring = TimeUtils.millis();
+                    }
 
 
                 }
@@ -340,7 +357,6 @@ public class ScreenShop implements Screen {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         batch.draw(imgBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
-        batch.draw(imgBG2, 0, 0, SCR_WIDTH, SCR_HEIGHT);
 
 
         if (screenState == SCREEN) {
@@ -378,6 +394,13 @@ public class ScreenShop implements Screen {
 
         batch.draw(imgBack[btnBack.type], btnBack.imgX, btnBack.imgY, btnBack.imgWidth, btnBack.imgHeight);
         batch.draw(main.screenMenu.imgMN, btnAllmoney.x - 70, btnAllmoney.y - 58, 50, 50);
+        if (iswarring) {
+            batch.draw(imgWarring, 150, 1410, 600, 170);
+
+            font32.draw(batch, LanguageManager.get("make_purchases_in_order"), 301, 1536, 400, Align.center, true);
+
+
+        }
         batch.end();
 
 
@@ -396,6 +419,12 @@ public class ScreenShop implements Screen {
         return TimeUtils.millis() - timeRedSpawn <= timeRed;
     }
 
+    public void warring() {
+        if (iswarring) {
+            if (TimeUtils.millis() > timeLastWarring + timeWarring)
+                iswarring = false;
+        }
+    }
 
     private int price() {
 
@@ -488,8 +517,6 @@ public class ScreenShop implements Screen {
         if (b == btnRight) ship.vX = -40;
         else ship.vX = 40;
     }
-
-
 
 
     private void ChangePlusShots() {

@@ -4,6 +4,7 @@ import static ru.pick.Main.SCR_HEIGHT;
 import static ru.pick.Main.SCR_WIDTH;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -27,6 +28,7 @@ public class ScreenLeaderboard implements Screen {
     Texture imgPBT;
     private InputKeyboard keyboard;
     public static boolean iskeyboard = true;
+    private boolean idIsLoad;
     Texture imgBackAtlas;
     Texture imgReset;
     TextureRegion[] imgBack = new TextureRegion[2];
@@ -79,9 +81,11 @@ public class ScreenLeaderboard implements Screen {
     @Override
     public void render(float delta) {
 
-        if(!iskeyboard){
-        leaderboard();
-        getplase();}
+        if (!iskeyboard) {
+            main.player.savePlayerToFirebase(main.player);
+            leaderboard();
+            getplase();
+        }
 
 
         if (Gdx.input.justTouched()) {
@@ -103,6 +107,7 @@ public class ScreenLeaderboard implements Screen {
                 main.player.name = keyboard.getText();
                 main.player.money = main.allmoney;
                 main.player.level = main.level;
+                loadId();
 
                 iskeyboard = false;
             }
@@ -110,7 +115,6 @@ public class ScreenLeaderboard implements Screen {
         }
 
         if (iskeyboard) keyboard.start();
-        main.player.savePlayerToFirebase(main.player);
 
 
         batch.setProjectionMatrix(camera.combined);
@@ -183,6 +187,7 @@ public class ScreenLeaderboard implements Screen {
                     } else {
                         btnPlace.changeText(LanguageManager.get("Youarein") + " " + main.player.rank + " " + LanguageManager.get("place"));
                     }
+                    saveId();
                 } else {
                     btnPlace.changeText(LanguageManager.get("Youareoffline"));
                 }
@@ -191,7 +196,7 @@ public class ScreenLeaderboard implements Screen {
             @Override
             public void onError(String message) {
                 btnPlace.changeText(LanguageManager.get("Youareoffline"));
-                //  Gdx.app.error("Leaderboard", message);
+
             }
         });
 
@@ -201,29 +206,26 @@ public class ScreenLeaderboard implements Screen {
 
 
     }
-    /* private void LoadTable() {
-        Preferences prefs = Gdx.app.getPreferences("TableRecords");
-        for (int i=0; i<players.length;i++){
-            players[i].name= prefs.getString("name"+i,"Noname");
-            players[i].level=prefs.getInteger("level"+i,0);
-            players[i].money=prefs.getInteger("money"+i,0);
-        }
-    }
-    private void saveTable() {
 
+    private void loadId() {
+        Preferences prefs = Gdx.app.getPreferences("игровые ресурсы");
 
-        Preferences prefs = Gdx.app.getPreferences("TableRecords");
-        for (int i=0; i<players.length;i++){
+        main.player.firebaseId = prefs.getString("id");
+        idIsLoad = true;
 
-            prefs.putString("name"+i, players[i].name);
-            prefs.putInteger("level"+i, players[i].level);
-            prefs.putInteger("money"+i,players[i].money);
-
-        }
-        prefs.flush();
     }
 
-     */
+    private void saveId() {
+        if (idIsLoad) {
+
+            Preferences prefs = Gdx.app.getPreferences("игровые ресурсы");
+            prefs.putString("id", main.player.firebaseId);
+
+            prefs.flush();
+        }
+    }
+
+
    /* public void changeButtons (){
         FirebaseManager firebase = FirebaseService.create();
         if(firebase.isOnline()) {

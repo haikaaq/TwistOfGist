@@ -1,5 +1,7 @@
 package ru.pick;
 
+import static ru.pick.Main.SCR_WIDTH;
+
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -20,6 +22,7 @@ public class Object {
     public long timeLastWouded;
     public long timeWoud;
     public boolean isWouded;
+    public boolean isoverlap;
 
     public Object(float x, float y) {
         this.x = x;
@@ -115,14 +118,9 @@ public class Object {
                     int alpha1 = (pixel1 >>> 24);
                     int pixel2 = p2.getPixel(atlasX2, atlasY2);
                     int alpha2 = (pixel2 >>> 24);
-                    // System.out.println(atlasX1+"  "+atlasY1+"            "+u1+"  "+v1+"      "+type+"     "+alpha1);
-                    //System.out.println(atlasX2+ "   "+atlasY2+"            "+u2+"  "+v2+"      "+obj2.type+"     "+alpha2);
-                    //System.out.println(alpha1 + "     "+ alpha2);
 
-
-                    if ((alpha2) != 0 && (alpha1) != 0) {
+                    if ((alpha2) > 0 && (alpha1) > 0) {
                         return true;
-
                     }
 
 
@@ -143,5 +141,17 @@ public class Object {
 
     }
 
+    public void OutOfScreen() {
+        if (x >= SCR_WIDTH - width / 2) {
+            x = SCR_WIDTH - width / 2;
+            vX -= 2 * vX;
+        }
+
+        if (x < width / 2) {
+            x = width / 2;
+            vX -= 2 * vX;
+        }
+
+    }
 
 }

@@ -182,4 +182,3 @@ public class FirebaseDesktop implements FirebaseManager {
     }
 
 }
-

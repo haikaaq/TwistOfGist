@@ -1,7 +1,6 @@
 package ru.pick;
 
 import static ru.pick.Main.*;
-import static ru.pick.ScreenLeaderboard.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -23,6 +22,8 @@ public class ScreenMenu implements Screen {
     private BitmapFont font70;
     private long timeLastChangeBg, timeChangeBg = 700;
     private int phaseBg;
+    private float menuEnemyAlpha=1f;
+
 
 
     private Levels.Level curentlevel;
@@ -49,7 +50,7 @@ public class ScreenMenu implements Screen {
     TextureRegion[][] imgButtons = new TextureRegion[3][3];
     Texture imgBGAtlas;
 
-    Boss MenuEnemy;
+    Boss menuEnemy;
 
 
     public ScreenMenu(Main main) {
@@ -66,7 +67,7 @@ public class ScreenMenu implements Screen {
         imgLongButtonAtlas = new Texture("LongButton.png");
         imgButtonsAtlas = new Texture("AtlasButtons.png");
         imgBGAtlas = new Texture("bgmenu.png");
-        imgBG2 = new Texture("bgmenu2.png");
+        imgBG2 = new Texture("bgmenu.png");
         imgMN = new Texture("moneta.png");
         imgLogo = new Texture("logo.png");
 
@@ -76,7 +77,7 @@ public class ScreenMenu implements Screen {
         }
         for (int e = 0; e < imgEnemyBoses.length; e++) {
 
-            imgEnemyBoses[e] = new TextureRegion(imgEnemyesBoses, (e < 6 ? e : 10 - e) * 450, 0, 450, 450);
+            imgEnemyBoses[e] = new TextureRegion(imgEnemyesBoses, (e < 6 ? e : 10 - e) * 1025, 0, 1025, 1025);
         }
         for (int e = 0; e < imgLongButton.length; e++) {
 
@@ -100,8 +101,8 @@ public class ScreenMenu implements Screen {
         btnAllmoney = new SpaceButton(font70, "" + main.allmoney, SCR_WIDTH - 120, 1550);
 
 
-        MenuEnemy = new Boss();
-        MenuEnemy.MenuEnemy = true;
+        menuEnemy = new Boss();
+        menuEnemy.MenuEnemy = true;
 
 
     }
@@ -121,12 +122,17 @@ public class ScreenMenu implements Screen {
         if (LanguageManager.currentBundle == LanguageManager.ruBundle) {
             btnPlay.imgWidhtCoefficient = 2.7f;
         } else btnPlay.imgWidhtCoefficient = 4.2f;
-        btnPlay.ButtonsState(Mousepose.x, Mousepose.y);
-        btnSetting.ButtonsState(Mousepose.x, Mousepose.y);
-        btnAbout.ButtonsState(Mousepose.x, Mousepose.y);
-        btnShop.ButtonsState(Mousepose.x, Mousepose.y);
-        btnLeaderboard.ButtonsState(Mousepose.x, Mousepose.y);
-        btnExit.ButtonsState(Mousepose.x, Mousepose.y);
+        if(gameState==GAME){
+            if (LanguageManager.currentBundle == LanguageManager.ruBundle) {
+                btnPlay.imgWidhtCoefficient = 1.5f;
+            } else btnPlay.imgWidhtCoefficient = 2f;
+        }
+        btnPlay.buttonsState(Mousepose.x, Mousepose.y);
+        btnSetting.buttonsState(Mousepose.x, Mousepose.y);
+        btnAbout.buttonsState(Mousepose.x, Mousepose.y);
+        btnShop.buttonsState(Mousepose.x, Mousepose.y);
+        btnLeaderboard.buttonsState(Mousepose.x, Mousepose.y);
+        btnExit.buttonsState(Mousepose.x, Mousepose.y);
 
         if (btnAbout.setScreenButton) main.setScreen(main.screenAbout);
         if (btnSetting.setScreenButton) main.setScreen(main.screenSettings);
@@ -145,7 +151,7 @@ public class ScreenMenu implements Screen {
 
         if (btnLeaderboard.setScreenButton) {
             main.setScreen(main.screenLeaderboard);
-            iskeyboard = true;
+            //iskeyboard = true;
         }
 
         if (btnExit.setScreenButton) {
@@ -153,12 +159,16 @@ public class ScreenMenu implements Screen {
         }
 
 
-        MenuEnemy.move();
+        menuEnemy.move();
         btnSetting.changePhases();
         btnAbout.changePhases();
         btnShop.changePhases();
         btnPlay.changePhases();
-        btnPlay.changeText(LanguageManager.get("play"));
+        if(gameState==GAME){
+            btnPlay.changeText(LanguageManager.get("continue"));
+        }
+        else btnPlay.changeText(LanguageManager.get("play"));
+
         btnLeaderboard.changeText(LanguageManager.get("leaderboard"));
         btnLevel.changeText(LanguageManager.get("level") + " " + main.level);
 
@@ -166,21 +176,23 @@ public class ScreenMenu implements Screen {
         btnAllmoney.changeText(main.allmoney);
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        batch.draw(imgBG[phaseBg], 0, 0, SCR_WIDTH, SCR_HEIGHT);
-
+        //batch.draw(imgBG[phaseBg], 0, 0, SCR_WIDTH, SCR_HEIGHT);
+        batch.draw(imgBG2, 0, 0, SCR_WIDTH, SCR_HEIGHT);
         changePhase();
-        if(main.isPlayMove&&!main.isFirstRunning)
+        if(!main.isFirstRunning)
         {btnPlay.isMove=true;}
         else{
             btnPlay.isMove=false;
         }
-        if(curentlevel.isKeyboard&&!main.isPlayMove){
+        if(curentlevel.isNums &&!main.isPlayMove){
         btnShop.moveButton(4f,4f,12f);}
 
+        batch.setColor(1, 1, 1, menuEnemyAlpha);
+        batch.draw(imgEnemyBoses[menuEnemy.phase], menuEnemy.scrX(), menuEnemy.scrY(), menuEnemy.width / 2, menuEnemy.height / 2, menuEnemy.width, menuEnemy.height, 1, 1, menuEnemy.rotation);
+        batch.setColor(1, 1, 1, 1);
 
-        batch.draw(imgEnemyBoses[MenuEnemy.phase], MenuEnemy.scrX(), MenuEnemy.scrY(), MenuEnemy.width / 2, MenuEnemy.height / 2, MenuEnemy.width, MenuEnemy.height, 1, 1, MenuEnemy.rotation);
-        batch.draw(imgBG2, 0, 0, SCR_WIDTH, SCR_HEIGHT);
-        batch.draw(imgLogo, SCR_WIDTH / 2 - 240, 950 , 480, 390);
+
+        //batch.draw(imgLogo, SCR_WIDTH / 2 - 240, 950 , 480, 390);
         batch.draw(imgLongButton[btnPlay.phase], btnPlay.imgX, btnPlay.imgY, btnPlay.imgWidth, btnPlay.imgHeight);
         batch.draw(imgButtons[btnSetting.type][btnSetting.phase], btnSetting.imgX, btnSetting.imgY, btnSetting.imgWidth, btnSetting.imgHeight);
         batch.draw(imgButtons[btnAbout.type][btnAbout.phase], btnAbout.imgX, btnAbout.imgY, btnAbout.imgWidth, btnAbout.imgHeight);

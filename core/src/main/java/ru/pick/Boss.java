@@ -45,9 +45,9 @@ public class Boss extends Object {
 
         super.move();
         if (MenuEnemy) {
-            y = SCR_HEIGHT / 5 + 55;
-            width = height = SCR_WIDTH + 30;
-            x = 11 * SCR_WIDTH / 15;
+            y = SCR_HEIGHT / 3 + 80;
+            width = height = SCR_WIDTH - 300;
+            x = 12 * SCR_WIDTH / 15;
         }
         rotationSpeed = (isWouded) ? -2 * spin : 2 * spin;
         rotation += rotationSpeed;

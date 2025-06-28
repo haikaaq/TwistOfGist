@@ -24,7 +24,8 @@ public class SpaceButton {
     public boolean setScreenButton;
     public boolean wrapEnabled;
     public int type;
-    private int spin=1;
+    private int spin = 1;
+    public int phase2 = 0;
     private boolean wasTouched;
     public float imgWidhtCoefficient;
     public boolean isMove;
@@ -59,8 +60,8 @@ public class SpaceButton {
         this.type = type;
         this.imgWidth = widht;
         this.imgHeight = height;
-        minImgWidth=imgWidth;
-        minImgHeight=imgHeight;
+        minImgWidth = imgWidth;
+        minImgHeight = imgHeight;
 
         this.imgX = x;
         this.imgY = y;
@@ -109,7 +110,7 @@ public class SpaceButton {
 
 
     boolean hit(float tx, float ty) {
-        if (isImageAndTextButton||isOnlyImageButton)
+        if (isImageAndTextButton || isOnlyImageButton)
             return imgX < tx && tx < imgX + imgWidth && ty > imgY && ty < imgY + imgHeight;
 
 
@@ -128,12 +129,11 @@ public class SpaceButton {
 
             this.minImgWidth = width * imgWidhtCoefficient;
             this.minImgHeight = height * 3.9f;
-            if(isMove){
-               moveButton(4f,8f, 12);
-            }
-            else{
-                imgHeight=minImgHeight;
-                imgWidth=minImgWidth;
+            if (isMove) {
+                moveButton(4f, 8f, 12);
+            } else {
+                imgHeight = minImgHeight;
+                imgWidth = minImgWidth;
             }
             this.imgY = y - imgHeight / 2 - height / 2;
             this.imgX = x + width / 2 - imgWidth / 2;
@@ -158,7 +158,14 @@ public class SpaceButton {
 
     }
 
-    public void ButtonsState(float x, float y) {
+    public void changePhases(int phaseCount) {
+        phase = 0;
+        if (isHover) phase = 1;
+        if (isPressed) phase = 1;
+
+    }
+
+    public void buttonsState(float x, float y) {
         isPressed = false;
         setScreenButton = false;
         isHover = false;
@@ -180,13 +187,14 @@ public class SpaceButton {
         }
 
     }
-    public void moveButton(float vH,float vW,float coefficient){
 
-        imgWidth +=vW*spin;
-        imgHeight+=vH*spin;
-        if(isOnlyImageButton)imgX-=vW/2f*spin;
-        if((imgWidth-minImgWidth>=minImgWidth/coefficient)||(imgWidth<=minImgWidth)){
-            spin=spin*-1;
+    public void moveButton(float vH, float vW, float coefficient) {
+
+        imgWidth += vW * spin;
+        imgHeight += vH * spin;
+        if (isOnlyImageButton) imgX -= vW / 2f * spin;
+        if ((imgWidth - minImgWidth >= minImgWidth / coefficient) || (imgWidth <= minImgWidth)) {
+            spin = spin * -1;
         }
 
 
