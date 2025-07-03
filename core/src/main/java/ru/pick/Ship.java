@@ -17,7 +17,10 @@ public class Ship extends Object {
     public float rotation = 0;
     public float rotationSpeed;
 
+
     public float CheckVx;
+    private float acceleration = 0.2f;
+    private float friction = 0.9f; // Трение (0.9 = 10% замедления)
 
 
     public Ship(float x, float y) {
@@ -31,6 +34,22 @@ public class Ship extends Object {
 
     }
 
+    public void setVelocity(float vX, float vY) {
+        this.vX = vX;
+        this.vY = vY;
+    }
+
+    public void update(float delta) {
+
+
+        // Постепенное замедление (если джойстик отпущен)
+        vX *= friction;
+        vY *= friction;
+
+        // Если скорость очень мала — останавливаем корабль
+        if (Math.abs(vX) < 0.01f) vX = 0;
+        if (Math.abs(vY) < 0.01f) vY = 0;
+    }
 
     public void changePhase() {
         if (TimeUtils.millis() > timeLastPhase + timePhaseInterval) {
@@ -45,7 +64,9 @@ public class Ship extends Object {
 
         vX = (touch.x - scrX() - 125) / 27;
         vY = (touch.y - scrY() - 125) / 70;
-        OutOfScreen();
+        updateRotatoin();
+
+        outOfScreen();
 
     }
 
@@ -53,26 +74,21 @@ public class Ship extends Object {
     public void move() {
         super.move();
         //if (vX>MaxVx)vX=MaxVx;
-        rotationSpeed = (vX - CheckVx) * 2;
-        if (Math.abs(rotationSpeed) < 0.7f) rotationSpeed = rotationSpeed / 200;
+
         rotation -= rotationSpeed;
+        rotation = MathUtils.clamp(rotation, -80f, 80f);
 
 
-
-      /* rotationSpeed = MathUtils.clamp(rotationSpeed, -MAX_ROTATION_SPEED, MAX_ROTATION_SPEED);
-
-        float newRotation = rotation - rotationSpeed;
-        float baseRotation = 0f;
-
-// Ограничиваем отклонение от базового угла
-        if (Math.abs(newRotation - baseRotation) > MAX_ROTATION_ANGLE) {
-            newRotation = baseRotation + (MAX_ROTATION_ANGLE * Math.signum(newRotation - baseRotation));
-        }
-        rotation = newRotation;
-*/
 
         changePhase();
-        OutOfScreen();
+        outOfScreen();
+        updateRotatoin();
+    }
+
+    public void updateRotatoin() {
+        rotationSpeed = (vX - CheckVx) * 2;
+        if (Math.abs(rotationSpeed) < 0.7f)
+            rotationSpeed = MathUtils.clamp(rotationSpeed / 200, -0.7f, 0.7f);
     }
 
 
@@ -81,7 +97,7 @@ public class Ship extends Object {
         vY = 0;
     }
 
-    public void OutOfScreen() {
+    public void outOfScreen() {
         if (x >= SCR_WIDTH) {
             x = SCR_WIDTH;
         }
@@ -94,12 +110,11 @@ public class Ship extends Object {
         if (x < 0) {
             x = 0;
         }
+
     }
 
 
 }
-
-
 
 
 

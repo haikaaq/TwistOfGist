@@ -23,8 +23,7 @@ public class OrientationHelper {
 
     public enum ScreenOrientation {
         PORTRAIT,
-        LANDSCAPE,
-        UNDEFINED
+
     }
 
     private static OrientationProvider provider;
@@ -34,7 +33,7 @@ public class OrientationHelper {
     }
 
     public static ScreenOrientation getOrientation() {
-        return provider != null ? provider.getOrientation() : ScreenOrientation.UNDEFINED;
+        return provider != null ? provider.getOrientation() : ScreenOrientation.PORTRAIT;
     }
 
     public interface OrientationProvider {

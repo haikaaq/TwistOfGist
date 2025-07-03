@@ -60,7 +60,7 @@ public class Boss extends Object {
         }
         if (Dead) rotationSpeed = 0;
         changePhase();
-        if (!MenuEnemy) OutOfScreen();
+        if (!MenuEnemy) outOfScreen();
     }
 
     public boolean BelowTheScreen() {
@@ -68,7 +68,7 @@ public class Boss extends Object {
     }
 
 
-    public void OutOfScreen() {
+    public void outOfScreen() {
         if (x >= SCR_WIDTH - width / 2) {
             x = SCR_WIDTH - width / 2;
             vX -= 2 * vX;

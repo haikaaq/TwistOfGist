@@ -43,39 +43,6 @@ public class AndroidLauncher extends AndroidApplication {
         FirebaseDatabase.getInstance().setLogLevel(Logger.Level.DEBUG);
         initialize(new Main(), configuration);
 
-        OrientationHelper.setListener(new OrientationHelper.OrientationListener() {
-
-            @Override
-            public void lockCurrent() {
-                runOnUiThread(() -> {
-                    int orientation = getResources().getConfiguration().orientation;
-                    if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                    } else {
-                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                    }
-                });
-            }
-
-
-            @Override
-            public void unlock() {
-                runOnUiThread(() ->
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR));
-            }
-        });
-        OrientationHelper.setProvider(new  OrientationHelper.OrientationProvider() {
-            @Override
-            public OrientationHelper.ScreenOrientation getOrientation() {
-                int orientation = getResources().getConfiguration().orientation;
-                return orientation == Configuration.ORIENTATION_LANDSCAPE ?
-                    OrientationHelper.ScreenOrientation.LANDSCAPE :
-                    OrientationHelper.ScreenOrientation.PORTRAIT;
-            }
-        });
-
-       //
-
     }
     /// не используется автоповорт из AndroidManifest т.к в игре присутствуют уровни с акселерометром и во время их прохождения необходимо отключать автоповорот
 }

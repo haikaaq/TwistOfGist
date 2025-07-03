@@ -141,7 +141,7 @@ public class Object {
 
     }
 
-    public void OutOfScreen() {
+    public void outOfScreen() {
         if (x >= SCR_WIDTH - width / 2) {
             x = SCR_WIDTH - width / 2;
             vX -= 2 * vX;

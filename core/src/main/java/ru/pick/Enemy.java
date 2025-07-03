@@ -40,7 +40,7 @@ public class Enemy extends Object {
         super.move();
 
         changePhase();
-        OutOfScreen();
+        outOfScreen();
 
     }
 
