@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 
 public class FirstRunManager {
-    private static final String PREFS_NAME = "игровые ресурсы";
     private static final String FIRST_RUN_KEY = "isFirstRun";
 
     public static boolean isFirstRun() {
