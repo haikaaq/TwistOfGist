@@ -30,17 +30,18 @@ public class ScreenAbout implements Screen {
     Texture imgBG0;
     Texture imgLevels;
     Texture imgWarring;
-    TextureRegion[][] imgLevel = new TextureRegion[2][2];;
+    TextureRegion[][] imgLevel = new TextureRegion[2][2];
+    ;
     Texture imgBackAtlas;
     TextureRegion[] imgBack = new TextureRegion[2];
     boolean slide0 = true;
     boolean slide1 = false;
     private boolean iswarring = false;
-    private long timeWarring=1100,timeLastWarring;
+    private long timeWarring = 1100, timeLastWarring;
 
     private Levels.Level curentlevel;
-    public float speedSliding=10;
-    public float xBG0=0,xHistory=60,minButtonX=50,maxButtonX=SCR_WIDTH+50;
+    public float speedSliding = 10;
+    public float xBG0 = 0, xHistory = 60, minButtonX = 50, maxButtonX = SCR_WIDTH + 50;
 
     SpaceButton btnBack;
     SpaceButton btnRight;
@@ -55,12 +56,12 @@ public class ScreenAbout implements Screen {
         camera = main.camera;
         touch = main.touch;
         font = main.font70;
-        font32=main.font32;
+        font32 = main.font32;
         imgBG0 = new Texture("bgabout.png");
         imgWarring = new Texture("warring.png");
 
         imgBackAtlas = new Texture("buttonsLeftRight.png");
-        imgLevels= new Texture("levels.png");
+        imgLevels = new Texture("levels.png");
 
 
         btnBack = new SpaceButton(10, 1500, 90, 90, 0);
@@ -86,23 +87,21 @@ public class ScreenAbout implements Screen {
     public void show() {
 
 
-
-
     }
 
     @Override
     public void render(float delta) {
         warring();
 
-       if(slide0)changeSlideMinus();
-       if(slide1)changeSlidePlus();
+        if (slide0) changeSlideMinus();
+        if (slide1) changeSlidePlus();
 
 
-        int j=0;
-        for (SpaceButton a:levels){
+        int j = 0;
+        for (SpaceButton a : levels) {
 
-            if( j<=main.level) a.type=0;
-            else a.type=1;
+            if (j <= main.level) a.type = 0;
+            else a.type = 1;
             j++;
         }
 
@@ -110,9 +109,10 @@ public class ScreenAbout implements Screen {
         updateButtonsLanguage();
         Vector3 mousepose = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mousepose);
-        for (int i =0;i<levels.size();i++){
+        for (int i = 0; i < levels.size(); i++) {
             levels.get(i).changePhases(2);
-            levels.get(i).buttonsState(mousepose.x,mousepose.y);}
+            levels.get(i).buttonsState(mousepose.x, mousepose.y);
+        }
 
 
 
@@ -145,24 +145,23 @@ public class ScreenAbout implements Screen {
                 }
 
             }
-            for (int i =0;i<levels.size();i++){
-               if( levels.get(i).hit(touch.x, touch.y)){
-                   if(levels.get(i).type==0){
-                       if(gameState!=GAME) {
-                           if (main.level != i) {
-                               main.isAboutLevel = true;
-                               main.aboutLevel = i;
-                               main.setScreen(main.screenNumLevel);
-                           } else {
-                               main.setScreen(main.screenNumLevel);
-                           }
-                       }
-                       else{
-                           iswarring=true;
-                           timeLastWarring=TimeUtils.millis();
-                       }
-                   }
-               }
+            for (int i = 0; i < levels.size(); i++) {
+                if (levels.get(i).hit(touch.x, touch.y)) {
+                    if (levels.get(i).type == 0) {
+                        if (gameState != GAME) {
+                            if (main.level != i) {
+                                main.isAboutLevel = true;
+                                main.aboutLevel = i;
+                                main.setScreen(main.screenNumLevel);
+                            } else {
+                                main.setScreen(main.screenNumLevel);
+                            }
+                        } else {
+                            iswarring = true;
+                            timeLastWarring = TimeUtils.millis();
+                        }
+                    }
+                }
 
 
             }
@@ -176,32 +175,29 @@ public class ScreenAbout implements Screen {
 
             batch.draw(imgBG0, 0, 0, SCR_WIDTH, SCR_HEIGHT);
 
-            font.draw(batch, LanguageManager.get("history"), xHistory, SCR_HEIGHT - 183, SCR_WIDTH - 120, Align.center, true);
+        font.draw(batch, LanguageManager.get("history"), xHistory, SCR_HEIGHT - 183, SCR_WIDTH - 120, Align.center, true);
 
-            int i=0;
-            for(SpaceButton a:levels){
+        int i = 0;
+        for (SpaceButton a : levels) {
 
-            batch.draw(imgLevel[a.type][a.phase],a.imgX,a.imgY,a.imgWidth,a.imgHeight);
-            if(a.type==0)font.draw(batch, ""+i,(i<10?a.imgX+a.imgWidth/2-10:a.imgX+a.imgWidth/2-25),a.imgY+a.imgHeight/2+30);
+            batch.draw(imgLevel[a.type][a.phase], a.imgX, a.imgY, a.imgWidth, a.imgHeight);
+            if (a.type == 0)
+                font.draw(batch, "" + i, (i < 10 ? a.imgX + a.imgWidth / 2 - 10 : a.imgX + a.imgWidth / 2 - 25), a.imgY + a.imgHeight / 2 + 30);
 
-            i+=1;
-            }
-
-
-
-            if(slide0){
-                batch.draw(imgBack[btnRight.type], btnRight.imgX, btnRight.imgY, btnRight.imgWidth, btnRight.imgHeight);
-            }
-            if (slide1){
-                batch.draw(imgBack[btnLeft.type], btnLeft.imgX, btnLeft.imgY, btnLeft.imgWidth, btnLeft.imgHeight);
-            }
+            i += 1;
+        }
 
 
+        if (slide0) {
+            batch.draw(imgBack[btnRight.type], btnRight.imgX, btnRight.imgY, btnRight.imgWidth, btnRight.imgHeight);
+        }
+        if (slide1) {
+            batch.draw(imgBack[btnLeft.type], btnLeft.imgX, btnLeft.imgY, btnLeft.imgWidth, btnLeft.imgHeight);
+        }
 
 
-
-        if(iswarring){
-            batch.draw(imgWarring,150,1410,600,170);
+        if (iswarring) {
+            batch.draw(imgWarring, 150, 1410, 600, 170);
 
             font32.draw(batch, LanguageManager.get("completecurrentgame"), 291, 1536, 400, Align.center, true);
 
@@ -217,23 +213,25 @@ public class ScreenAbout implements Screen {
 
 
     }
-    public void changeSlidePlus(){
+
+    public void changeSlidePlus() {
 
 
-            if(xHistory>-SCR_WIDTH-100) xHistory-=speedSliding;
-            for(int i=0;i<levels.size();i++){
-                if (levels.get(i).imgX>minButtonX+i%3*300)levels.get(i).imgX-=speedSliding;
+        if (xHistory > -SCR_WIDTH - 100) xHistory -= speedSliding;
+        for (int i = 0; i < levels.size(); i++) {
+            if (levels.get(i).imgX > minButtonX + i % 3 * 300) levels.get(i).imgX -= speedSliding;
 
-            }
+        }
 
 
     }
-    public void changeSlideMinus(){
+
+    public void changeSlideMinus() {
 
 
-        if(xHistory<50) xHistory+=speedSliding;
-        for(int i=0;i<levels.size();i++){
-            if (levels.get(i).imgX<maxButtonX+i%3*300)levels.get(i).imgX+=speedSliding;
+        if (xHistory < 50) xHistory += speedSliding;
+        for (int i = 0; i < levels.size(); i++) {
+            if (levels.get(i).imgX < maxButtonX + i % 3 * 300) levels.get(i).imgX += speedSliding;
 
         }
 
@@ -241,26 +239,27 @@ public class ScreenAbout implements Screen {
     }
 
     public void spavnButtons() {
-        for(int i=0;i<3;i++){
-            levels.add(new SpaceButton(maxButtonX+i*300, 1200, 200, 200,0));
+        for (int i = 0; i < 3; i++) {
+            levels.add(new SpaceButton(maxButtonX + i * 300, 1200, 200, 200, 0));
         }
-        for(int i=0;i<3;i++){
-            levels.add(new SpaceButton(maxButtonX+i*300, 900, 200, 200,0));
+        for (int i = 0; i < 3; i++) {
+            levels.add(new SpaceButton(maxButtonX + i * 300, 900, 200, 200, 0));
         }
-        for(int i=0;i<3;i++){
-            levels.add(new SpaceButton(maxButtonX+i*300, 600, 200, 200,0));
+        for (int i = 0; i < 3; i++) {
+            levels.add(new SpaceButton(maxButtonX + i * 300, 600, 200, 200, 0));
         }
 
-        for(int i=0;i<2;i++){
-            levels.add(new SpaceButton(maxButtonX+i*300, 300, 200, 200,0));
+        for (int i = 0; i < 2; i++) {
+            levels.add(new SpaceButton(maxButtonX + i * 300, 300, 200, 200, 0));
         }
 
 
     }
-    public void warring(){
-        if(iswarring){
-            if (TimeUtils.millis()>timeLastWarring+timeWarring)
-                iswarring=false;
+
+    public void warring() {
+        if (iswarring) {
+            if (TimeUtils.millis() > timeLastWarring + timeWarring)
+                iswarring = false;
         }
     }
 

@@ -22,7 +22,7 @@ public class ScreenMenu implements Screen {
     private BitmapFont font70;
     private long timeLastChangeBg, timeChangeBg = 700;
     private int phaseBg;
-    private float menuEnemyAlpha=1f;
+    private float menuEnemyAlpha = 1f;
 
 
 
@@ -122,7 +122,7 @@ public class ScreenMenu implements Screen {
         if (LanguageManager.currentBundle == LanguageManager.ruBundle) {
             btnPlay.imgWidhtCoefficient = 2.7f;
         } else btnPlay.imgWidhtCoefficient = 4.2f;
-        if(gameState==GAME){
+        if (gameState == GAME) {
             if (LanguageManager.currentBundle == LanguageManager.ruBundle) {
                 btnPlay.imgWidhtCoefficient = 1.5f;
             } else btnPlay.imgWidhtCoefficient = 2f;
@@ -164,10 +164,9 @@ public class ScreenMenu implements Screen {
         btnAbout.changePhases();
         btnShop.changePhases();
         btnPlay.changePhases();
-        if(gameState==GAME){
+        if (gameState == GAME) {
             btnPlay.changeText(LanguageManager.get("continue"));
-        }
-        else btnPlay.changeText(LanguageManager.get("play"));
+        } else btnPlay.changeText(LanguageManager.get("play"));
 
         btnLeaderboard.changeText(LanguageManager.get("leaderboard"));
         btnLevel.changeText(LanguageManager.get("level") + " " + main.level);
@@ -179,12 +178,12 @@ public class ScreenMenu implements Screen {
         //batch.draw(imgBG[phaseBg], 0, 0, SCR_WIDTH, SCR_HEIGHT);
         batch.draw(imgBG2, 0, 0, SCR_WIDTH, SCR_HEIGHT);
         changePhase();
-        if(!main.isFirstRunning)
+        if (!main.isFirstRunning)
         {btnPlay.isMove=true;}
         else{
             btnPlay.isMove=false;
         }
-        if(curentlevel.isNums &&!main.isPlayMove){
+        if (curentlevel.isNums && !main.isPlayMove) {
         btnShop.moveButton(4f,4f,12f);}
 
         batch.setColor(1, 1, 1, menuEnemyAlpha);
