@@ -7,6 +7,7 @@ import static ru.pick.Main.gameState;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -27,12 +28,15 @@ public class ScreenAbout implements Screen {
     private Vector3 touch;
     private BitmapFont font;
     private BitmapFont font32;
+    private AssetManager manager;
     Texture imgBG0;
     Texture imgLevels;
     Texture imgWarring;
-    TextureRegion[][] imgLevel = new TextureRegion[2][2];
-    ;
+
     Texture imgBackAtlas;
+    TextureRegion[][] imgLevel = new TextureRegion[2][2];
+
+
     TextureRegion[] imgBack = new TextureRegion[2];
     boolean slide0 = true;
     boolean slide1 = false;
@@ -41,7 +45,7 @@ public class ScreenAbout implements Screen {
 
     private Levels.Level curentlevel;
     public float speedSliding = 10;
-    public float xBG0 = 0, xHistory = 60, minButtonX = 50, maxButtonX = SCR_WIDTH + 50;
+    public float xBG0 = 0, xHistory = 69, minButtonX = 50, maxButtonX = SCR_WIDTH + 50;
 
     SpaceButton btnBack;
     SpaceButton btnRight;
@@ -57,11 +61,12 @@ public class ScreenAbout implements Screen {
         touch = main.touch;
         font = main.font70;
         font32 = main.font32;
-        imgBG0 = new Texture("bgabout.png");
-        imgWarring = new Texture("warring.png");
+        this.manager = main.manager;
+        imgBG0 = manager.get("bgabout.png", Texture.class);
+        imgWarring = manager.get("warring.png", Texture.class);
 
-        imgBackAtlas = new Texture("buttonsLeftRight.png");
-        imgLevels = new Texture("levels.png");
+        imgBackAtlas = manager.get("buttonsLeftRight.png", Texture.class);
+        imgLevels = manager.get("levels.png", Texture.class);
 
 
         btnBack = new SpaceButton(10, 1500, 90, 90, 0);
@@ -175,7 +180,7 @@ public class ScreenAbout implements Screen {
 
             batch.draw(imgBG0, 0, 0, SCR_WIDTH, SCR_HEIGHT);
 
-        font.draw(batch, LanguageManager.get("history"), xHistory, SCR_HEIGHT - 183, SCR_WIDTH - 120, Align.center, true);
+        font.draw(batch, LanguageManager.get("history"), xHistory, SCR_HEIGHT - 185, SCR_WIDTH - 122, Align.center, true);
 
         int i = 0;
         for (SpaceButton a : levels) {

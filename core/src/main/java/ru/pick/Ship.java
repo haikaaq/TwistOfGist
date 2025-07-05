@@ -82,7 +82,7 @@ public class Ship extends Object {
 
         changePhase();
         outOfScreen();
-        updateRotatoin();
+
     }
 
     public void updateRotatoin() {

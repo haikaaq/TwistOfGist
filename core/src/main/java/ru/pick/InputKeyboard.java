@@ -118,7 +118,7 @@ public class InputKeyboard {
                 keyPressed = -1;
             }
         } else { // рисуем отжатую кнопку
-            dx = 0;
+            dx = -5;
             dy = 0;
             batch.draw(imgKeyUP, x, y, width, height);
         }

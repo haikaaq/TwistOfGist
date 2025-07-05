@@ -3,7 +3,9 @@ package ru.pick;
 import static ru.pick.Main.*;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,6 +22,7 @@ public class ScreenMenu implements Screen {
     private OrthographicCamera camera;
     private Vector3 touch;
     private BitmapFont font70;
+    private AssetManager manager;
     private long timeLastChangeBg, timeChangeBg = 700;
     private int phaseBg;
     private float menuEnemyAlpha = 1f;
@@ -59,18 +62,17 @@ public class ScreenMenu implements Screen {
         camera = main.camera;
         touch = main.touch;
         font70 = main.font70;
-
+        this.manager = main.manager;
         FonMusic = main.FonMusic;
 
         LanguageManager.loadBundles();
-        imgEnemyesBoses = new Texture("atlasboss.png");
-        imgLongButtonAtlas = new Texture("LongButton.png");
-        imgButtonsAtlas = new Texture("AtlasButtons.png");
-        imgBGAtlas = new Texture("bgmenu.png");
-        imgBG2 = new Texture("bgmenu.png");
-        imgMN = new Texture("moneta.png");
-        imgLogo = new Texture("logo.png");
-
+        imgEnemyesBoses = manager.get("atlasboss.png", Texture.class);
+        imgLongButtonAtlas = manager.get("LongButton.png", Texture.class);
+        imgButtonsAtlas = manager.get("AtlasButtons.png", Texture.class);
+        imgBGAtlas = manager.get("bgmenu.png", Texture.class);
+        imgBG2 = manager.get("bgmenu.png", Texture.class);
+        imgMN = manager.get("moneta.png", Texture.class);
+        imgLogo = manager.get("logo.png", Texture.class);
 
         for (int i = 0; i < imgBG.length; i++) {
             imgBG[i] = new TextureRegion(imgBGAtlas, (i) * 900, 0, 900, 1600);
@@ -110,6 +112,7 @@ public class ScreenMenu implements Screen {
 
     @Override
     public void show() {
+        loadState();
 
     }
 
@@ -178,11 +181,9 @@ public class ScreenMenu implements Screen {
         //batch.draw(imgBG[phaseBg], 0, 0, SCR_WIDTH, SCR_HEIGHT);
         batch.draw(imgBG2, 0, 0, SCR_WIDTH, SCR_HEIGHT);
         changePhase();
-        if (!main.isFirstRunning)
-        {btnPlay.isMove=true;}
-        else{
-            btnPlay.isMove=false;
-        }
+
+        btnPlay.isMove = true;
+
         if (curentlevel.isNums && !main.isPlayMove) {
         btnShop.moveButton(4f,4f,12f);}
 
@@ -223,6 +224,15 @@ public class ScreenMenu implements Screen {
         }
     }
 
+    public void loadState() {
+
+        Preferences prefs = Gdx.app.getPreferences("игровые ресурсы");
+
+// Получаем значение (с дефолтным значением на случай первого запуска)
+        main.isFirstLeaderboard = prefs.getBoolean("isFLB", true);
+
+
+    }
 
     @Override
     public void resize(int width, int height) {

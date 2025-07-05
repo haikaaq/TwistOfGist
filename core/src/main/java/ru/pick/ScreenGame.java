@@ -15,6 +15,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -44,7 +45,7 @@ public class ScreenGame implements Screen {
     private final BitmapFont font70;
     private final BitmapFont font32;
     private InputNumKeyboard keyboard;
-
+    private AssetManager manager;
 
     private long timeLastSpawnEnemy;
     private long timeLastSpawnShots;
@@ -166,6 +167,7 @@ public class ScreenGame implements Screen {
 
     public ScreenGame(Main main) {
         this.main = main;
+        this.manager = main.manager;
         batch = main.batch;
         camera = main.camera;
         moneyFactor = 10;
@@ -176,6 +178,7 @@ public class ScreenGame implements Screen {
         font70 = main.font70;
         font32 = main.font32;
         level = main.level;
+
         FonMusic = main.FonMusic;
         allmoney = main.allmoney;
 
@@ -183,34 +186,37 @@ public class ScreenGame implements Screen {
         Gdx.input.setInputProcessor(new Processor());
         imgMN = new Texture("moneta.png");
 
-        imgBG = new Texture(currentlevel.backgroundPath);
-        imgShieldBoost = new Texture("shieldBoost.png");
-        imgRocketBoost = new Texture("rocketBoost.png");
-        imgShiledShipAtlas = new Texture("shieldShip.png");
-        imgRocketAtlas = new Texture("rocket.png");
-        imgShiledShipWarringAtlas = new Texture("shieldWarringShip.png");
-        imgBG2 = new Texture("bgmenu2.png");
-        imgShipsatlas = new Texture("atlas.png");
-        imgFragmentatlas = new Texture("fragments.png");
-        //imgEnemyes = new Texture(currentlevel.enemyPath);
-        imgBackAtlas = new Texture("buttonsLeftRight.png");
-        imgStone = new Texture("stone.png");
-        imgNumsAtlas = new Texture("nums.png");
+        imgMN = manager.get("moneta.png", Texture.class);
 
-        joystickBase = new Texture("jsBase.png");
-        joystickStick = new Texture("jsStick.png");
-        imgEnemyesWouded = new Texture("woundedemenies.png");
-        imgEnemyesBoses = new Texture("atlasboss.png");
-        imgEnemyesDead = new Texture("enemyesDead.png");
-        imgLongButtonAtlas = new Texture("LongButton.png");
-        imgEarthAtlas = new Texture("earthatlas.png");
-        imgRED = new Texture("red.png");
-        imgMinus = new Texture("minus.png");
-        imgPlus = new Texture("plus.png");
-        imgGreen = new Texture("green.png");
-        imgGrayBG = new Texture("GrayBG.png");
-        imgShotsatlas = new Texture("shots.png");
-        imgLogo = new Texture("logo.png");
+        imgBG = manager.get(currentlevel.backgroundPath, Texture.class);
+        imgShieldBoost = manager.get("shieldBoost.png", Texture.class);
+        imgRocketBoost = manager.get("rocketBoost.png", Texture.class);
+        imgShiledShipAtlas = manager.get("shieldShip.png", Texture.class);
+        imgRocketAtlas = manager.get("rocket.png", Texture.class);
+        imgShiledShipWarringAtlas = manager.get("shieldWarringShip.png", Texture.class);
+        imgBG2 = manager.get("bgmenu2.png", Texture.class);
+        imgShipsatlas = manager.get("atlas.png", Texture.class);
+        imgFragmentatlas = manager.get("fragments.png", Texture.class);
+//imgEnemyes = manager.get(currentlevel.enemyPath, Texture.class); // Раскомментировать если нужно
+        imgBackAtlas = manager.get("buttonsLeftRight.png", Texture.class);
+        imgStone = manager.get("stone.png", Texture.class);
+        imgNumsAtlas = manager.get("nums.png", Texture.class);
+
+        joystickBase = manager.get("jsBase.png", Texture.class);
+        joystickStick = manager.get("jsStick.png", Texture.class);
+        imgEnemyesWouded = manager.get("woundedemenies.png", Texture.class);
+        imgEnemyesBoses = manager.get("atlasboss.png", Texture.class);
+        imgEnemyesDead = manager.get("enemyesDead.png", Texture.class);
+        imgLongButtonAtlas = manager.get("LongButton.png", Texture.class);
+        imgEarthAtlas = manager.get("earthatlas.png", Texture.class);
+        imgRED = manager.get("red.png", Texture.class);
+        imgMinus = manager.get("minus.png", Texture.class);
+        imgPlus = manager.get("plus.png", Texture.class);
+        imgGreen = manager.get("green.png", Texture.class);
+        imgGrayBG = manager.get("GrayBG.png", Texture.class);
+        imgShotsatlas = manager.get("shots.png", Texture.class);
+        imgLogo = manager.get("logo.png", Texture.class);
+
         keyboard = new InputNumKeyboard(font70, SCR_WIDTH, SCR_HEIGHT, 10);
 
         shipsPixmap = new Pixmap(Gdx.files.internal("atlas.png"));
@@ -220,7 +226,6 @@ public class ScreenGame implements Screen {
         rocketPixmap = new Pixmap(Gdx.files.internal("rocket.png"));
         stonePixmap = new Pixmap(Gdx.files.internal("stone.png"));
         numPixmap = new Pixmap(Gdx.files.internal("black.png"));
-
 
         for (int j = 0; j < imgShipatlas.length; j++) {
             for (int i = 0; i < imgShipatlas[j].length; i++) {

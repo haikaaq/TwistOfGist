@@ -4,6 +4,7 @@ import static ru.pick.Main.SCR_HEIGHT;
 import static ru.pick.Main.SCR_WIDTH;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -18,6 +19,7 @@ public class ScreenNumLevel implements Screen {
     private OrthographicCamera camera;
     private Vector3 touch;
     private BitmapFont font;
+    private AssetManager manager;
 
     private long beginingTime, screenTime = 3200;
     private Levels.Level curentlevel;
@@ -31,12 +33,13 @@ public class ScreenNumLevel implements Screen {
         batch = main.batch;
         camera = main.camera;
         font = main.font70;
+        this.manager = main.manager;
         loadLevel(main.level);
 
         level = main.level;
         btnNumLevel = new SpaceButton(font, curentlevel.numLevel, 800);
         btnLevel = new SpaceButton(font, LanguageManager.get("level") + " " + main.level, 1350);
-        imgBG = new Texture("GrayBG.png");
+        imgBG = manager.get("GrayBG.png", Texture.class);
     }
 
     public void show() {

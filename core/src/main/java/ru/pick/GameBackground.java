@@ -7,7 +7,7 @@ public class GameBackground extends Object {
     public GameBackground(float x, float y) {
         super(x, y);
         width= SCR_WIDTH;
-        height=SCR_HEIGHT;
+        height = SCR_HEIGHT * 3;
         vX=0;
         vY=-1;
     }
@@ -15,6 +15,6 @@ public class GameBackground extends Object {
     @Override
     public void move() {
         super.move();
-        if (y<-SCR_HEIGHT) y=SCR_HEIGHT;
+        if (y < -SCR_HEIGHT * 3) y = SCR_HEIGHT;
     }
 }

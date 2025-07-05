@@ -6,7 +6,9 @@ import static ru.pick.Main.SCR_WIDTH;
 import static ru.pick.Main.controls;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -24,6 +26,8 @@ public class ScreenSettings implements Screen {
     private Vector3 touch;
     private BitmapFont font70;
     private BitmapFont font32;
+    private AssetManager manager;
+
     private Levels.Level curentlevel;
     private InputKeyboard keyboard;
     private Rocket rocket;
@@ -42,10 +46,7 @@ public class ScreenSettings implements Screen {
     private long timeWarring = 1100, timeLastWarring;
     private boolean iswarring = false;
     //код для смены вида управления скорее всего пригодится в следующих ровнях(Setting levels), поэтому не удален
-    SpaceButton btnControls;
-    SpaceButton btnScreen;
-    SpaceButton btnJoystic;
-    SpaceButton btnAccelerometr;
+
     SpaceButton btnBack;
     SpaceButton btnLeft;
     SpaceButton btnRight;
@@ -65,34 +66,30 @@ public class ScreenSettings implements Screen {
         camera = main.camera;
         touch = main.touch;
         font70 = main.font70;
+        this.manager = main.manager;
         font32 = main.font32;
         loadLevel(main.level);
         controls = SCREEN;
-        imgBG = new Texture("bgset.png");
-        imgON = new Texture("on.png");
-        imgOFF = new Texture("off.png");
-        imgBG2 = new Texture("bgmenu2.png");
-        imgLogo = new Texture("logo.png");
-        imgWarring = new Texture("push.png");
-        // imgRocket0 = new Texture("rocket.png");
 
+        imgLongButtonAtlas = manager.get("LongButton.png", Texture.class);
+        imgBG = manager.get("bgset.png", Texture.class);
+        imgON = manager.get("on.png", Texture.class);
+        imgOFF = manager.get("off.png", Texture.class);
+        imgBG2 = manager.get("bgmenu2.png", Texture.class);
+        imgLogo = manager.get("logo.png", Texture.class);
+        imgWarring = manager.get("push.png", Texture.class);
+        imgBackAtlas = manager.get("buttonsLeftRight.png", Texture.class);
 
-        imgBackAtlas = new Texture("buttonsLeftRight.png");
-
-        // btnControls = new SpaceButton(font70,"Controls",100,1100);
         btnMusic = new SpaceButton(font70, LanguageManager.get("music"), 100, 1100);
-       /*  btnScreen = new SpaceButton(font70,"Screen",900);
-        btnJoystic = new SpaceButton(font70,"Joystick",1000);
-       // btnAccelerometr = new SpaceButton(font70,"Accelerometr",800);*/
-        //btnLeft= new SpaceButton(font70, "Left",SCR_WIDTH/2-60,900);
-        //btnRight= new SpaceButton(font70, "Right",SCR_WIDTH/2-60,800);
+
+
         btnFonMusic = new SpaceButton(font70, LanguageManager.get("backgroundmusic"), 230, 1000);
         btnActionSounds = new SpaceButton(font70, LanguageManager.get("ActionsSounds"), 230, 900);
         btnLanguage = new SpaceButton(font70, LanguageManager.get("Language"), 100, 800);
         btnRussian = new SpaceButton(font70, LanguageManager.get("russian"), 230, 700);
         btnEnglish = new SpaceButton(font70, LanguageManager.get("english"), 230, 600);
-        imgLongButtonAtlas = new Texture("LongButton.png");
-        keyboard = new InputKeyboard(font70, SCR_WIDTH, SCR_HEIGHT * 3 / 4, 11);
+
+        keyboard = new InputKeyboard(font70, SCR_WIDTH, SCR_HEIGHT * 3 / 4, 8);
 
 
         btnBack = new SpaceButton(10, 1500, 90, 90, 0);
@@ -135,7 +132,7 @@ public class ScreenSettings implements Screen {
 
         camera.unproject(Mousepose);
         btnName.buttonsState(Mousepose.x, Mousepose.y);
-        if (btnName.setScreenButton) {
+        if (btnName.setScreenButton && !main.isFirstLeaderboard) {
 
             keyboard.start();
 
@@ -150,55 +147,28 @@ public class ScreenSettings implements Screen {
                 main.player.name = keyboard.getText();
                 iswarring = true;
                 timeLastWarring = TimeUtils.millis();
+                main.isNewName = true;
+                saveState();
+
+
 
 
             }
 
-            /*if(btnAccelerometr.hit(touch.x-60, touch.y)) {
-                if(controls==ACCELEROMETER)
-                    controls=SCREEN;
-                else{
-                    controls=ACCELEROMETER;}
-
-                }
-
-            if(btnScreen.hit(touch.x-60, touch.y)) {
-                if(controls==SCREEN)
-                        controls=ACCELEROMETER;
-                else {controls = SCREEN;}}
-
-            if(btnJoystic.hit(touch.x, touch.y)) {
-                if(controls==JOYSTIK)
-                     controls=SCREEN;
-
-                else{
-                    controls=JOYSTIK;}}
-            if(controls==JOYSTIK||controls==JOYSTIK_LEFT||controls==JOYSTIK_RIGHT){
-                if(btnRight.hit(touch.x-60, touch.y)) {
-                    if(controls==JOYSTIK_RIGHT)
-                        controls=JOYSTIK_LEFT;
-                    else{
-                        controls=JOYSTIK_RIGHT;}}
-                if(btnLeft.hit(touch.x-60, touch.y)) {
-                    if(controls==JOYSTIK_LEFT)
-                    controls=JOYSTIK_RIGHT;
-                    else{
-                        controls=JOYSTIK_LEFT;}}}*/
-
-            if (btnFonMusic.hit(touch.x - 60, touch.y)) {
+            if (btnFonMusic.hit(touch.x - 60, touch.y) && !keyboard.isKeyboardShow) {
                 if (main.isFonMusic) main.isFonMusic = false;
                 else main.isFonMusic = true;
             }
 
-            if (btnActionSounds.hit(touch.x - 60, touch.y)) {
+            if (btnActionSounds.hit(touch.x - 60, touch.y) && !keyboard.isKeyboardShow) {
                 if (main.isActionSounds) main.isActionSounds = false;
                 else main.isActionSounds = true;
 
             }
-            if (btnEnglish.hit(touch.x - 60, touch.y)) {
+            if (btnEnglish.hit(touch.x - 60, touch.y) && !keyboard.isKeyboardShow) {
                 LanguageManager.setLanguage("en");
             }
-            if (btnRussian.hit(touch.x - 60, touch.y)) {
+            if (btnRussian.hit(touch.x - 60, touch.y) && !keyboard.isKeyboardShow) {
                 LanguageManager.setLanguage("ru");
 
             }
@@ -212,14 +182,10 @@ public class ScreenSettings implements Screen {
         batch.begin();
         batch.draw(imgBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
 
-        // batch.draw(imgBG2, 0, 0, SCR_WIDTH, SCR_HEIGHT);
+
 
         font70.draw(batch, LanguageManager.get("settings"), 0, 1550, SCR_WIDTH, Align.center, true);
-       /* btnControls.font.draw(batch, btnControls.text, btnControls.x, btnControls.y);
-        btnScreen.font.draw(batch, btnScreen.text, btnScreen.x, btnScreen.y);
-        batch.draw(controls==SCREEN?imgON:imgOFF,btnScreen.x+btnScreen.widht, btnScreen.y-btnScreen.height -10,70,70 );
-        btnJoystic.font.draw(batch, btnJoystic.text, btnJoystic.x, btnJoystic.y);
-        btnAccelerometr.font.draw(batch, btnAccelerometr.text, btnAccelerometr.x, btnAccelerometr.y);*/
+
         btnMusic.font.draw(batch, btnMusic.text, btnMusic.x, btnMusic.y);
         btnFonMusic.font.draw(batch, btnFonMusic.text, btnFonMusic.x, btnFonMusic.y);
         btnLanguage.font.draw(batch, btnLanguage.text, btnLanguage.x, btnLanguage.y);
@@ -227,9 +193,10 @@ public class ScreenSettings implements Screen {
         btnEnglish.font.draw(batch, btnEnglish.text, btnEnglish.x, btnEnglish.y);
         batch.draw(main.isFonMusic ? imgON : imgOFF, btnFonMusic.x + btnFonMusic.width, btnFonMusic.y - btnFonMusic.height - 10, 70, 70);
         btnActionSounds.font.draw(batch, btnActionSounds.text, btnActionSounds.x, btnActionSounds.y);
-
+        if (!main.isFirstLeaderboard) {
         batch.draw(imgLongButton[btnName.phase], btnName.imgX, btnName.imgY, btnName.imgWidth, btnName.imgHeight);
-        btnName.font.draw(batch, btnName.text, btnName.x, btnName.y);
+            btnName.font.draw(batch, btnName.text, btnName.x, btnName.y);
+        }
         batch.draw(main.isActionSounds ? imgON : imgOFF, btnActionSounds.x + btnActionSounds.width, btnActionSounds.y - btnActionSounds.height - 10, 70, 70);
         batch.draw(LanguageManager.currentBundle == LanguageManager.enBundle ? imgON : imgOFF, btnEnglish.x + btnEnglish.width, btnEnglish.y - btnEnglish.height - 10, 70, 70);
         batch.draw(LanguageManager.currentBundle == LanguageManager.ruBundle ? imgON : imgOFF, btnRussian.x + btnRussian.width, btnRussian.y - btnRussian.height - 10, 70, 70);
@@ -302,6 +269,14 @@ public class ScreenSettings implements Screen {
         font70.dispose();
     }
 
+    public void saveState() {
+        Preferences prefs = Gdx.app.getPreferences("игровые ресурсы");
+
+
+        prefs.putString("nm", main.player.name);
+
+        prefs.flush();
+    }
 
     private void loadLevel(int level) {
         curentlevel = Levels.LEVELS[level];

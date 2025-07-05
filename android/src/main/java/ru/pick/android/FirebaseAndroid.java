@@ -4,6 +4,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,28 +30,24 @@ public class FirebaseAndroid implements FirebaseManager {
     public FirebaseAndroid(Context context) {
         this.context = context;
         this.database = FirebaseDatabase.getInstance().getReference();
-
     }
-
 
     @Override
     public void savePlayer(Player player) {
-
         Gdx.app.log("FirebaseAndroid", "Saving player: " + player.name);
-        //   FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        //  DatabaseReference ref = database.getReference();
+        player.firebaseId = loadFirebaseIdFromPrefs();
 
         // Если у игрока нет ID - создаем новую запись
         if (player.firebaseId == null) {
             DatabaseReference newRef = database.push();
             player.firebaseId = newRef.getKey();
+            saveFirebaseIdToPrefs(player.firebaseId);
+
             newRef.setValue(player).addOnSuccessListener(aVoid -> {
                     Gdx.app.log("Firebase", "Player saved! ID: " + player.firebaseId);
                 })
                 .addOnFailureListener(e -> {
-                    online=false;
-                    // Gdx.app.error("Firebase", "Save failed: " + e.getMessage());
+                    online = false;
                 });
         }
         // Если ID есть - обновляем существующую
@@ -60,22 +57,14 @@ public class FirebaseAndroid implements FirebaseManager {
                     online=true;
                     Gdx.app.log("Firebase", "Player updated");
                 } else {
-                    online=false;
-                    // Gdx.app.error("Firebase", "Update failed", task.getException());
+                    online = false;
                 }
             });
         }
     }
 
-
     @Override
     public void getTop10ByLevel(SortedLeaderboardCallback callback) {
-        // if (!forceOnline && !isOnline()) {
-        // List<Player> cached = LocalLeaderBoard.load();
-        // callback.onSuccess(cached);
-        // return;
-        //}
-
         FirebaseDatabase.getInstance()
             .getReference()
             .orderByChild("level")
@@ -93,10 +82,6 @@ public class FirebaseAndroid implements FirebaseManager {
                         players.add(player);
                         Gdx.app.log("Firebase", "Loaded player: " + player.name); // Логируем
                     }
-
-
-
-
                     players.sort( (p1, p2) -> {
                         if (p1.level != p2.level) {
                             return Integer.compare(p2.level, p1.level); // Уровень ↓
@@ -104,34 +89,15 @@ public class FirebaseAndroid implements FirebaseManager {
                             return Integer.compare(p2.money, p1.money); // Деньги ↓
                         }
                     });
-
-                    // LocalLeaderBoard.save(players); // Кешируем
                     callback.onSuccess(players);
-
                 }
 
                 @Override
                 public void onCancelled(@NotNull DatabaseError error) {
-                    online=false;
-                    /*List<Player> players = new ArrayList<>();
-                    for(int i=0; i<=10; i++){
-                        players.add(new Player());
-                    }*/
-                    //callback.onSuccess(players);
-
-                    return;
-
+                    online = false;
                 }
             });
     }
-
-    /*() {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-
-    }*/
-
     @Override
     public void getPlayerRank(Player targetPlayer, PlayerRankCallback callback) {
         FirebaseDatabase.getInstance()
@@ -150,13 +116,11 @@ public class FirebaseAndroid implements FirebaseManager {
                             allPlayers.add(player);
                         }
                     }
-
                     // Сортируем как в топе
                     allPlayers.sort((p1, p2) -> {
                         int levelCompare = Integer.compare(p2.level, p1.level);
                         return levelCompare != 0 ? levelCompare : Integer.compare(p2.money, p1.money);
                     });
-
                     // Находим позицию игрока
                     int rank = -1;
                     for (int i = 0; i < allPlayers.size(); i++) {
@@ -165,23 +129,30 @@ public class FirebaseAndroid implements FirebaseManager {
                             break;
                         }
                     }
-
                     if (rank != -1) {
                         callback.onSuccess(rank);
                     } else {
-                        online=false;
-                        // callback.onError("Player not found in leaderboard");
+                        online = false;
                     }
                 }
-
                 @Override
                 public void onCancelled(@NotNull DatabaseError error) {
-                    online=false;
-                    //callback.onError(error.getMessage());
+                    online = false;
                 }
             });
     }
     public boolean isOnline(){
         return online;
+    }
+
+    public String loadFirebaseIdFromPrefs() {
+        Preferences prefs = Gdx.app.getPreferences("игровые ресурсы");
+        return prefs.getString("firebaseId", null); // null - значение по умолчанию, если ID не найден
+    }
+
+    private void saveFirebaseIdToPrefs(String firebaseId) {
+        Preferences prefs = Gdx.app.getPreferences("игровые ресурсы");
+        prefs.putString("firebaseId", firebaseId);
+        prefs.flush();
     }
 }
