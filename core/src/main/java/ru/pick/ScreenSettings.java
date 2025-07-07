@@ -71,7 +71,7 @@ public class ScreenSettings implements Screen {
         loadLevel(main.level);
         controls = SCREEN;
 
-        imgLongButtonAtlas = manager.get("LongButton.png", Texture.class);
+        imgLongButtonAtlas = manager.get("longButton.png", Texture.class);
         imgBG = manager.get("bgset.png", Texture.class);
         imgON = manager.get("on.png", Texture.class);
         imgOFF = manager.get("off.png", Texture.class);

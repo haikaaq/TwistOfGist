@@ -75,8 +75,8 @@ public class Object {
 
     boolean overlap(Object obj2, Pixmap p1, Pixmap p2) {
 
-        if (Math.abs(x - obj2.x) > (width + obj2.width) / 2 ||
-            Math.abs(y - obj2.y) > (height + obj2.height) / 2) {
+        if (Math.abs(x - obj2.x) > (width + obj2.width) / 4 ||
+            Math.abs(y - obj2.y) > (height + obj2.height) / 4) {
             return false;
         } else {
             // 2. Определяем область пересечения в мировых координатах

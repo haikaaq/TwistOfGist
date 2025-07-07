@@ -39,7 +39,7 @@ public class ScreenNumLevel implements Screen {
         level = main.level;
         btnNumLevel = new SpaceButton(font, curentlevel.numLevel, 800);
         btnLevel = new SpaceButton(font, LanguageManager.get("level") + " " + main.level, 1350);
-        imgBG = manager.get("GrayBG.png", Texture.class);
+        imgBG = manager.get("grayBG.png", Texture.class);
     }
 
     public void show() {

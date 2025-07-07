@@ -15,6 +15,6 @@ public class GameBackground extends Object {
     @Override
     public void move() {
         super.move();
-        if (y < -SCR_HEIGHT * 3) y = SCR_HEIGHT;
+        if (y < -SCR_HEIGHT * 3) y = SCR_HEIGHT * 3 - 70;
     }
 }

@@ -35,6 +35,8 @@ public class AndroidLauncher extends AndroidApplication {
 
         AndroidApplicationConfiguration configuration = new AndroidApplicationConfiguration();
         configuration.useImmersiveMode = true;
+        configuration.numSamples = 2;
+        configuration.useGL30 = false; // Если не используете GLES 3.0
 
 
         FirebaseApp.initializeApp(this);

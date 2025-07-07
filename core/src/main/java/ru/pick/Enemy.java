@@ -19,7 +19,7 @@ public class Enemy extends Object {
     public Enemy() {
         type = MathUtils.random(0, 4);
 
-        nPhases = 12;
+        nPhases = 6;
 
         x = MathUtils.random(width / 2, SCR_WIDTH - width / 2);
         y = MathUtils.random(SCR_HEIGHT + height, SCR_HEIGHT + height + 300);
@@ -27,7 +27,7 @@ public class Enemy extends Object {
         timeWoud = 154;
         imgWidth = imgHeight = 800;
         rotationSpeed = 0;
-        width = height = MathUtils.random(180f, 250);
+        width = height = MathUtils.random(200f, 280);
         vX = MathUtils.random(-0.5000f, 0.50000f);
         health = MathUtils.random(3 * (shotCount + 1), 11 * (shotCount + 1));
         vY = MathUtils.random(-2.99f, -0.78f);

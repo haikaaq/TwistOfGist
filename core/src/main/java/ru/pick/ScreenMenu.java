@@ -66,9 +66,9 @@ public class ScreenMenu implements Screen {
         FonMusic = main.FonMusic;
 
         LanguageManager.loadBundles();
-        imgEnemyesBoses = manager.get("atlasboss.png", Texture.class);
-        imgLongButtonAtlas = manager.get("LongButton.png", Texture.class);
-        imgButtonsAtlas = manager.get("AtlasButtons.png", Texture.class);
+        imgEnemyesBoses = new Texture("atlasboss.png");
+        imgLongButtonAtlas = new Texture("longButton.png");
+        imgButtonsAtlas = manager.get("atlasButtons.png", Texture.class);
         imgBGAtlas = manager.get("bgmenu.png", Texture.class);
         imgBG2 = manager.get("bgmenu.png", Texture.class);
         imgMN = manager.get("moneta.png", Texture.class);
@@ -184,8 +184,6 @@ public class ScreenMenu implements Screen {
 
         btnPlay.isMove = true;
 
-        if (curentlevel.isNums && !main.isPlayMove) {
-        btnShop.moveButton(4f,4f,12f);}
 
         batch.setColor(1, 1, 1, menuEnemyAlpha);
         batch.draw(imgEnemyBoses[menuEnemy.phase], menuEnemy.scrX(), menuEnemy.scrY(), menuEnemy.width / 2, menuEnemy.height / 2, menuEnemy.width, menuEnemy.height, 1, 1, menuEnemy.rotation);

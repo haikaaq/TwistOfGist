@@ -47,6 +47,7 @@ public class ScreenGame implements Screen {
     private InputNumKeyboard keyboard;
     private AssetManager manager;
 
+
     private long timeLastSpawnEnemy;
     private long timeLastSpawnShots;
     private long timeLastSpawnBoost;
@@ -90,7 +91,7 @@ public class ScreenGame implements Screen {
     public int allmoney;
     public int shotsShots;
     public int moneyFactor;
-    private int NumInt = 0;
+    private int numInt = 0;
     public boolean isBoss = true;
 
     Texture imgMN;
@@ -129,16 +130,16 @@ public class ScreenGame implements Screen {
     Pixmap stonePixmap;
     Pixmap numPixmap;
     TextureRegion[] imgRocket = new TextureRegion[1];
-    TextureRegion[][] imgShipatlas = new TextureRegion[5][12];
-    TextureRegion[][] imgShiledShip = new TextureRegion[5][12];
-    TextureRegion[][] imgShiledShipWarring = new TextureRegion[5][12];
+    TextureRegion[][] imgShipatlas = new TextureRegion[5][9];
+    TextureRegion[][] imgShiledShip = new TextureRegion[5][8];
+    TextureRegion[][] imgShiledShipWarring = new TextureRegion[5][8];
     TextureRegion[][] imgEnemy = new TextureRegion[5][12];
     TextureRegion[] imgEnemyBoses = new TextureRegion[6];
     TextureRegion[] imgNum = new TextureRegion[10];
     TextureRegion[] imgEnemyDead = new TextureRegion[10];
     TextureRegion[][] imgFragments = new TextureRegion[4][4];
     TextureRegion[] imgShotatlas = new TextureRegion[5];
-    TextureRegion[][] imgEnemyWouded = new TextureRegion[5][12];
+    TextureRegion[][] imgEnemyWouded = new TextureRegion[5][6];
     TextureRegion[] imgLongButton = new TextureRegion[3];
     TextureRegion[] imgEarth = new TextureRegion[4];
     TextureRegion[] imgBack = new TextureRegion[2];
@@ -170,8 +171,11 @@ public class ScreenGame implements Screen {
         this.manager = main.manager;
         batch = main.batch;
         camera = main.camera;
-        moneyFactor = 10;
+
+
+        moneyFactor = 5;
         LoadGame();
+
 
         loadLevel(main.level);
         touch = main.touch;
@@ -184,6 +188,7 @@ public class ScreenGame implements Screen {
 
 
         Gdx.input.setInputProcessor(new Processor());
+
         imgMN = new Texture("moneta.png");
 
         imgMN = manager.get("moneta.png", Texture.class);
@@ -191,11 +196,11 @@ public class ScreenGame implements Screen {
         imgBG = manager.get(currentlevel.backgroundPath, Texture.class);
         imgShieldBoost = manager.get("shieldBoost.png", Texture.class);
         imgRocketBoost = manager.get("rocketBoost.png", Texture.class);
-        imgShiledShipAtlas = manager.get("shieldShip.png", Texture.class);
+        imgShiledShipAtlas = new Texture("shieldShip.png");
         imgRocketAtlas = manager.get("rocket.png", Texture.class);
-        imgShiledShipWarringAtlas = manager.get("shieldWarringShip.png", Texture.class);
+        imgShiledShipWarringAtlas = new Texture("shieldWarringShip.png");
         imgBG2 = manager.get("bgmenu2.png", Texture.class);
-        imgShipsatlas = manager.get("atlas.png", Texture.class);
+        imgShipsatlas = new Texture("atlas.png");
         imgFragmentatlas = manager.get("fragments.png", Texture.class);
 //imgEnemyes = manager.get(currentlevel.enemyPath, Texture.class); // Раскомментировать если нужно
         imgBackAtlas = manager.get("buttonsLeftRight.png", Texture.class);
@@ -204,18 +209,19 @@ public class ScreenGame implements Screen {
 
         joystickBase = manager.get("jsBase.png", Texture.class);
         joystickStick = manager.get("jsStick.png", Texture.class);
-        imgEnemyesWouded = manager.get("woundedemenies.png", Texture.class);
-        imgEnemyesBoses = manager.get("atlasboss.png", Texture.class);
-        imgEnemyesDead = manager.get("enemyesDead.png", Texture.class);
-        imgLongButtonAtlas = manager.get("LongButton.png", Texture.class);
+        imgEnemyesWouded = new Texture("woundedemenies.png");
+        imgEnemyesBoses = new Texture("atlasboss.png");
+        imgEnemyesDead = new Texture("enemyesDead.png");
+        imgLongButtonAtlas = manager.get("longButton.png", Texture.class);
         imgEarthAtlas = manager.get("earthatlas.png", Texture.class);
         imgRED = manager.get("red.png", Texture.class);
         imgMinus = manager.get("minus.png", Texture.class);
         imgPlus = manager.get("plus.png", Texture.class);
         imgGreen = manager.get("green.png", Texture.class);
-        imgGrayBG = manager.get("GrayBG.png", Texture.class);
+        imgGrayBG = manager.get("grayBG.png", Texture.class);
         imgShotsatlas = manager.get("shots.png", Texture.class);
         imgLogo = manager.get("logo.png", Texture.class);
+
 
         keyboard = new InputNumKeyboard(font70, SCR_WIDTH, SCR_HEIGHT, 10);
 
@@ -229,17 +235,17 @@ public class ScreenGame implements Screen {
 
         for (int j = 0; j < imgShipatlas.length; j++) {
             for (int i = 0; i < imgShipatlas[j].length; i++) {
-                imgShipatlas[j][i] = new TextureRegion(imgShipsatlas, (i < 7 ? i : 12 - i) * 800, (j) * 800, 800, 800);
+                imgShipatlas[j][i] = new TextureRegion(imgShipsatlas, i * 400, (j) * 500, 400, 500);
             }
         }
         for (int j = 0; j < imgShiledShip.length; j++) {
             for (int i = 0; i < imgShiledShip[j].length; i++) {
-                imgShiledShip[j][i] = new TextureRegion(imgShiledShipAtlas, (i < 7 ? i : 12 - i) * 800, (j) * 800, 800, 800);
+                imgShiledShip[j][i] = new TextureRegion(imgShiledShipAtlas, (i) * 400, (j) * 500, 400, 500);
             }
         }
         for (int j = 0; j < imgShiledShipWarring.length; j++) {
             for (int i = 0; i < imgShiledShipWarring[j].length; i++) {
-                imgShiledShipWarring[j][i] = new TextureRegion(imgShiledShipWarringAtlas, (i < 7 ? i : 12 - i) * 800, (j) * 800, 800, 800);
+                imgShiledShipWarring[j][i] = new TextureRegion(imgShiledShipWarringAtlas, (i) * 400, (j) * 500, 400, 500);
             }
         }
         for (int e = 0; e < imgNum.length; e++) {
@@ -252,7 +258,7 @@ public class ScreenGame implements Screen {
         }
         for (int j = 0; j < imgEnemyWouded.length; j++) {
             for (int i = 0; i < imgEnemyWouded[j].length; i++) {
-                imgEnemyWouded[j][i] = new TextureRegion(imgEnemyesWouded, (i < 7 ? i : 12 - i) * 800, (j) * 800, 800, 800);
+                imgEnemyWouded[j][i] = new TextureRegion(imgEnemyesWouded, (i) * 400, (j) * 500, 400, 500);
             }
         }
 
@@ -291,6 +297,7 @@ public class ScreenGame implements Screen {
         btnGetMoney = new SpaceButton(font70, LanguageManager.get("getandexit"), imgLongButtonAtlas, 260, 1.58f);
         btnMoney = new SpaceButton(font70, strmoney, SCR_WIDTH - 120, 1550);
 
+
         sndExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
         sndBlaster = Gdx.audio.newSound(Gdx.files.internal("blaster.mp3"));
         shipSkin = main.shipSkin;
@@ -298,15 +305,17 @@ public class ScreenGame implements Screen {
         initialShotCount = main.shotsBoostCount;
         initialEven = main.shotEven;
         bg[0] = new GameBackground(0, 0);
-        bg[1] = new GameBackground(0, SCR_HEIGHT);
+        bg[1] = new GameBackground(0, SCR_HEIGHT * 3);
         ship = new Ship(SCR_WIDTH / 2, SCR_HEIGHT / 5);
+        //Model model = manager.get("models/type0.obj");
+
 
 
     }
 
 
     public void show() {
-
+        ship.type = main.shipSkin;
         gameState = GAME;
         shotCount = main.shotsBoostCount;
         shotEven = main.shotEven;
@@ -343,7 +352,7 @@ public class ScreenGame implements Screen {
         imgEnemyes = currentlevel.imgEnemyes;
         for (int j = 0; j < imgEnemy.length; j++) {
             for (int i = 0; i < imgEnemy[j].length; i++) {
-                imgEnemy[j][i] = new TextureRegion(imgEnemyes, (i < 7 ? i : 12 - i) * 800, (j) * 800, 800, 800);
+                imgEnemy[j][i] = new TextureRegion(imgEnemyes, (i < 10 ? i : 10 - i) * 400, (j) * 500, 400, 500);
             }
         }
         btnGetMoney.changeText(LanguageManager.get("getandexit"));
@@ -353,8 +362,10 @@ public class ScreenGame implements Screen {
 
     @Override
     public void render(float delta) {
-        ship.CheckVx = ship.vX;
-        ship.type = main.shipSkin;
+
+
+        //ship.CheckVx = ship.vX;
+
 
         if (currentlevel.controls == JOYSTIK_RIGHT || currentlevel.controls == JOYSTIK_LEFT && joystick != null) {
             Vector2 direction = joystick.getDirection();
@@ -369,7 +380,7 @@ public class ScreenGame implements Screen {
             spavnRocketAndShieldBoost();
         }
 
-        SaveGame();
+
         if (isRocket) {
             for (Rocket r : rockets) {
                 r.update(delta);
@@ -382,11 +393,13 @@ public class ScreenGame implements Screen {
             if (btnBack.hit(touch.x, touch.y)) {
                 main.isPlayMove = false;
                 main.shotsBoostCount = shotCount;
+
                 if (main.isAboutLevel) {
                     gameState = GAME_OVER;
                     gameClear();
                     main.isAboutLevel = false;
                 } else {
+                    SaveGame();
                     FonMusic.stop();
                     stopGame();
                 }
@@ -406,6 +419,7 @@ public class ScreenGame implements Screen {
 
             if (btnGetMoney.hit(touch.x, touch.y)) {
                 if (gameState == GAME_OVER) {
+                    SaveGame();
                     main.shotsBoostCount = initialShotCount;
                     main.shotEven = initialEven;
                     gameClear();
@@ -419,18 +433,13 @@ public class ScreenGame implements Screen {
         btnGetMoney.changePhases();
         if (currentlevel.controls == ACCELEROMETER && (Gdx.app.getType() == Application.ApplicationType.Android)) {
             final float deadzone = 0.2f;
-            float prevX = ship.x;
-            float prevY = ship.y;
             float rawX = Gdx.input.getAccelerometerX();
             float rawY = Gdx.input.getAccelerometerY();
             if (Math.abs(rawX) <= deadzone) rawX = 0;
             if (Math.abs(rawY) <= deadzone) rawY = 0;
             if (OrientationHelper.getOrientation() == OrientationHelper.ScreenOrientation.PORTRAIT) {
-                ship.vY = -rawX * 4;
-                ship.vX = rawY * 3;
-            } else {
-                ship.vX = -rawX * 4;
-                ship.vY = -rawY * 4;
+                ship.vY = -rawY;
+                ship.vX = -rawX;
             }
             ship.move();
 
@@ -472,7 +481,7 @@ public class ScreenGame implements Screen {
             earth.move();
         }
         if (currentlevel.isNums) {
-            //keyboard();
+
             spavnNums();
 
         }
@@ -595,10 +604,14 @@ public class ScreenGame implements Screen {
             if (isRocket) {
                 for (int i = rockets.size() - 1; i >= 0; i--) {
                     if (rockets.get(i).overlap(enemies.get(j))) {
-                        rockets.remove(i);
+
                         for (int k = MathUtils.random(2, 9); k >= 0; k--) {
                             fragments.add(new Fragment(enemies.get(j).x, enemies.get(j).y));
                         }
+                        for (int k = MathUtils.random(2, 7); k >= 0; k--) {
+                            fragments.add(new Fragment(rockets.get(i).x, rockets.get(i).y));
+                        }
+                        rockets.remove(i);
                         emeniesDone += 1;
                         money += moneyFactor;
                         enemies.get(j).width = 0;
@@ -765,6 +778,8 @@ public class ScreenGame implements Screen {
                 }
             }
         }
+        if (nums.isEmpty()) isBoss = true;
+
         for (int i = rocketsBoost.size() - 1; i >= 0; i--) {
             if (rocketsBoost.get(i).OutOfscreen()) rocketsBoost.remove(i);
         }
@@ -786,17 +801,26 @@ public class ScreenGame implements Screen {
         if (currentlevel.controls == JOYSTIK_LEFT || currentlevel.controls == JOYSTIK_RIGHT) {
 
             ship.update(delta);
-            ship.updateRotatoin();
+
         }
-        ship.updateRotatoin();
-        ship.type = main.shipSkin;
+
+
         strmoney = money + "";
         btnMoney.changeText(strmoney);
 
 
         /// draw
-        batch.setProjectionMatrix(camera.combined);
+
+        // Отрисовка
+
+
+
+
+
+
+
         batch.begin();
+
 
         for (GameBackground bg : bg) {
             batch.draw(imgBG, bg.x, bg.y, bg.width, bg.height);
@@ -869,7 +893,11 @@ public class ScreenGame implements Screen {
         if (isShieldWarring)
             batch.draw(imgShiledShipWarring[main.shipSkin][ship.phase], ship.scrX(), ship.scrY(), ship.width / 2, ship.height / 2, ship.width, ship.height, 1, 1, ship.rotation);
 
-        batch.draw(imgShipatlas[main.shipSkin][ship.phase], ship.scrX(), ship.scrY(), ship.width / 2, ship.height / 2, ship.width, ship.height, 1, 1, ship.rotation);
+        if (ship.vX < 0) {
+            batch.draw(imgShipatlas[main.shipSkin][ship.phase], ship.scrX(), ship.scrY(), ship.width / 2, ship.height / 2, ship.width, ship.height, -1, 1, ship.rotation);
+        } else {
+            batch.draw(imgShipatlas[main.shipSkin][ship.phase], ship.scrX(), ship.scrY(), ship.width / 2, ship.height / 2, ship.width, ship.height, 1, 1, ship.rotation);
+        }
 
 
         if (gameState == GAME_OVER) {
@@ -915,6 +943,7 @@ public class ScreenGame implements Screen {
 
 
         batch.end();
+
 
     }
 
@@ -1192,13 +1221,9 @@ public class ScreenGame implements Screen {
 
 
             }
-            if (strKB.equals("" + sumCoastEnemyes)) {
-                isBoss = true;
-                timeGreenSpawn = TimeUtils.millis();
-                strKB = "a";
 
 
-            } else if (!strKB.isEmpty() && !isBoss) {
+            if (!strKB.isEmpty() && !isBoss) {
                 sumCoastEnemyes = 0;
                 gameState = GAME_OVER;
                 timeRedSpawn = TimeUtils.millis();
@@ -1223,10 +1248,10 @@ public class ScreenGame implements Screen {
     }
 
     public void spavnNums() {
-        if (TimeUtils.millis() > timeLastSpawnNums + currentlevel.timeSpawnInterval * 3) {
-            nums.add(new Boost(randomExclude(0, 9, NumInt), false));
-            nums.add(new Boost(MathUtils.clamp(NumInt, 0, 9), true));
-            NumInt += 1;
+        if (TimeUtils.millis() > timeLastSpawnNums + currentlevel.timeSpawnInterval && numInt < 10) {
+            nums.add(new Boost(randomExclude(0, 9, numInt), false));
+            nums.add(new Boost(MathUtils.clamp(numInt, 0, 9), true));
+            numInt += 1;
             timeLastSpawnNums = TimeUtils.millis();
 
         }
@@ -1305,7 +1330,7 @@ public class ScreenGame implements Screen {
         shots.clear();
         stones.clear();
         nums.clear();
-        NumInt = 0;
+        numInt = 0;
         fragments.clear();
         ship.x = SCR_WIDTH / 2;
         ship.y = SCR_HEIGHT / 5;

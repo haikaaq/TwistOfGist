@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -109,10 +110,10 @@ public class ScreenShop implements Screen {
         imgRed = manager.get("red.png", Texture.class);
         imgBG = manager.get("bgshop.png", Texture.class);
         imgPush = manager.get("push.png", Texture.class);
-        imgShipsatlas = manager.get("atlas.png", Texture.class);
+        imgShipsatlas = new Texture("atlas.png");
         imgShotsatlas = manager.get("shots.png", Texture.class);
         imgPlus = manager.get("plus.png", Texture.class);
-        imgLongButtonAtlas = manager.get("LongButton.png", Texture.class);
+        imgLongButtonAtlas = manager.get("longButton.png", Texture.class);
         imgWarring = manager.get("warring.png", Texture.class);
 
         btnAllmoney = new SpaceButton(font, "" + (main.allmoney >= 1000 ? main.allmoney : main.allmoney / 1000 + 'k'), SCR_WIDTH - 120, 1550);
@@ -142,7 +143,7 @@ public class ScreenShop implements Screen {
 
         for (int j = 0; j < imgShipatlas.length; j++) {
             for (int i = 0; i < imgShipatlas[j].length; i++) {
-                imgShipatlas[j][i] = new TextureRegion(imgShipsatlas, (i < 7 ? i : 12 - i) * 800, j * 800, 800, 800);
+                imgShipatlas[j][i] = new TextureRegion(imgShipsatlas, (i) * 400, j * 500, 400, 500);
             }
         }
 
@@ -670,7 +671,6 @@ public class ScreenShop implements Screen {
         if (ship.x > SCR_WIDTH + ship.width / 2) {
             ship.x = -ship.width / 2;
         }
-        ship.changePhase();
 
 
     }

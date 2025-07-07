@@ -27,8 +27,8 @@ public class Boost extends Object {
         this.isTrueNum = isTrueNum;
         imgWidth = imgHeight = 400;
         x = MathUtils.random(width / 2, SCR_WIDTH - width / 2);
-        y = MathUtils.random(SCR_HEIGHT + height, 2 * SCR_HEIGHT);
-        vY = MathUtils.random(-5f, -4.9f);
+        y = MathUtils.random(SCR_HEIGHT + height, SCR_HEIGHT + 1 / 2 * SCR_HEIGHT);
+        vY = -4f;
     }
 
     public boolean overlap(Object o) {

@@ -5,9 +5,16 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
 
 
@@ -24,12 +31,14 @@ public class Main extends Game {
     public AssetManager manager;
     public SpriteBatch batch;
     public OrthographicCamera camera;
+
     public Vector3 touch;
     public BitmapFont font70;
     public BitmapFont font32;
     public boolean isPlayMove = true;
     public ScreenMenu screenMenu;
     public ScreenGame screenGame;
+
     public ScreenShop screenShop;
     public LoadingScreen screenLoading;
     public ScreenSettings screenSettings;
@@ -60,10 +69,13 @@ public class Main extends Game {
     public void create() {
         manager = new AssetManager();
         batch = new SpriteBatch();
+
         camera = new OrthographicCamera();
         camera.setToOrtho(false, SCR_WIDTH, SCR_HEIGHT);
+
         touch = new Vector3();
         player = new Player();
+
         font70 = new BitmapFont(Gdx.files.internal("701.fnt"));
         font32 = new BitmapFont(Gdx.files.internal("32.fnt"));
         FonMusic = Gdx.audio.newMusic(Gdx.files.internal("musicFon.mp3"));

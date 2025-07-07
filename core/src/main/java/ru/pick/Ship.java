@@ -5,7 +5,6 @@ import static ru.pick.Main.SCR_WIDTH;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.TimeUtils;
 
 public class Ship extends Object {
 
@@ -16,9 +15,9 @@ public class Ship extends Object {
     private long timePhaseInterval = 150;
     public float rotation = 0;
     public float rotationSpeed;
+    private float vxAbs;
 
-
-    public float CheckVx;
+    //public float checkVx;
     private float acceleration = 0.2f;
     private float friction = 0.9f; // Трение (0.9 = 10% замедления)
 
@@ -51,12 +50,22 @@ public class Ship extends Object {
         if (Math.abs(vY) < 0.01f) vY = 0;
     }
 
-    public void changePhase() {
-        if (TimeUtils.millis() > timeLastPhase + timePhaseInterval) {
+    public void changeShipPhase() {
+        /*if (TimeUtils.millis() > timeLastPhase + timePhaseInterval) {
             timeLastPhase = TimeUtils.millis();
             phase++;
         }
-        if (phase == nPhases) phase = 0;
+        if (phase == nPhases) phase = 0;*/
+
+        if (vX == 0) phase = 0;
+        if (vxAbs > 0 && vxAbs <= 1.7f) phase = 1;
+        if (vxAbs > 1.7f && vxAbs <= 2.9f) phase = 2;
+        if (vxAbs > 2.9f && vxAbs <= 3.8f) phase = 3;
+        if (vxAbs > 3.8f && vxAbs <= 4.9f) phase = 4;
+        if (vxAbs > 4.9f && vxAbs <= 6f) phase = 5;
+        if (vxAbs > 6.0f && vxAbs <= 6.8f) phase = 6;
+        if (vxAbs > 6.8f) phase = 7;
+
 
     }
 
@@ -64,8 +73,8 @@ public class Ship extends Object {
 
         vX = (touch.x - scrX() - 125) / 27;
         vY = (touch.y - scrY() - 125) / 70;
-        updateRotatoin();
 
+        vxAbs = Math.abs(vX);
         outOfScreen();
 
     }
@@ -74,19 +83,19 @@ public class Ship extends Object {
     public void move() {
         super.move();
         //if (vX>MaxVx)vX=MaxVx;
-
+        vxAbs = Math.abs(vX);
         rotation -= rotationSpeed;
-        rotation = MathUtils.clamp(rotation, -80f, 80f);
+        rotation = MathUtils.clamp(rotation, -60f, 60f);
 
 
-
-        changePhase();
+        updateRotatoin();
+        changeShipPhase();
         outOfScreen();
 
     }
 
     public void updateRotatoin() {
-        rotationSpeed = (vX - CheckVx) * 2;
+        rotation = (vX * 2);
         if (Math.abs(rotationSpeed) < 0.7f)
             rotationSpeed = MathUtils.clamp(rotationSpeed / 200, -0.7f, 0.7f);
     }
