@@ -31,7 +31,7 @@ public class Levels {
         ),
         //1
         new Level(
-            "bggame.png",
+            "bggame3.png",
             "enemyes.png",
             25,
             1,
@@ -56,7 +56,7 @@ public class Levels {
 
         // Уровень 2
         new Level(
-            "bggame.png",
+            "bggame3.png",
             "enemyes.png",
             0,
             10,
@@ -283,6 +283,7 @@ public class Levels {
 
     public static class Level {
         Texture imgEnemyes;
+        Texture imgBG;
 
         public final String backgroundPath;
         public final String enemyPath;
@@ -338,6 +339,7 @@ public class Levels {
 
             this.isAccelerometrLevel = isAccelerometrLevel;
             imgEnemyes = new Texture(enemyPath);
+            imgBG = new Texture(backgroundPath);
 
         }
 

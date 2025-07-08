@@ -131,57 +131,50 @@ public class FirebaseDesktop implements FirebaseManager {
 
     @Override
     public void getPlayerRank(Player targetPlayer, PlayerRankCallback callback) {
-        Request request = new Request.Builder()
-            .url(DB_URL + ".json?orderBy=\"level\"")
-            .get()
-            .build();
+        String url = DB_URL + ".json?orderBy=\"level\"&limitToLast=10&print=pretty";
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(url).get().build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Gdx.app.postRunnable(() -> callback.onError(e.getMessage()));
+            public void onFailure(@NotNull Call call, IOException e) {
+                callback.onError(e.getMessage());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try {
-                    if (!response.isSuccessful()) {
-                        throw new IOException("HTTP " + response.code());
-                    }
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    JsonObject data = JsonParser.parseString(response.body().string()).getAsJsonObject();
+                    List<Player> allPlayers = new ArrayList<>();
 
-                    String jsonData = response.body().string();
-                    JsonObject data = gson.fromJson(jsonData, JsonObject.class);
-                    List<Player> players = new ArrayList<>();
-
+                    // Парсим всех игроков
                     for (Map.Entry<String, JsonElement> entry : data.entrySet()) {
-                        Player player = gson.fromJson(entry.getValue(), Player.class);
+                        Player player = new Gson().fromJson(entry.getValue(), Player.class);
                         player.firebaseId = entry.getKey();
-                        players.add(player);
+                        allPlayers.add(player);
                     }
 
-                    players.sort((p1, p2) -> {
+                    // Сортировка
+                    allPlayers.sort((p1, p2) -> {
                         int levelCompare = Integer.compare(p2.level, p1.level);
                         return levelCompare != 0 ? levelCompare : Integer.compare(p2.money, p1.money);
                     });
 
-                    int rank = -1;
-                    for (int i = 0; i < players.size(); i++) {
-                        if (players.get(i).firebaseId.equals(targetPlayer.firebaseId)) {
-                            rank = i + 1;
-                            break;
-                        }
-                    }
+                    // Поиск позиции
+                    int rank = IntStream.range(0, allPlayers.size())
+                        .filter(i -> allPlayers.get(i).firebaseId.equals(targetPlayer.firebaseId))
+                        .findFirst()
+                        .orElse(-1) + 1; // +1 чтобы сделать рейтинг от 1
 
-                    final int finalRank = rank;
-                    Gdx.app.postRunnable(() -> {
-                        if (finalRank != -1) {
-                            callback.onSuccess(finalRank);
-                        } else {
-                            callback.onError("Player not found");
-                        }
-                    });
-                } catch (Exception e) {
-                    Gdx.app.postRunnable(() -> callback.onError(e.getMessage()));
+                    if (rank > 0) {
+                        callback.onSuccess(rank);
+                    } else {
+                        callback.onError("Player not found");
+                    }
+                } else {
+                    callback.onError("HTTP error: " + response.code());
                 }
             }
         });

@@ -156,8 +156,13 @@ public class ScreenSettings implements Screen {
             }
 
             if (btnFonMusic.hit(touch.x - 60, touch.y) && !keyboard.isKeyboardShow) {
-                if (main.isFonMusic) main.isFonMusic = false;
-                else main.isFonMusic = true;
+                if (main.isFonMusic) {
+                    main.isFonMusic = false;
+                    main.menuMusic.pause();
+                } else {
+                    main.isFonMusic = true;
+                    main.menuMusic.play();
+                }
             }
 
             if (btnActionSounds.hit(touch.x - 60, touch.y) && !keyboard.isKeyboardShow) {

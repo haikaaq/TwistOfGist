@@ -116,11 +116,13 @@ public class FirebaseAndroid implements FirebaseManager {
                             allPlayers.add(player);
                         }
                     }
+
                     // Сортируем как в топе
                     allPlayers.sort((p1, p2) -> {
                         int levelCompare = Integer.compare(p2.level, p1.level);
                         return levelCompare != 0 ? levelCompare : Integer.compare(p2.money, p1.money);
                     });
+
                     // Находим позицию игрока
                     int rank = -1;
                     for (int i = 0; i < allPlayers.size(); i++) {
@@ -129,10 +131,12 @@ public class FirebaseAndroid implements FirebaseManager {
                             break;
                         }
                     }
+
                     if (rank != -1) {
                         callback.onSuccess(rank);
                     } else {
                         online = false;
+                        // callback.onError("Player not found in leaderboard");
                     }
                 }
                 @Override

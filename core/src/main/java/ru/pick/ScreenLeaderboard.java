@@ -94,6 +94,9 @@ public class ScreenLeaderboard implements Screen {
             keyboard.start();
 
         } else {
+
+            main.player.money = main.allmoney;
+            main.player.level = main.level;
             main.player.savePlayerToFirebase(main.player);
             // leaderboard();
 
@@ -104,6 +107,7 @@ public class ScreenLeaderboard implements Screen {
     @Override
     public void render(float delta) {
         warring();
+        System.out.println(main.player.rank);
 
 
         if (!keyboard.isKeyboardShow) {
@@ -240,11 +244,29 @@ public class ScreenLeaderboard implements Screen {
 
     public void leaderboard() {
         FirebaseManager firebase = FirebaseService.create();
+        firebase.getPlayerRank(main.player, new FirebaseManager.PlayerRankCallback() {
 
+            @Override
+            public void onSuccess(int rank) {
+
+
+                main.player.rank = rank;
+
+
+            }
+
+            @Override
+            public void onError(String message) {
+                Gdx.app.log("RANK", "Ошибка: " + message);
+            }
+        });
+        btnLead.changeText(LanguageManager.get("leaderboard"));
+        btnName.changeText(LanguageManager.get("enteryourname"));
 
         firebase.getTop10ByLevel(new FirebaseManager.SortedLeaderboardCallback() {
 
 
+            //isleaderboard = true;
             @Override
             public void onSuccess(List<Player> players) {
                 topPlayers = players;
@@ -268,25 +290,7 @@ public class ScreenLeaderboard implements Screen {
             }
         });
 
-        firebase.getPlayerRank(main.player, new FirebaseManager.PlayerRankCallback() {
 
-            @Override
-            public void onSuccess(int rank) {
-
-
-                main.player.rank = rank;
-
-            }
-
-            @Override
-            public void onError(String message) {
-                Gdx.app.log("RANK", "Ошибка: " + message);
-            }
-        });
-        btnLead.changeText(LanguageManager.get("leaderboard"));
-        btnName.changeText(LanguageManager.get("enteryourname"));
-
-        isleaderboard = true;
 
     }
 

@@ -5,16 +5,9 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
 
 
@@ -45,7 +38,8 @@ public class Main extends Game {
     public ScreenLeaderboard screenLeaderboard;
     public ScreenAbout screenAbout;
     public ScreenNumLevel screenNumLevel;
-    public Music FonMusic;
+    public Music fonMusic;
+    public Music menuMusic;
     public int level;
     public int shipSkin;
     public int shotsShots;
@@ -78,7 +72,8 @@ public class Main extends Game {
 
         font70 = new BitmapFont(Gdx.files.internal("701.fnt"));
         font32 = new BitmapFont(Gdx.files.internal("32.fnt"));
-        FonMusic = Gdx.audio.newMusic(Gdx.files.internal("musicFon.mp3"));
+        fonMusic = Gdx.audio.newMusic(Gdx.files.internal("musicFon.mp3"));
+        menuMusic = Gdx.audio.newMusic(Gdx.files.internal("soundBG.mp3"));
         LanguageManager.loadBundles();
         screenLoading = new LoadingScreen(this);
         setScreen(screenLoading);

@@ -39,7 +39,8 @@ public class ScreenMenu implements Screen {
     SpaceButton btnAllmoney;
     SpaceButton btnShop;
 
-    Music FonMusic;
+    Music fonMusic;
+    Music menuMusic;
     Texture imgLogo;
     Texture imgMN;
     Texture imgBG2;
@@ -63,7 +64,8 @@ public class ScreenMenu implements Screen {
         touch = main.touch;
         font70 = main.font70;
         this.manager = main.manager;
-        FonMusic = main.FonMusic;
+        fonMusic = main.fonMusic;
+        menuMusic = main.menuMusic;
 
         LanguageManager.loadBundles();
         imgEnemyesBoses = new Texture("atlasboss.png");
@@ -113,6 +115,10 @@ public class ScreenMenu implements Screen {
     @Override
     public void show() {
         loadState();
+        if (main.isFonMusic) {
+            menuMusic.setLooping(true);
+            menuMusic.play();
+        }
 
     }
 
@@ -143,10 +149,11 @@ public class ScreenMenu implements Screen {
         if (btnPlay.setScreenButton) {
             main.setScreen(main.screenNumLevel);
             if (main.isFonMusic) {
-                FonMusic.setLooping(true);
-                FonMusic.play();
+                menuMusic.pause();
+                fonMusic.setLooping(true);
+                fonMusic.play();
             }
-            FonMusic.setVolume(0.3f);
+            fonMusic.setVolume(1.3f);
 
             return;
         }

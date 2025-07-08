@@ -183,7 +183,7 @@ public class ScreenGame implements Screen {
         font32 = main.font32;
         level = main.level;
 
-        FonMusic = main.FonMusic;
+        FonMusic = main.fonMusic;
         allmoney = main.allmoney;
 
 
@@ -193,7 +193,7 @@ public class ScreenGame implements Screen {
 
         imgMN = manager.get("moneta.png", Texture.class);
 
-        imgBG = manager.get(currentlevel.backgroundPath, Texture.class);
+
         imgShieldBoost = manager.get("shieldBoost.png", Texture.class);
         imgRocketBoost = manager.get("rocketBoost.png", Texture.class);
         imgShiledShipAtlas = new Texture("shieldShip.png");
@@ -315,6 +315,7 @@ public class ScreenGame implements Screen {
 
 
     public void show() {
+
         ship.type = main.shipSkin;
         gameState = GAME;
         shotCount = main.shotsBoostCount;
@@ -348,7 +349,7 @@ public class ScreenGame implements Screen {
             stones.add(new Stone(50,MathUtils.random(0f,1200f)));
             stones.add(new Stone(850,MathUtils.random(200f,1400f)));}*/
         }
-
+        imgBG = currentlevel.imgBG;
         imgEnemyes = currentlevel.imgEnemyes;
         for (int j = 0; j < imgEnemy.length; j++) {
             for (int i = 0; i < imgEnemy[j].length; i++) {
@@ -889,10 +890,20 @@ public class ScreenGame implements Screen {
             }
         }
         if (isShield)
-            batch.draw(imgShiledShip[main.shipSkin][ship.phase], ship.scrX(), ship.scrY(), ship.width / 2, ship.height / 2, ship.width, ship.height, 1, 1, ship.rotation);
-        if (isShieldWarring)
-            batch.draw(imgShiledShipWarring[main.shipSkin][ship.phase], ship.scrX(), ship.scrY(), ship.width / 2, ship.height / 2, ship.width, ship.height, 1, 1, ship.rotation);
+            if (ship.vX > 0) {
+                batch.draw(imgShiledShip[main.shipSkin][ship.phase], ship.scrX(), ship.scrY(), ship.width / 2, ship.height / 2, ship.width, ship.height, 1, 1, ship.rotation);
+            } else {
+                batch.draw(imgShiledShip[main.shipSkin][ship.phase], ship.scrX(), ship.scrY(), ship.width / 2, ship.height / 2, ship.width, ship.height, -1, 1, ship.rotation);
+            }
 
+        if (isShieldWarring) {
+            if (ship.vX > 0) {
+                batch.draw(imgShiledShipWarring[main.shipSkin][ship.phase], ship.scrX(), ship.scrY(), ship.width / 2, ship.height / 2, ship.width, ship.height, 1, 1, ship.rotation);
+            } else {
+                batch.draw(imgShiledShipWarring[main.shipSkin][ship.phase], ship.scrX(), ship.scrY(), ship.width / 2, ship.height / 2, ship.width, ship.height, -1, 1, ship.rotation);
+
+            }
+        }
         if (ship.vX < 0) {
             batch.draw(imgShipatlas[main.shipSkin][ship.phase], ship.scrX(), ship.scrY(), ship.width / 2, ship.height / 2, ship.width, ship.height, -1, 1, ship.rotation);
         } else {
