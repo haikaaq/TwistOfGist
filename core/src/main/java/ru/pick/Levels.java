@@ -31,7 +31,7 @@ public class Levels {
         ),
         //1
         new Level(
-            "bggame3.png",
+            "bggame2.png",
             "enemyes.png",
             25,
             1,
@@ -130,7 +130,7 @@ public class Levels {
         ),
         //5
         new Level(
-            "bggame.png",
+            "bggame2.png",
             "nothing.png",
             25,
             0,
@@ -154,7 +154,7 @@ public class Levels {
         ),
         //6
         new Level(
-            "bggame.png",
+            "bggame3.png",
             "enemyes.png",
             100,
             0,
@@ -205,7 +205,7 @@ public class Levels {
         ),
         //8
         new Level(
-            "bggame.png",
+            "bggame2.png",
             "enemyes.png",
             20,
             0,
@@ -255,7 +255,7 @@ public class Levels {
 
         //10
         new Level(
-            "bggame.png",
+            "bggame3.png",
             "enemyes.png",
             9,
             0,
